@@ -1,0 +1,130 @@
+@import "../../bower_components/font-awesome/scss/font-awesome.scss";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss";
+@import "./variables.scss";
+@import "./skeleton-custom.scss";
+@import "./dialog.scss";
+@import "./messagecontainer.scss";
+
+@media (#{$bp-smaller-than-phablet}) {}
+@media (#{$bp-smaller-than-tablet}) {}
+@media (#{$bp-smaller-than-desktop}) {}
+
+//Your custom app styles
+.example-page {
+    margin: auto;
+    padding: 50px;
+    width: 60%;
+    text-align: center;
+}
+
+.checkbox-label { padding: 10px; }
+
+.hidden { display: none; }
+
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-green { color: #2fa000; }
+.text-blue { color: #0076a0; }
+
+.positive { background-color: $color-success; }
+.negative { background-color: $color-danger; }
+.error { background-color: $color-danger; }
+.bold { font-weight: bold; }
+.no-border { border: 0 !important; }
+
+.button-container {
+    button,
+    .button {
+        margin-left: 6px;
+    }
+}
+
+.list-striped {
+    li {
+        &:nth-child(odd) {
+            background-color: #efefef;
+        }
+    }
+}
+
+.list-selectable {
+    li:not(.list-header) {
+        cursor: pointer;
+        &:hover {
+            background-color: #eee;
+        }
+    }
+}
+
+.list-header {
+    font-weight: bold;
+}
+
+.icon-button {
+    cursor: pointer;
+    vertical-align: middle;
+
+    &:hover {
+        font-weight: bold;
+    }
+}
+
+.list-text-cell {
+    display: inline-block;
+    width: 80%;
+}
+
+.list-icon-cell {
+    display: inline-block;
+    width: 20%;
+}
+
+/**
+ *  Participants page
+ *
+ *
+ */
+.home-page {
+    button {
+        margin-bottom: 1.5rem;
+    }
+
+}
+
+/**
+ *  Participants page
+ *
+ *
+ */
+.participants-page {
+    form {
+        margin-top: 2rem;
+    }
+}
+
+#participants-list {
+    .fa-user {
+        margin-right: 4px;
+    }
+}
+
+/**
+ *  Expenses page
+ *
+ */
+.shares-section-container {
+    display: none;
+
+    @media (#{$bp-larger-than-desktop}) {
+        display: inline;
+    }
+}
+
+.expenses-list {
+    @media (#{$bp-smaller-than-desktop}) {
+        width: 100% !important;
+    }
+}

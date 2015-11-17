@@ -1,0 +1,43 @@
+@import "./variables.scss";
+
+/**
+ *  Styles for message container component
+ *
+ *
+ */
+.message-container {
+
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: $border-radius-light;
+    border-width: 1px;
+    border-style: solid;
+
+    &.info {
+        border-color: darken($color-info, 10%);
+    }
+
+    &.danger {
+        color: #fff;
+        border-color: darken($color-danger, 10%);
+    }
+
+    &.success {
+        border-color: darken($color-success, 10%);
+    }
+
+    &.warning {
+        border-color: darken($color-warning, 10%);
+    }
+
+    .close-button {
+        position: relative;
+        top: -6px;
+        right: -4px;
+        cursor: pointer;
+    }
+
+    span.message-text:not(:first-of-type) {
+        padding-left: 25px;
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "expensesplitter",
+  "version": "0.1.0",
+  "dependencies": {
+    "font-awesome": "fontawesome#~4.4.0",
+    "Skeleton-Sass": "skeleton-scss#*",
+    "bootstrap-sass": "~3.3.5"
+  }
+}

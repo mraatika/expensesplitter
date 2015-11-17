@@ -1,0 +1,18 @@
+@import "./skeleton-custom.scss";
+@import "./variables.scss";
+
+.modal-dialog {
+    &.small {
+        /* Larger than phablet */
+        @media (#{$bp-larger-than-tablet}) {
+            max-width: 450px;
+        }
+    }
+
+    &.large {
+        /* Larger than phablet */
+        @media (#{$bp-larger-than-tablet}) {
+            max-width: 750px;
+        }
+    }
+}

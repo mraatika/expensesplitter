@@ -1,0 +1,84 @@
+@import "./variables.scss";
+@import "../../bower_components/Skeleton-Sass/scss/skeleton.scss";
+
+.info, .button-info {
+    background-color: $color-info;
+    border-color: $color-info;
+}
+
+.danger, .button-danger {
+    color: #fff;
+    background-color: $color-danger;
+    border-color: $color-danger;
+
+    &:hover {
+        color: #fff;
+        background-color: darken($color-danger, 10%);
+        border-color: darken($color-danger, 10%);
+    }
+}
+
+.success, .button-success {
+    background-color: $color-success;
+    border-color: $color-success;
+}
+
+.warning, .button-warning {
+    background-color: $color-warning;
+    border-color: $color-warning;
+}
+
+.button,
+button,
+input {
+    &[disabled] {
+        background-color: lighten($light-grey, 5%);
+    }
+}
+
+.button,
+button {
+    &[disabled] {
+        border: 0;
+
+        &:hover {
+            color: #555;
+        }
+
+        &.button-primary,
+        &.button-primary:hover {
+            background-color: lighten($primary-color, 20%);
+        }
+    }
+}
+
+input[type="text"] {
+    &[disabled] {
+        border-color: lighten($border-color, 10%);
+    }
+}
+
+ul {
+    list-style: none;
+    margin-bottom: 0;
+
+    li {
+        padding: 0.8rem;
+        margin: 0;
+
+        &:not(:last-child) {
+            &:not(.list-header) {
+                border-bottom: 1px solid #efefef;
+            }
+        }
+    }
+
+}
+
+form {
+    margin-bottom: 0;
+}
+
+button {
+    margin-bottom: 1.5rem;
+}

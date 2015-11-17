@@ -1,0 +1,11 @@
+$color-success: #5CB85C;
+$color-info: #B0EAFB;
+$color-danger: #D9534F;
+$color-warning: #F0AD4E;
+
+$border-radius-light: 4px;
+$border-radius-medium: 8px;
+
+$bp-smaller-than-phablet   : "max-width: 550px" !default;
+$bp-smaller-than-tablet    : "max-width: 750px" !default;
+$bp-smaller-than-desktop   : "max-width: 1000px" !default;
