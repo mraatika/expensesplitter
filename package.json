@@ -45,7 +45,7 @@
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testPathDirs": [
-      "<rootDir>/src/js/__tests__/components/expenses"
+      "<rootDir>/src/js/__tests__/"
     ],
     "testFileExtensions": [
       "es6",
