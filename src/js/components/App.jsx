@@ -10,12 +10,11 @@ import {name as appName} from '../../../package.json';
 export class App extends React.Component {
 
     componentWillMount() {
-        this.router = new Router();
         DataStore.init(storageFactory.create());
     }
 
     componentDidMount() {
-        this.router.start();
+        Router.start();
     }
 
     render() {

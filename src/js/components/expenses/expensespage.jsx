@@ -4,7 +4,7 @@ import React from 'react';
 import DataStore from '../../stores/datastore';
 import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
-import {Navigation} from '../navigation.jsx';
+import {Navigation} from '../navigation/navigation.jsx';
 import {ExpenseAddForm} from './expenseaddform.jsx';
 import {ExpenseList} from './expenselist.jsx';
 import {SharesSection} from '../shares/sharessection.jsx';

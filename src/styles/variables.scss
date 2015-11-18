@@ -1,7 +1,11 @@
+@import "../../bower_components/Skeleton-Sass/scss/base/_variables.scss";
+
 $color-success: #5CB85C;
 $color-info: #B0EAFB;
 $color-danger: #D9534F;
 $color-warning: #F0AD4E;
+
+$color-link-hover: darken($link-color, 5%);
 
 $border-radius-light: 4px;
 $border-radius-medium: 8px;

@@ -5,7 +5,7 @@ import DataStore from '../../stores/datastore';
 import pages from '../../constants/pages';
 import {ParticipantList} from './participantlist.jsx';
 import {ParticipantAddForm} from './participantaddform.jsx';
-import {Navigation} from '../navigation.jsx';
+import {Navigation} from '../navigation/navigation.jsx';
 import {t} from '../../dictionary/dictionary';
 
 export class ParticipantsPage extends React.Component {

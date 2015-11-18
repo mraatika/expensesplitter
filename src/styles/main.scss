@@ -82,6 +82,11 @@
     width: 20%;
 }
 
+option.current {
+    font-style: italic;
+    color: #888;
+}
+
 /**
  *  Participants page
  *
@@ -127,4 +132,13 @@
     @media (#{$bp-smaller-than-desktop}) {
         width: 100% !important;
     }
+}
+
+/**
+ * Navigation
+ */
+
+nav a.button:hover {
+    color: $color-link-hover;
+    border-color: $color-link-hover;
 }

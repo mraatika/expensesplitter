@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * All navigable pages with link hrefs and translatable names
+ * @type {Object}
+ */
 export default Object.freeze({
 
     HOME: {
