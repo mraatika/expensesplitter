@@ -1,10 +1,8 @@
-'use strict';
-
 jest.autoMockOff();
 
-const TransactionService = require('../../service/transactionsservice');
+const TransactionsService = require('../../service/transactionsservice').default;
 
-describe('Service: TransactionService', function () {
+describe('Service: TransactionsService', function () {
 
     var participants = [ { id:'1', name:'Seppo' }, { id:'2', name:'Markku' }, { 'id':3, name:'Pera' } ];
 
@@ -26,7 +24,7 @@ describe('Service: TransactionService', function () {
                 }
             ]
         };
-        var transactionsService = new TransactionService(sheet);
+        var transactionsService = new TransactionsService(sheet);
         var transactions = transactionsService.calculateTransactions();
 
         expect(transactions.length).toEqual(2);

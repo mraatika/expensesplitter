@@ -1,8 +1,6 @@
-'use strict';
-
 jest.dontMock('../../service/expensesservice.js');
 
-const ExpensesService = require('../../service/expensesservice');
+const ExpensesService = require('../../service/expensesservice').default;
 
 describe('Service: ExpensesService', function () {
 

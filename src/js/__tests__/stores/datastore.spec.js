@@ -1,8 +1,8 @@
 jest.autoMockOff();
 
-const DataStore = require('../../stores/datastore');
-const ActionCreators = require('../../actions/dataactioncreators');
-const Constants = require('../../constants/AppConstants');
+const DataStore = require('../../stores/datastore').default;
+const ActionCreators = require('../../actions/dataactioncreators').default;
+const Constants = require('../../constants/AppConstants').default;
 
 var sheets = [
     {
