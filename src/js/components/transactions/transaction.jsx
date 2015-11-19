@@ -1,14 +1,19 @@
-'use strict';
-
 import React from 'react';
 import _ from 'lodash';
 
-export class Transaction extends React.Component {
+/**
+ * @class Transaction
+ * @description A list element representing a transaction
+ * @extends {ReactComponent}
+ */
+export default class Transaction extends React.Component {
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var transaction = this.props.transaction;
-        var participants = this.props.participants;
-        var findParticipant = function (participantId) {
+        const {transaction, participants} = this.props;
+        const findParticipant = participantId => {
             return _.find(participants, (participant => participant.id === participantId)).name;
         };
 
@@ -22,3 +27,8 @@ export class Transaction extends React.Component {
         );
     }
 }
+
+Transaction.propTypes = {
+    transaction: React.PropTypes.object.isRequired,
+    participants: React.PropTypes.array.isRequired
+};

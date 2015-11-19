@@ -1,21 +1,19 @@
-'use strict';
-
 import React from 'react';
 import Transaction from './transaction.jsx';
 import {t} from '../../dictionary/dictionary';
 
-var TransactionsList = React.createClass({
+/**
+ * @class TransactionsList
+ * @description List for transactions
+ * @extends {ReactComponent}
+ */
+export default class TransactionsList extends React.Component {
 
-    getDefaultProps: function() {
-        return {
-            transactions: [],
-            participants: []
-        };
-    },
-
-    render: function() {
-        var participants = this.props.participants;
-        var transactions = this.props.transactions;
+    /**
+     * @return {ReactComponent}
+     */
+    render() {
+        const {participants, transactions} = this.props;
 
         return (
             <ul id="transactions-list">
@@ -30,7 +28,22 @@ var TransactionsList = React.createClass({
             </ul>
         );
     }
+}
 
-});
+TransactionsList.defaultProps = {
+    transactions: [],
+    participants: []
+};
 
-export default TransactionsList;
+TransactionsList.propTypes = {
+    /**
+     * List of transactions
+     * @type {Array}
+     */
+    transactions: React.PropTypes.array,
+    /**
+     * List of participants
+     * @type {Array}
+     */
+    participants: React.PropTypes.array
+};

@@ -1,7 +1,9 @@
 @import "../../bower_components/font-awesome/scss/font-awesome.scss";
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_component-animations.scss";
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_panels.scss";
 @import "./variables.scss";
 @import "./skeleton-custom.scss";
 @import "./dialog.scss";
@@ -34,6 +36,7 @@
 .error { background-color: $color-danger; }
 .bold { font-weight: bold; }
 .no-border { border: 0 !important; }
+.wrap-content { overflow: auto; }
 
 .button-container {
     button,
