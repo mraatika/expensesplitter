@@ -18,7 +18,7 @@ export class NavigationSelect extends React.Component {
      * @return {undefined}
      */
     _onChange() {
-        let link = this._select.options[this._select.selectedIndex].value;
+        const link = this._select.options[this._select.selectedIndex].value;
         // defer to allow the pending update to be completed
         _.defer(() => page(link));
     }
@@ -28,7 +28,8 @@ export class NavigationSelect extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        let currentRoute = Router.getCurrentRoute();
+        const currentRoute = Router.getCurrentRoute();
+        const navigablePages = _.pick(pages, page => page.displayInNavigation);
 
         return (
             <select
@@ -37,8 +38,8 @@ export class NavigationSelect extends React.Component {
                 defaultValue={currentRoute}
                 onChange={this._onChange.bind(this)}>
                 {
-                    _.map(pages, (page, key) => {
-                        let isCurrentPage = page.href == currentRoute;
+                    _.map(navigablePages, (page, key) => {
+                        const isCurrentPage = page.href == currentRoute;
                         return <option key={key} value={page.href} className={isCurrentPage ? 'current' : ''}>
                             {t(page.label)}
                         </option>;
