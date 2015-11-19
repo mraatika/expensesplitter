@@ -13,10 +13,6 @@ var Renderer = {
      */
     renderContentView: function(component) {
         ReactDom.render(component, document.getElementById('content'));
-    },
-
-    renderFullView: function(component) {
-        ReactDom.render(component, document.body);
     }
 };
 

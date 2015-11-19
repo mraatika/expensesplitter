@@ -67,7 +67,7 @@ var routes = {
         var sheetSummary = getComponent(SheetSummary, {
             sheet: currentSheet
         });
-        renderer.renderFullView(sheetSummary);
+        renderer.renderContentView(sheetSummary);
     }
 };
 
