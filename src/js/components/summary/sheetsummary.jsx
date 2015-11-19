@@ -1,14 +1,13 @@
 'use strict';
 
 import React from 'react';
-import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
-import ExpenseList from '../expenses/expenselist.jsx';
-import TransactionsList from '../transactions/transactionslist.jsx';
-import SharesTable from '../shares/sharestable.jsx';
+import {ExpenseList} from '../expenses/expenselist.jsx';
+import {TransactionsList} from '../transactions/transactionslist.jsx';
+import {SharesTable} from '../shares/sharestable.jsx';
 
-var SheetSummary = React.createClass({
+export class SheetSummary extends React.Component {
 
     render() {
         var { participants, expenses } = this.props.sheet;
@@ -26,7 +25,8 @@ var SheetSummary = React.createClass({
                 <h2>{t('lang.expense_plural')}:</h2>
                 <ExpenseList
                     expenses={expenses}
-                    participants={participants} />
+                    participants={participants}
+                    isRemoveAllowed={false}/>
 
                 <h2>{t('lang.share_plural')}:</h2>
                 <SharesTable
@@ -38,6 +38,4 @@ var SheetSummary = React.createClass({
             </div>
         );
     }
-});
-
-export default SheetSummary;
+}

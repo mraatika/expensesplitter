@@ -53,5 +53,15 @@ export class ExpenseList extends React.Component {
 }
 
 ExpenseList.defaultProps = {
-    expenses: []
+    expenses: [],
+    participants: [],
+    isRemoveAllowed: true,
+    hideFooter: false
+};
+
+ExpenseList.propTypes = {
+    expenses: React.PropTypes.array,
+    participants: React.PropTypes.array,
+    isRemoveAllowed: React.PropTypes.bool,
+    hideFooter: React.PropTypes.bool
 };
