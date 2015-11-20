@@ -9,7 +9,7 @@ import {HomePage} from '../components/home/homepage.jsx';
 import {ParticipantsPage} from '../components/participants/participantspage.jsx';
 import {ExpensesPage} from '../components/expenses/expensespage.jsx';
 import {TransactionsPage} from '../components/transactions/transactionspage.jsx';
-import {SheetSummary} from '../components/summary/sheetsummary.jsx';
+import SheetSummary from '../components/summary/sheetsummary.jsx';
 
 /**
  *  Use factory to create component with data

@@ -4,10 +4,10 @@ import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import {ExpenseList} from '../expenses/expenselist.jsx';
-import {TransactionsList} from '../transactions/transactionslist.jsx';
+import TransactionsList from '../transactions/transactionslist.jsx';
 import {SharesTable} from '../shares/sharestable.jsx';
 
-export class SheetSummary extends React.Component {
+export default class SheetSummary extends React.Component {
 
     render() {
         var { participants, expenses } = this.props.sheet;
