@@ -61,7 +61,7 @@
     "expenses.per_participant" : "Per person",
 
     "participants.add_participant": "Add participant",
-    "participants.confirm_removal": "The participant has related expenses. Those are also removed.",
+    "participants.confirm_removal": "Selected participant has related expenses. Those will also be removed.",
     "participants.confirm_removal_title": "Confirm removal",
     "participants.no_participants": "No particpants added yet!",
     "participants.remove_participant": "Remove participant",

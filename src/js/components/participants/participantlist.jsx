@@ -1,23 +1,37 @@
-'use strict';
-
 import React from 'react';
-import {Participant} from './participant.jsx';
+import _ from 'lodash';
+import Participant from './participant.jsx';
 import {t} from '../../dictionary/dictionary';
 
-export class ParticipantList extends React.Component {
+/**
+ * @class ParticipantList
+ * @description List of Participant components
+ * @extends {ReactComponent}
+ */
+export default class ParticipantList extends React.Component {
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var participants = this.props.participants;
+        const sheet = this.props.sheet;
+        const participants = _.sortBy(sheet.participants, 'name');
 
         return (
             <ul id="participants-list">
-                {
-                    participants.length ? participants.map(participant =>
-                            <Participant key={participant.id} participant={participant} sheet={this.props.sheet} />
-                    ) : <li><i>{ t('participants.no_participants') }</i></li>
-                }
+            {
+                participants.length ? participants.map(participant =>
+                    <Participant key={participant.id} participant={participant} sheet={sheet} />
+                ) : <li><i>{ t('participants.no_participants') }</i></li>
+            }
             </ul>
         );
     }
 }
 
-ParticipantList.defaultProps = { participants: [] };
+ParticipantList.propTypes = {
+    /**
+     * The current sheet. Required.
+     * @type {object}
+     */
+    sheet: React.PropTypes.object.isRequired
+};

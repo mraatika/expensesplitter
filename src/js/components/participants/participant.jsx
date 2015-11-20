@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import ActionCreator from '../../actions/dataactioncreators';
 import {t} from '../../dictionary/dictionary';
@@ -7,7 +5,7 @@ import {ModalDialog} from '../common/modaldialog.jsx';
 import ExpensesService from '../../service/expensesservice';
 import {TrashButton} from '../common/trashbutton.jsx';
 
-export class Participant extends React.Component {
+export default class Participant extends React.Component {
 
     handleRemoveClick() {
         let props = this.props;

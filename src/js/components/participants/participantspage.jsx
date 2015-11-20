@@ -1,26 +1,25 @@
-'use strict';
-
 import React from 'react';
 import DataStore from '../../stores/datastore';
 import pages from '../../constants/pages';
-import {ParticipantList} from './participantlist.jsx';
+import ParticipantList from './participantlist.jsx';
 import {ParticipantAddForm} from './participantaddform.jsx';
 import {Navigation} from '../navigation/navigation.jsx';
 import {t} from '../../dictionary/dictionary';
 
-export class ParticipantsPage extends React.Component {
-
+/**
+ * @class ParticipantsPage
+ * @description Page for displaying and adding participants
+ * @extends {ReactComponent}
+ */
+export default class ParticipantsPage extends React.Component {
+    /**
+     * @constructor
+     * @param  {object} props
+     * @return {ParticipantsPage}
+     */
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
-    }
-
-    _onChange() {
-        var currentSheet = DataStore.getCurrentSheet();
-
-        this.setState({
-            currentSheet: currentSheet
-        });
     }
 
     componentDidMount() {
@@ -31,11 +30,23 @@ export class ParticipantsPage extends React.Component {
         DataStore.removeChangeListener(this._onChange);
     }
 
+    /**
+     * Callback for DataStore's events
+     * @private
+     * @return {undefined}
+     */
+    _onChange() {
+        this.setState({ currentSheet: DataStore.getCurrentSheet() });
+    }
+
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         return (
             <section className="participants-page">
                 <h1>{ t('lang.participant_plural') }</h1>
-                <ParticipantList participants={this.props.currentSheet.participants} sheet={this.props.currentSheet}/>
+                <ParticipantList sheet={this.props.currentSheet}/>
                 <ParticipantAddForm participants={this.props.currentSheet.participants} />
                 <Navigation
                     prev={pages.HOME}
