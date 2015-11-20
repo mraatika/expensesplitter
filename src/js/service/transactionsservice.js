@@ -24,8 +24,8 @@ const zeroBalanceFilterer = balance => !utils.Number.round(balance.balance, 3);
 export default class TransactionsService {
     /**
      * @constructor
-     * @param  {[type]} sheet [description]
-     * @return {[type]}       [description]
+     * @param  {object} sheet
+     * @return {TransactionsService}
      */
     constructor(sheet) {
         this.expensesService = new ExpensesService(sheet);
