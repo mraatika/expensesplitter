@@ -20,7 +20,11 @@ export default class ParticipantList extends React.Component {
             <ul id="participants-list">
             {
                 participants.length ? participants.map(participant =>
-                    <Participant key={participant.id} participant={participant} sheet={sheet} />
+                    <Participant
+                        key={participant.id}
+                        participant={participant}
+                        sheet={sheet}
+                        onRemoveClick={this.props.onRemoveClick}/>
                 ) : <li><i>{ t('participants.no_participants') }</i></li>
             }
             </ul>

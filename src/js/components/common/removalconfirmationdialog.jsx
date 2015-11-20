@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import Q from 'kew';
 import {t} from '../../dictionary/dictionary';
 import {ModalDialog} from '../common/modaldialog.jsx';
 
@@ -12,10 +13,12 @@ export default class RemovalConfirmationDialog extends React.Component {
 
     /**
      * Open the modal
-     * @return {undefined}
+     * @return {Q} A Q promise object
      */
     open() {
+        this._promise = Q.defer();
         this._modal.open();
+        return this._promise;
     }
 
     /**
@@ -23,6 +26,8 @@ export default class RemovalConfirmationDialog extends React.Component {
      * @return {undefined}
      */
     close() {
+        // reject the promise object
+        this._promise.reject();
         this._modal.close();
     }
 
@@ -35,8 +40,10 @@ export default class RemovalConfirmationDialog extends React.Component {
         if (_.isFunction(this.props.onRemoveConfirmed)) {
             this.props.onRemoveConfirmed();
         }
-
-        this.close();
+        // resolve the promise object
+        this._promise.resolve();
+        // dont't use this.close for it will reject the promise
+        this._modal.close();
     }
 
     /**

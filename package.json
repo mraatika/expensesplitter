@@ -69,6 +69,7 @@
   "dependencies": {
     "classnames": "^2.2.0",
     "flux": "^2.1.1",
+    "kew": "^0.7.0",
     "keymirror": "^0.1.1",
     "lodash": "^3.10.1",
     "object-assign": "^4.0.1",

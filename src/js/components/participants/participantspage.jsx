@@ -5,6 +5,9 @@ import ParticipantList from './participantlist.jsx';
 import {ParticipantAddForm} from './participantaddform.jsx';
 import {Navigation} from '../navigation/navigation.jsx';
 import {t} from '../../dictionary/dictionary';
+import ActionCreator from '../../actions/dataactioncreators';
+import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
+import ExpensesService from '../../service/expensesservice';
 
 /**
  * @class ParticipantsPage
@@ -41,6 +44,35 @@ export default class ParticipantsPage extends React.Component {
     }
 
     /**
+     * Callback for participant removal button transfered to Participant component (list element)
+     * @private
+     * @param  {object} participant
+     * @return {undefined}
+     */
+    _handleParticipantRemoval(participant) {
+        const expensesService = new ExpensesService(this.state.currentSheet);
+        const expensesParticipatedIn = expensesService.findExpensesByParticipant(participant.id);
+        const expensesPaidBy = expensesService.findExpensesPaidByParticipant(participant.id);
+
+        if (expensesParticipatedIn.length || expensesPaidBy.length) {
+            // after confirmation promise is resolved
+            this._removeConfirmationDialog.open().then(() => this._removeParticipant(participant));
+        } else {
+            this._removeParticipant(participant);
+        }
+    }
+
+    /**
+     * Remove the given participant from the current sheet
+     * @private
+     * @param  {object} participant
+     * @return {undefined}
+     */
+    _removeParticipant(participant) {
+        ActionCreator.removeParticipant(participant);
+    }
+
+    /**
      * @return {ReactComponent}
      */
     render() {
@@ -49,11 +81,20 @@ export default class ParticipantsPage extends React.Component {
         return (
             <section className="participants-page">
                 <h1>{ t('lang.participant_plural') }</h1>
-                <ParticipantList sheet={sheet}/>
+                <ParticipantList
+                    sheet={sheet}
+                    onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm participants={sheet.participants} />
                 <Navigation
                     prev={pages.HOME}
                     next={pages.EXPENSES} />
+
+                <RemovalConfirmationDialog
+                    ref={c => this._removeConfirmationDialog = c}
+                    header={ t('common.confirm_removal') }
+                    contentText={ t('participants.confirm_removal') }
+                    okButtonLabel={ t('participants.remove_participant') }
+                />
             </section>
 
         );
