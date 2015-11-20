@@ -9,15 +9,24 @@ import _ from 'lodash';
  *  @param {number} to What needs to paid
  *  @return {number}
  */
-var calculateTransActionAmount = function(from, to) {
-    return from > to ? to : from;
-};
+const calculateTransActionAmount = (from, to) => from > to ? to : from;
+/**
+ * function for filtering out zero balances
+ * @param  {object} balance
+ * @return {boolean}
+ */
+const zeroBalanceFilterer = balance => !utils.Number.round(balance.balance, 3);
 
 /**
  * @class TransactionService
  * @description Service for calculating transactions
  */
 export default class TransactionsService {
+    /**
+     * @constructor
+     * @param  {[type]} sheet [description]
+     * @return {[type]}       [description]
+     */
     constructor(sheet) {
         this.expensesService = new ExpensesService(sheet);
     }
@@ -28,30 +37,24 @@ export default class TransactionsService {
      *  @return {array} Transactions
      */
     calculateTransactions() {
-        var amount;
-        var min;
-        var max;
-        var transactions = [];
-        var balances = this.expensesService.calculateBalances();
-        var filterZeroBalances = function (balance) {
-            return !utils.Number.round(balance.balance, 3);
-        };
+        const transactions = [];
+        let balances = this.expensesService.calculateBalances();
 
         // iterate until all accounts are even
         while (balances.length) {
             // the participant who needs to pay most
-            min = balances[0];
+            let min = balances[0];
             // the participant who needs most compensation
-            max = balances[balances.length - 1];
+            let max = balances[balances.length - 1];
 
-            // sometimes calculations with floats are tricky
-            // so if the balances are never
+            // break the loop if remaining balance has remainder
+            // (calculations with float numbers are tricky)
             if (min.participant === max.participant) {
                 break;
             }
 
-            // how much the min can and need pay to the max
-            amount = calculateTransActionAmount((min.balance * -1), max.balance);
+            // how much the min can and need to pay to the max
+            let amount = calculateTransActionAmount((min.balance * -1), max.balance);
 
             transactions.push({
                 from: max.participant,
@@ -60,11 +63,11 @@ export default class TransactionsService {
             });
 
             // update amounts
-            min.balance += min.balance;
-            max.balance -= max.balance;
+            min.balance += amount;
+            max.balance -= amount;
 
             // filter out all zero balances
-            balances = _.reject(balances, filterZeroBalances);
+            balances = _.reject(balances, zeroBalanceFilterer);
         }
 
         return transactions;
