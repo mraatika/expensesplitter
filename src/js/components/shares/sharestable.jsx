@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import ExpensesService from '../../service/expensesservice';
 import DataStore from '../../stores/datastore';
 import {t} from '../../dictionary/dictionary';
@@ -63,7 +64,8 @@ export default class SharesTable extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        var {shares} = this.state;
+        // order shares first by balance and the by participant's name
+        const shares = _.sortByAll(this.state.shares, ['balance', 'participantName']);
 
         return (
             <table className="shares-list u-full-width">
