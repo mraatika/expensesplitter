@@ -34,7 +34,7 @@ export class ParticipantsPage extends React.Component {
     render() {
         return (
             <section className="participants-page">
-                <h1>{ t('lang.participant_plural') }:</h1>
+                <h1>{ t('lang.participant_plural') }</h1>
                 <ParticipantList participants={this.props.currentSheet.participants} sheet={this.props.currentSheet}/>
                 <ParticipantAddForm participants={this.props.currentSheet.participants} />
                 <Navigation
