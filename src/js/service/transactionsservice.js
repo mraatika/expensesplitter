@@ -38,7 +38,7 @@ export default class TransactionsService {
      */
     calculateTransactions() {
         const transactions = [];
-        let balances = this.expensesService.calculateBalances();
+        let balances = _.filter(this.expensesService.calculateBalances(), balance => balance.balance != 0);
 
         // iterate until all accounts are even
         while (balances.length) {

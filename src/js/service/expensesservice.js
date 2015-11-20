@@ -31,7 +31,6 @@ export default class ExpensesService {
                     balance: this.calculateParticipantBalance(participant.id, expenses)
                 };
             })
-            .filter(balance => balance.balance !== 0)
             .sortBy(balance => balance.balance)
             .value();
     }
