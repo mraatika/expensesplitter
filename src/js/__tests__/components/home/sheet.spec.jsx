@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 
-const Sheet = require('../../../components/home/sheet.jsx').Sheet;
+const Sheet = require('../../../components/home/sheet.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 
 describe('Component:Sheet', function() {

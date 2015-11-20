@@ -4,11 +4,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 
-const HomePage = require('../../../components/home/homepage.jsx').HomePage;
+const HomePage = require('../../../components/home/homepage.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators.js').default;
 const dictionary = require('../../../dictionary/dictionary.js');
 const DataStore = require('../../../stores/datastore').default;
-const LoadSheetDialog = require('../../../components/home/loadsheetdialog.jsx').LoadSheetDialog;
+const LoadSheetDialog = require('../../../components/home/loadsheetdialog.jsx').default;
 
 describe('Component:HomePage', function() {
     var homePage;
@@ -78,7 +78,7 @@ describe('Component:HomePage', function() {
         it('should call addSheet method when continue button is pressed', function () {
             var form = TestUtils.findRenderedDOMComponentWithTag(homePage, 'form');
 
-            spyOn(homePage, 'addSheet').andCallThrough();
+            spyOn(homePage, '_addSheet').andCallThrough();
             spyOn(ActionCreators, 'addSheet');
 
             // set currentSheetName to enable the add button
@@ -86,7 +86,7 @@ describe('Component:HomePage', function() {
 
             TestUtils.Simulate.submit(form);
 
-            expect(homePage.addSheet).toHaveBeenCalled();
+            expect(homePage._addSheet).toHaveBeenCalled();
             expect(ActionCreators.addSheet).toHaveBeenCalledWith(homePage.state.currentSheetName);
         });
     });
@@ -132,10 +132,10 @@ describe('Component:HomePage', function() {
         it('should call editCurrentSheetAndContinue method when continue button is pressed', function () {
             var form = TestUtils.findRenderedDOMComponentWithTag(homePage, 'form');
 
-            spyOn(homePage, 'editCurrentSheetAndContinue');
+            spyOn(homePage, '_editCurrentSheetAndContinue');
             TestUtils.Simulate.submit(form);
 
-            expect(homePage.editCurrentSheetAndContinue).toHaveBeenCalled();
+            expect(homePage._editCurrentSheetAndContinue).toHaveBeenCalled();
         });
     });
 

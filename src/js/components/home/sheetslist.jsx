@@ -1,14 +1,19 @@
-'use strict';
-
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
-import {Sheet} from './sheet.jsx';
+import Sheet from './sheet.jsx';
 
-export class SheetsList extends React.Component {
+/**
+ * @class SheetsList
+ * @description A list of Sheet components
+ * @extends {ReactComponent}
+ */
+export default class SheetsList extends React.Component {
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var sheets = this.props.sheets;
-        var currentSheetId = (this.props.currentSheet || {}).id;
+        const {sheets, currentSheet} = this.props;
 
         return (
             <ul className="list-selectable">
@@ -16,16 +21,17 @@ export class SheetsList extends React.Component {
                     <div className="five columns">
                         {t('home.sheet_name')}:
                     </div>
+
                     <div className="five columns">
                         {t('lang.created_on')}:
                     </div>
                 </li>
                 {
                     sheets.length ? sheets.map(sheet =>
-                            <Sheet
-                                key={sheet.id}
-                                sheet={sheet}
-                                isCurrentSheet={currentSheetId && sheet.id === currentSheetId} />
+                        <Sheet
+                            key={sheet.id}
+                            sheet={sheet}
+                            isCurrentSheet={currentSheet && sheet.id === currentSheet.id} />
                     ) : <li><i>{ t('loadsheetdialog.no_sheets') }</i></li>
                 }
             </ul>

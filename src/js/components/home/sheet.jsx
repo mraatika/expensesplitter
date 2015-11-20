@@ -4,7 +4,7 @@ import React from 'react';
 import ActionCreators from '../..//actions/dataactioncreators';
 import {t} from '../../dictionary/dictionary';
 
-export class Sheet extends React.Component {
+export default class Sheet extends React.Component {
 
     handleRemoveClick(e) {
         e.stopPropagation();
