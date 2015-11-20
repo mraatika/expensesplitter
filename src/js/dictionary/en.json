@@ -1,6 +1,11 @@
 {
     "app.info" : "Split shared expenses without a hassle",
 
+    "common.confirm_removal": "Confirm removal",
+
+    "expenses.remove_all_confirmation": "All expenses will be permanently removed. Are you sure you want to remove all the expenses?",
+    "expenses.remove_all_expenses": "Remove all expenses",
+
     "home.button.add" : "New sheet",
     "home.button.add_and_continue" : "Add sheet & continue",
     "home.button.edit" : "Edit current sheet",
@@ -62,7 +67,6 @@
 
     "participants.add_participant": "Add participant",
     "participants.confirm_removal": "Selected participant has related expenses. Those will also be removed.",
-    "participants.confirm_removal_title": "Confirm removal",
     "participants.no_participants": "No particpants added yet!",
     "participants.remove_participant": "Remove participant",
 

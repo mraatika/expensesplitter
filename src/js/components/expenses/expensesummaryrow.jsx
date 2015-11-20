@@ -2,6 +2,7 @@ import React from 'react';
 import ActionCreator from '../../actions/dataactioncreators';
 import ExpensesService from '../../service/expensesservice';
 import {t} from '../../dictionary/dictionary';
+import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 
 /**
  * @class ExpenseSummaryRow
@@ -11,6 +12,10 @@ import {t} from '../../dictionary/dictionary';
 export default class ExpenseSummaryRow extends React.Component {
 
     _handleRemoveAllClick() {
+        this._removalConfirmationDialog.open();
+    }
+
+    _onRemovalConfirmed() {
         ActionCreator.removeAllExpenses();
     }
 
@@ -29,12 +34,21 @@ export default class ExpenseSummaryRow extends React.Component {
                 <td colSpan="4" className="text-right">
                     {
                         this.props.isRemoveAllowed ?
-                        <button
-                            type="button"
-                            onClick={this._handleRemoveAllClick}
-                            disabled={!this.props.expenses.length}>
-                            { t('lang.remove_all') }
-                        </button> : ''
+                        <div>
+                            <button
+                                type="button"
+                                onClick={this._handleRemoveAllClick.bind(this)}
+                                disabled={!this.props.expenses.length}>
+                                { t('lang.remove_all') }
+                            </button>
+                            <RemovalConfirmationDialog
+                                ref={ c => this._removalConfirmationDialog = c }
+                                onRemoveConfirmed={this._onRemovalConfirmed.bind(this)}
+                                header={ t('common.confirm_removal') }
+                                contentText={ t('expenses.remove_all_confirmation') }
+                                okButtonLabel={ t('expenses.remove_all_expenses') }
+                            />
+                        </div>: ''
                     }
                 </td>
             </tr>
