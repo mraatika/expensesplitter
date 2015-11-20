@@ -2,6 +2,8 @@ import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import SheetsList from './sheetslist.jsx';
 import {ModalDialog} from '../common/modaldialog.jsx';
+import ActionCreators from '../..//actions/dataactioncreators';
+import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 
 /**
  * @class LoadSheetDialog
@@ -25,6 +27,16 @@ export default class LoadSheetDialog extends React.Component {
         this.refs.dialog.close();
     }
 
+    _handleRemoveClick(sheet) {
+        this._removeConfirmationDialog.open().then(() => {
+            this._removeSheet(sheet);
+        });
+    }
+
+    _removeSheet(sheet) {
+        ActionCreators.removeSheet(sheet.id);
+    }
+
     /**
      * @return {ReactComponent}
      */
@@ -37,9 +49,16 @@ export default class LoadSheetDialog extends React.Component {
                 header={t('loadsheetdialog.header')}>
                 <section id="load-sheet-dialog">
                     <SheetsList
+                        onRemoveClick={this._handleRemoveClick.bind(this)}
                         sheets={this.props.sheets}
                         currentSheet={this.props.currentSheet} />
                 </section>
+                <RemovalConfirmationDialog
+                    ref={c => this._removeConfirmationDialog = c}
+                    header={ t('home.remove_sheet_confirmation_title') }
+                    contentText={ t('home.remove_sheet_confirmation_msg') }
+                    okButtonLabel={ t('home.remove_sheet') }
+                />
             </ModalDialog>
         );
     }

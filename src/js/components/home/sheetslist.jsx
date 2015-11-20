@@ -31,6 +31,7 @@ export default class SheetsList extends React.Component {
                         <Sheet
                             key={sheet.id}
                             sheet={sheet}
+                            onRemoveClick={this.props.onRemoveClick}
                             isCurrentSheet={currentSheet && sheet.id === currentSheet.id} />
                     ) : <li><i>{ t('loadsheetdialog.no_sheets') }</i></li>
                 }

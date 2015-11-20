@@ -1,46 +1,39 @@
-'use strict';
-
 import React from 'react';
-import ActionCreators from '../..//actions/dataactioncreators';
-import {t} from '../../dictionary/dictionary';
+import ActionCreators from '../../actions/dataactioncreators';
+import {TrashButton} from '../common/trashbutton.jsx';
 
 export default class Sheet extends React.Component {
 
-    handleRemoveClick(e) {
-        e.stopPropagation();
-        ActionCreators.removeSheet(this.props.sheet.id);
-    }
-
-    handleSheetItemClick() {
+    _handleSheetItemClick() {
         ActionCreators.setActiveSheet(this.props.sheet.id);
     }
 
+    _handleRemoveClick(e) {
+        e.stopPropagation();
+        this.props.onRemoveClick(this.props.sheet);
+    }
+
     render() {
-        var sheet = this.props.sheet;
+        const {sheet, isCurrentSheet} = this.props;
 
         return (
-            <li onClick={this.handleSheetItemClick.bind(this)}>
+            <li onClick={this._handleSheetItemClick.bind(this)}>
                 <div className="row">
                     <div className="five columns">
                         <span className="sheet-list-name">{sheet.name}</span>
                         &nbsp;
                         <i
-                            className={'fa fa-check-circle-o fa-lg text-green' + (this.props.isCurrentSheet ? '' : ' hidden')}
-                            aria-hidden={!this.isCurrentSheet} />
+                            className={'fa fa-check-circle-o fa-lg text-green' + (isCurrentSheet ? '' : ' hidden')}
+                            aria-hidden={!isCurrentSheet} />
                     </div>
                     <div className="five columns">
                         <span className="sheet-list-date">{sheet.createdOn.toLocaleString()}</span>
                     </div>
                     <div className="two columns text-center">
-                        <i
-                            className="fa fa-trash-o fa-fw fa-lg icon-button"
-                            aria-role="button"
-                            title={t('home.remove_sheet')}
-                            onClick={this.handleRemoveClick.bind(this)} />
+                        <TrashButton onClick={this._handleRemoveClick.bind(this)}/>
                     </div>
                 </div>
             </li>
         );
     }
-
 }
