@@ -14,23 +14,17 @@ export default class ParticipantSummaryList extends React.Component {
      */
     render() {
         const expensesService = new ExpensesService({ expenses: this.props.expenses });
-        const findParticipantsShareAndBalance = participantId => {
-            console.log(participantId, this.props.sharesAndBalances);
-            return _.find(this.props.sharesAndBalances, balance => balance.participantId === participantId);
-        };
 
         return (
             <div className="panel-group">
                 {
-                    this.props.participants.map(participant => {
-                        const expenses = expensesService.findAllExpensesOfParticipant(participant.id);
-                        const shareAndBalance = findParticipantsShareAndBalance(participant.id);
+                    this.props.sharesAndBalances.map(shareAndBalance => {
+                        const expenses = expensesService.findAllExpensesOfParticipant(shareAndBalance.participantId);
                         return <ParticipantSummaryListItem
-                            key={participant.id}
+                            key={shareAndBalance.participantId}
+                            participantName={shareAndBalance.participantName}
                             expenses={expenses}
-                            participant={participant}
-                            participants={this.props.participants}
-                            sharesAndBalances={shareAndBalance} />;
+                            participants={this.props.participants} />;
                     })
                 }
             </div>

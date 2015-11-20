@@ -34,7 +34,7 @@ export default class ParticipantSummaryListItem extends React.Component {
      */
     render() {
         const header = <ParticipantSummaryListItemHeader
-            headerText={this.props.participant.name}
+            headerText={this.props.participantName}
             isExpanded={this.state.isExpanded}
             onExpand={this._onExpand.bind(this)} />;
 
