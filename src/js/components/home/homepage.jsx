@@ -8,7 +8,7 @@ import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import {MessageContainer} from '../common/messagecontainer.jsx';
-import {RemoveSheetConfirmationDialog} from './removesheetconfirmationdialog.jsx';
+import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 
 /**
  * @class Homepage
@@ -205,10 +205,12 @@ export default class HomePage extends React.Component {
                     </div>
                 </div>
 
-                <RemoveSheetConfirmationDialog
+                <RemovalConfirmationDialog
                     ref="removeSheetConfirmationDialog"
                     onRemoveConfirmed={this._onSheetRemovalConfirmed.bind(this)}
-                    currentSheet={this.state.currentSheet}
+                    header={ t('home.remove_sheet_confirmation_title') }
+                    contentText={ t('home.remove_sheet_confirmation_msg') }
+                    okButtonLabel={ t('home.remove_sheet') }
                 />
 
                 <LoadSheetDialog
