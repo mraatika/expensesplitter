@@ -5,7 +5,7 @@ import ReactDom from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 import _ from 'lodash';
 
-const ExpenseSummaryRow = require('../../../components/expenses/expensesummaryrow.jsx').ExpenseSummaryRow;
+const ExpenseSummaryRow = require('../../../components/expenses/expensesummaryrow.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 
 describe('Component:ExpenseSummaryRow', function() {

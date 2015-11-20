@@ -3,14 +3,22 @@ import ActionCreator from '../../actions/dataactioncreators';
 import ExpensesService from '../../service/expensesservice';
 import {t} from '../../dictionary/dictionary';
 
-export class ExpenseSummaryRow extends React.Component {
+/**
+ * @class ExpenseSummaryRow
+ * @description Footer row for ExpenseList table
+ * @extends {ReactComponent}
+ */
+export default class ExpenseSummaryRow extends React.Component {
 
-    handleRemoveAllClick() {
+    _handleRemoveAllClick() {
         ActionCreator.removeAllExpenses();
     }
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var totalSum = new ExpensesService({
+        const totalSum = new ExpensesService({
             expenses: this.props.expenses
         }).getTotalSum();
 
@@ -23,7 +31,7 @@ export class ExpenseSummaryRow extends React.Component {
                         this.props.isRemoveAllowed ?
                         <button
                             type="button"
-                            onClick={this.handleRemoveAllClick}
+                            onClick={this._handleRemoveAllClick}
                             disabled={!this.props.expenses.length}>
                             { t('lang.remove_all') }
                         </button> : ''

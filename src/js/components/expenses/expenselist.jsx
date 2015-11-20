@@ -1,16 +1,19 @@
-'use strict';
-
 import React from 'react';
 import {Expense} from './expense.jsx';
-import {ExpenseSummaryRow} from './expensesummaryrow.jsx';
+import ExpenseSummaryRow from './expensesummaryrow.jsx';
 import {t} from '../../dictionary/dictionary';
 
+/**
+ * @class ExpenseList
+ * @description A list for Expense components representing
+ * expenses added to the current sheet
+ * @extends {ReactComponent}
+ */
 export class ExpenseList extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         var expenses = this.props.expenses;
 
@@ -60,8 +63,24 @@ ExpenseList.defaultProps = {
 };
 
 ExpenseList.propTypes = {
+    /**
+     * An array of Expense objects
+     * @type {array}
+     */
     expenses: React.PropTypes.array,
+    /**
+     * An array of Participant objects
+     * @type {array}
+     */
     participants: React.PropTypes.array,
+    /**
+     * Is removing of expenses allowed
+     * @type {boolean}
+     */
     isRemoveAllowed: React.PropTypes.bool,
+    /**
+     * Should the footer be hidden
+     * @type {boolean}
+     */
     hideFooter: React.PropTypes.bool
 };
