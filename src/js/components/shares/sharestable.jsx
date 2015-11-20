@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import ExpensesService from '../../service/expensesservice';
 import DataStore from '../../stores/datastore';
@@ -12,7 +10,7 @@ import {ShareSummaryRow} from './sharesummaryrow.jsx';
  * @description Table for displaying shares of each of the participants.
  * @extends ReactComponent
  */
-export class SharesTable extends React.Component {
+export default class SharesTable extends React.Component {
 
     /**
      * @constructor
