@@ -5,7 +5,7 @@ import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import {ExpenseList} from '../expenses/expenselist.jsx';
 import TransactionsList from '../transactions/transactionslist.jsx';
-import {SharesTable} from '../shares/sharestable.jsx';
+import SharesTable from '../shares/sharestable.jsx';
 
 export default class SheetSummary extends React.Component {
 

@@ -3,7 +3,7 @@ jest.autoMockOff();
 import React from 'react';
 import TestUtils from 'react-testutils-additions';
 
-const Share = require('../../../components/shares/share.jsx').Share;
+const Share = require('../../../components/shares/share.jsx').default;
 const Utils = require('../../../util/utils');
 
 describe('Component:Share', function() {

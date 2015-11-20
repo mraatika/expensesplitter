@@ -4,7 +4,7 @@ import React from 'react';
 import TestUtils from 'react-testutils-additions';
 import _ from 'lodash';
 
-const ExpenseAddForm = require('../../../components/expenses/expenseaddform.jsx').ExpenseAddForm;
+const ExpenseAddForm = require('../../../components/expenses/expenseaddform.jsx').default;
 const dictionary = require('../../../dictionary/dictionary');
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 

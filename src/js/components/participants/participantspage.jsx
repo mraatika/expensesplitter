@@ -19,6 +19,7 @@ export default class ParticipantsPage extends React.Component {
      */
     constructor(props) {
         super(props);
+        this.state = { currentSheet: this.props.currentSheet };
         this._onChange = this._onChange.bind(this);
     }
 
@@ -43,11 +44,13 @@ export default class ParticipantsPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
+        const sheet = this.state.currentSheet;
+
         return (
             <section className="participants-page">
                 <h1>{ t('lang.participant_plural') }</h1>
-                <ParticipantList sheet={this.props.currentSheet}/>
-                <ParticipantAddForm participants={this.props.currentSheet.participants} />
+                <ParticipantList sheet={sheet}/>
+                <ParticipantAddForm participants={sheet.participants} />
                 <Navigation
                     prev={pages.HOME}
                     next={pages.EXPENSES} />

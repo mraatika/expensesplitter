@@ -1,14 +1,12 @@
-'use strict';
-
 import React from 'react';
-import {Number} from '../../util/utils';
+import {Number as NumberUtils} from '../../util/utils';
 
 /**
  * @class Share
  * @description A table row element displaying participant's share of expenses
  * @extends React.Component
  */
-export class Share extends React.Component {
+export default class Share extends React.Component {
 
     /**
      * Return class name that marks balance as positive or negative.
@@ -22,7 +20,7 @@ export class Share extends React.Component {
     }
 
     render() {
-        var share = this.props.share;
+        const {share} = this.props;
 
         return (
             <tr>
@@ -30,12 +28,20 @@ export class Share extends React.Component {
                     {share.participantName}
                 </td>
                 <td className="share-share-amount">
-                    {Number.round(share.amount, 1)}
+                    {NumberUtils.round(share.amount, 1)}
                 </td>
                 <td className={'share-balance' + this.getBalanceClassName(share.balance)}>
-                    {Number.round(share.balance, 1)}
+                    {NumberUtils.round(share.balance, 1)}
                 </td>
             </tr>
         );
     }
 }
+
+Share.propTypes = {
+    /**
+     * A Share object
+     * @type {object}
+     */
+    share: React.PropTypes.object
+};

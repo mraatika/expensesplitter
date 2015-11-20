@@ -2,16 +2,19 @@
 
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
-import {SharesTable} from './sharestable.jsx';
+import SharesTable from './sharestable.jsx';
 
 /**
  * @class SharesSection
  * @description Section for displaying shares of all the participants. Mainly
  * a wrapper for the SharesTable component.
- * @extends React.Component
+ * @extends ReactComponent
  */
-export class SharesSection extends React.Component {
+export default class SharesSection extends React.Component {
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         return (
             <div>

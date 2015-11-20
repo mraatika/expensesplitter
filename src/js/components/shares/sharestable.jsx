@@ -4,13 +4,13 @@ import React from 'react';
 import ExpensesService from '../../service/expensesservice';
 import DataStore from '../../stores/datastore';
 import {t} from '../../dictionary/dictionary';
-import {Share} from './share.jsx';
+import Share from './share.jsx';
 import {ShareSummaryRow} from './sharesummaryrow.jsx';
 
 /**
  * @class SharesTable
  * @description Table for displaying shares of each of the participants.
- * @extends React.Component
+ * @extends ReactComponent
  */
 export class SharesTable extends React.Component {
 
@@ -27,27 +27,6 @@ export class SharesTable extends React.Component {
         this._onChange = this._onChange.bind(this);
     }
 
-    /**
-     * Calculate expenses, shares and related information for the component
-     * @return {Object}
-     *     {Array} balancesAndShares
-     *     {Number} totalSum
-     */
-    _getCurrentState() {
-        var {expenses, participants} = this.props;
-        var expensesService = new ExpensesService({ expenses, participants });
-        var balancesAndShares = expensesService.getAllBalancesAndShares();
-
-        return {
-            shares: balancesAndShares,
-            totalSum: expensesService.getTotalSum()
-        };
-    }
-
-    _onChange() {
-        this.setState(this._getCurrentState());
-    }
-
     componentDidMount() {
         DataStore.addChangeListener(this._onChange);
     }
@@ -56,8 +35,37 @@ export class SharesTable extends React.Component {
         DataStore.removeChangeListener(this._onChange);
     }
 
+    /**
+     * Calculate expenses, shares and related information for the component
+     * @return {Object}
+     *     {Array} balancesAndShares
+     *     {Number} totalSum
+     */
+    _getCurrentState() {
+        const {expenses, participants} = this.props;
+        const expensesService = new ExpensesService({ expenses, participants });
+        const balancesAndShares = expensesService.getAllBalancesAndShares();
+
+        return {
+            shares: balancesAndShares,
+            totalSum: expensesService.getTotalSum()
+        };
+    }
+
+    /**
+     * Callback for DataStore's events
+     * @private
+     * @return {undefined}
+     */
+    _onChange() {
+        this.setState(this._getCurrentState());
+    }
+
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var shares = this.state.shares;
+        var {shares} = this.state;
 
         return (
             <table className="shares-list u-full-width">

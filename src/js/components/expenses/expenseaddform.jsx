@@ -12,7 +12,7 @@ import {ValidatedSelect} from '../common/validatedselect.jsx';
  * @description A form component to add expenses
  * @extends React.Component
  */
-export class ExpenseAddForm extends React.Component {
+export default class ExpenseAddForm extends React.Component {
 
     /**
      * @constructor

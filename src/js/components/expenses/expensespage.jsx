@@ -1,19 +1,17 @@
-'use strict';
-
 import React from 'react';
 import DataStore from '../../stores/datastore';
 import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import {Navigation} from '../navigation/navigation.jsx';
-import {ExpenseAddForm} from './expenseaddform.jsx';
+import ExpenseAddForm from './expenseaddform.jsx';
 import {ExpenseList} from './expenselist.jsx';
-import {SharesSection} from '../shares/sharessection.jsx';
+import SharesSection from '../shares/sharessection.jsx';
 
 /**
  * @class ExpensesPage
  * @description Main level Controller view for the expenses page.
  */
-export class ExpensesPage extends React.Component {
+export default class ExpensesPage extends React.Component {
 
     /**
      * @constructor
@@ -22,15 +20,8 @@ export class ExpensesPage extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { currentSheet: null };
+        this.state = { currentSheet: this.props.currentSheet };
         this._onChange = this._onChange.bind(this);
-    }
-
-    /**
-     * Sheet change listener. Sets sheet to state.
-     */
-    _onChange() {
-        this.setState({ currentSheet: DataStore.getCurrentSheet() });
     }
 
     componentDidMount() {
@@ -41,8 +32,20 @@ export class ExpensesPage extends React.Component {
         DataStore.removeChangeListener(this._onChange);
     }
 
+    /**
+     * Sheet change listener. Sets sheet to state.
+     * @private
+     * @return {undefined}
+     */
+    _onChange() {
+        this.setState({ currentSheet: DataStore.getCurrentSheet() });
+    }
+
+    /**
+     * @return {ReactComponent}
+     */
     render() {
-        var sheet = this.props.currentSheet;
+        const sheet = this.state.currentSheet;
 
         return (
             <section id="expenses-page">

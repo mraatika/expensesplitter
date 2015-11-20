@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 
-const Participant = require('../../../components/participants/participant.jsx').Participant;
+const Participant = require('../../../components/participants/participant.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 const ExpensesService = require('../../../service/expensesservice').default;
 
