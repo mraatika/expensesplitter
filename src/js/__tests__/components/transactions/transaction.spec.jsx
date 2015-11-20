@@ -1,49 +1,53 @@
 jest.autoMockOff();
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 
-const Transaction = require('../../../components/transactions/transaction.jsx').Transaction;
+const Transaction = require('../../../components/transactions/transaction.jsx').default;
 
 describe('Component:Transaction', function() {
-    var transactionListItem;
-    var transactionModel = {
+    let transactionItem;
+    let transactionModel = {
         from: '1',
         to: '2',
         amount: 500
     };
-    var participants = [
+    let participants = [
         { id: '1', name: 'Seppo' },
         { id: '2', name: 'Pertsa' }
     ];
+    let page = {};
 
     beforeEach(function () {
-        var ListWrapper = React.createClass({
+        var TableWrapper = React.createClass({
             render: function() {
                 return (
-                    <ul><Transaction transaction={ transactionModel } participants={ participants }/></ul>
+                    <table><tbody><Transaction transaction={ transactionModel } participants={ participants }/></tbody></table>
                 );
             }
         });
-        var list = TestUtils.renderIntoDocument(<ListWrapper/>);
-        transactionListItem = TestUtils.findRenderedComponentWithType(list, Transaction);
+        var table = TestUtils.renderIntoDocument(<TableWrapper/>);
+        transactionItem = TestUtils.findRenderedComponentWithType(table, Transaction);
+
+        let cells = TestUtils.scryRenderedDOMComponentsWithTag(transactionItem, 'td');
+        page.fromCell = ReactDOM.findDOMNode(cells[0]);
+        page.toCell = ReactDOM.findDOMNode(cells[2]);
+        page.amountCell = ReactDOM.findDOMNode(cells[3]);
     });
 
     it('Renders transaction\'s from attribute (participant name)', function() {
-        // verify name label value
-        var label = TestUtils.findRenderedDOMComponentWithClass(transactionListItem, 'transactions-list-from');
-        expect(label.textContent).toEqual(participants[0].name);
+        // verify from text
+        expect(page.fromCell.textContent).toEqual(participants[0].name);
     });
 
     it('Renders transaction\'s to attribute (participant name)', function() {
-        // verify name label value
-        var label = TestUtils.findRenderedDOMComponentWithClass(transactionListItem, 'transactions-list-to');
-        expect(label.textContent).toEqual(participants[1].name);
+        // verify to text
+        expect(page.toCell.textContent).toEqual(participants[1].name);
     });
 
     it('Renders transaction\'s amount', function() {
-        // verify name label value
-        var label = TestUtils.findRenderedDOMComponentWithClass(transactionListItem, 'transactions-list-amount');
-        expect(label.textContent).toEqual('' + transactionModel.amount);
+        // verify amount text
+        expect(page.amountCell.textContent).toEqual('' + transactionModel.amount);
     });
 });

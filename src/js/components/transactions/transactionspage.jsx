@@ -21,7 +21,7 @@ export class TransactionsPage extends React.Component {
 
         return (
             <section className="transactions-page">
-                <h1>{ t('lang.transaction_plural') }:</h1>
+                <h1>{ t('lang.transaction_plural') }</h1>
                 <TransactionsList
                     transactions={this.props.transactions}
                     participants={participants} />

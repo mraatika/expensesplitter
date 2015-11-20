@@ -18,12 +18,12 @@ export default class Transaction extends React.Component {
         };
 
         return (
-            <li>
-                <span className="transactions-list-from">{findParticipant(transaction.from)}</span>
-                <span>&#8680;</span>
-                <span className="transactions-list-to">{findParticipant(transaction.to)}</span>
-                <span className="transactions-list-amount">{transaction.amount}</span>
-            </li>
+            <tr>
+                <td className="transactions-list-from">{findParticipant(transaction.from)}</td>
+                <td>&#8680;</td>
+                <td className="transactions-list-to">{findParticipant(transaction.to)}</td>
+                <td className="transactions-list-amount">{transaction.amount}</td>
+            </tr>
         );
     }
 }
