@@ -1,6 +1,5 @@
-'use strict';
-
 import React from 'react';
+import _ from 'lodash';
 import ExpensesService from '../../service/expensesservice';
 import ParticipantSummaryListItem from './participantsummarylistitem.jsx';
 
@@ -15,15 +14,21 @@ export default class ParticipantSummaryList extends React.Component {
      */
     render() {
         const expensesService = new ExpensesService({ expenses: this.props.expenses });
+        const findParticipantsShareAndBalance = participantId => {
+            console.log(participantId, this.props.sharesAndBalances);
+            return _.find(this.props.sharesAndBalances, balance => balance.participantId === participantId);
+        };
 
         return (
             <div className="panel-group">
                 {
-                    this.props.sharesAndBalances.map(shareAndBalance => {
-                        const expenses = expensesService.findAllExpensesOfParticipant(shareAndBalance.participantId);
+                    this.props.participants.map(participant => {
+                        const expenses = expensesService.findAllExpensesOfParticipant(participant.id);
+                        const shareAndBalance = findParticipantsShareAndBalance(participant.id);
                         return <ParticipantSummaryListItem
-                            key={shareAndBalance.participantId}
+                            key={participant.id}
                             expenses={expenses}
+                            participant={participant}
                             participants={this.props.participants}
                             sharesAndBalances={shareAndBalance} />;
                     })

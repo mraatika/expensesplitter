@@ -33,9 +33,8 @@ export default class ParticipantSummaryListItem extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {participantName} = this.props.sharesAndBalances;
         const header = <ParticipantSummaryListItemHeader
-            headerText={participantName}
+            headerText={this.props.participant.name}
             isExpanded={this.state.isExpanded}
             onExpand={this._onExpand.bind(this)} />;
 

@@ -57,7 +57,7 @@
 
     "expenseaddform.error.participants" : "Current sheet doesn't contain any participants. Go back to participants page to add participants.",
     "expenses.add_expense" : "Add expense",
-    "expenses.no_expenses" : "No expenses added yet",
+    "expenses.no_expenses" : "No expenses added",
     "expenses.per_participant" : "Per person",
 
     "participants.add_participant": "Add participant",
@@ -70,5 +70,5 @@
 
     "summary.preview_created" : "Preview created",
 
-    "transactions.no_transactions" : "No transactions created yet!"
+    "transactions.no_transactions" : "No transactions"
 }

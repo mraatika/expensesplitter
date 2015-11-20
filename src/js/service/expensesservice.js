@@ -24,21 +24,15 @@ export default class ExpensesService {
      *
      */
     calculateBalances(expenses = this.sheet.expenses, participants = this.sheet.participants) {
-        var self = this;
-
         return _.chain(participants)
-            .map(function (participant) {
+            .map(participant => {
                 return {
                     participant: participant.id,
-                    balance: self.calculateParticipantBalance(participant.id, expenses)
+                    balance: this.calculateParticipantBalance(participant.id, expenses)
                 };
             })
-            .filter(function (balance) {
-                return balance.balance !== 0;
-            })
-            .sortBy(function (balance) {
-                return balance.balance;
-            })
+            .filter(balance => balance.balance !== 0)
+            .sortBy(balance => balance.balance)
             .value();
     }
 
@@ -49,8 +43,8 @@ export default class ExpensesService {
      * @returns {number}
      */
     calculateParticipantBalance(participantId, expenses = this.sheet.expenses) {
-        var total = this.calculateParticipantShare(participantId, expenses),
-            paid = this.calculateParticipantTotalPaid(participantId, expenses);
+        const total = this.calculateParticipantShare(participantId, expenses);
+        const paid = this.calculateParticipantTotalPaid(participantId, expenses);
 
         return total - paid;
     }
@@ -62,9 +56,9 @@ export default class ExpensesService {
      * @returns {number} The sum of expenses
      */
     calculateParticipantShare(participantId, expenses = this.sheet.expenses) {
-        return _.reduce(expenses, function (sum, expense) {
+        return _.reduce(expenses, (sum, expense) => {
             // expense's participants
-            var participants = expense.participants || [],
+            const participants = expense.participants || [],
                 price = +expense.price || 0;
 
             // if price is invalid, zero or the participant given
@@ -85,10 +79,10 @@ export default class ExpensesService {
      * @returns {number}
      */
     calculateParticipantTotalPaid(participantId, expenses = this.sheet.expenses) {
-        return _.reduce(expenses, function (sum, expense) {
+        return _.reduce(expenses, (sum, expense) => {
             // expense's participants
-            var payer = expense.payer,
-                price = +expense.price;
+            const payer = expense.payer;
+            const price = +expense.price;
 
             // if price is invalid, zero or the participant given
             // in parameters hasn't participated in this expense
@@ -107,7 +101,7 @@ export default class ExpensesService {
      * @returns {number} The total sum
      */
     getTotalSum(expenses = this.sheet.expenses) {
-        return _.reduce(expenses, function (sum, expense) {
+        return _.reduce(expenses, (sum, expense) => {
             return sum + (+expense.price || 0);
         }, 0);
     }
@@ -119,9 +113,7 @@ export default class ExpensesService {
      * @return {array} An array of expenses
      */
     findExpensesByParticipant(participantId, expenses = this.sheet.expenses) {
-        return _.filter(expenses, function (expense) {
-            return expense.participants.indexOf(participantId) > -1;
-        });
+        return _.filter(expenses, expense => expense.participants.indexOf(participantId) > -1);
     }
 
     /**
@@ -131,9 +123,7 @@ export default class ExpensesService {
      * @return {array} An array of expenses
      */
     findExpensesPaidByParticipant(participantId, expenses = this.sheet.expenses) {
-        return _.filter(expenses, (expense) => {
-            return expense.payer === participantId;
-        });
+        return _.filter(expenses, expense => expense.payer === participantId);
     }
 
     /**
@@ -143,7 +133,7 @@ export default class ExpensesService {
      * @return {array} An array of expenses
      */
     findAllExpensesOfParticipant(participantId, expenses = this.sheet.expenses) {
-        return _.filter(expenses, (expense) => {
+        return _.filter(expenses, expense => {
             return expense.payer === participantId ||expense.participants.indexOf(participantId) > -1;
         });
     }
@@ -155,17 +145,16 @@ export default class ExpensesService {
      * @return {array}
      */
     getAllBalancesAndShares(participants = this.sheet.participants, expenses = this.sheet.expenses) {
-        var self = this;
-        var findParticipant = (participantId =>_.find(participants, (p => p.id === participantId)));
-        var balances = this.calculateBalances(expenses, participants);
+        const findParticipant = (participantId =>_.find(participants, (p => p.id === participantId)));
+        const balances = this.calculateBalances(expenses, participants);
 
         return _.chain(balances)
-                .map(function(balance) {
+                .map(balance => {
                     return {
                         participantId: balance.participant,
                         participantName: findParticipant(balance.participant).name,
                         balance: balance.balance,
-                        amount: self.calculateParticipantShare(
+                        amount: this.calculateParticipantShare(
                             balance.participant, expenses
                         )
                     };
