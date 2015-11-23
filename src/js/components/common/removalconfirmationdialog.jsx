@@ -66,7 +66,6 @@ export default class RemovalConfirmationDialog extends React.Component {
         return (
             <ModalDialog
                 ref={c => this._modal = c}
-                showModal={false}
                 header={ this.props.header }
                 buttons={buttons}
                 className="small">
