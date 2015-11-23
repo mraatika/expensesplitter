@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import ActionCreators from '../../actions/dataactioncreators';
 import {TrashButton} from '../common/trashbutton.jsx';
 
@@ -15,15 +16,17 @@ export default class Sheet extends React.Component {
 
     render() {
         const {sheet, isCurrentSheet} = this.props;
+        const iconClassName = classNames('fa', 'fa-check-circle-o', 'fa-lg', 'text-green', {
+            'hidden': !isCurrentSheet
+        });
 
         return (
             <li onClick={this._handleSheetItemClick.bind(this)}>
                 <div className="row">
                     <div className="five columns">
-                        <span className="sheet-list-name">{sheet.name}</span>
-                        &nbsp;
+                        <span className="sheet-list-name">{sheet.name}</span>&nbsp;
                         <i
-                            className={'fa fa-check-circle-o fa-lg text-green' + (isCurrentSheet ? '' : ' hidden')}
+                            className={iconClassName}
                             aria-hidden={!isCurrentSheet} />
                     </div>
                     <div className="five columns">
