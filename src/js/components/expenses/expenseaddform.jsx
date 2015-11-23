@@ -207,7 +207,7 @@ export default class ExpenseAddForm extends React.Component {
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
-                            autoFocus={true}
+                            autoFocus={!this.props.expenses.length}
                             events={{ change: true, blur: true }}/>
                     </div>
 

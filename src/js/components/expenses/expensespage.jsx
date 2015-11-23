@@ -65,7 +65,9 @@ export default class ExpensesPage extends React.Component {
                 </section>
 
                 <section className="clear-float">
-                    <ExpenseAddForm participants={sheet.participants} />
+                    <ExpenseAddForm
+                        participants={sheet.participants}
+                        expenses={sheet.expenses} />
                 </section>
 
                 <Navigation
