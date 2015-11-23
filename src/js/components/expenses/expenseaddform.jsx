@@ -1,8 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import ActionCreator from '../..//actions/dataactioncreators';
-import {Expense as ExpenseSchema, Participant as ParticipantSchema} from '../../validation/schema/schema';
+import {Expense as ExpenseSchema} from '../../validation/schema/schema';
 import {MessageContainer} from '../common/messagecontainer.jsx';
 import {ValidatedInput} from '../common/validatedinput.jsx';
 import {ValidatedSelect} from '../common/validatedselect.jsx';
@@ -171,6 +172,7 @@ export default class ExpenseAddForm extends React.Component {
         e.preventDefault();
         ActionCreator.addExpense(expense);
         this._setIntitialExpense();
+        ReactDOM.findDOMNode(this._nameField).focus();
     }
 
     render() {
@@ -196,6 +198,7 @@ export default class ExpenseAddForm extends React.Component {
                     <div className="three columns">
                         <label htmlFor="expense-name">{t('lang.expense')}:</label>
                         <ValidatedInput
+                            ref={c => this._nameField = c}
                             type="text"
                             name="name"
                             id="expense-name"
@@ -204,6 +207,7 @@ export default class ExpenseAddForm extends React.Component {
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
+                            autoFocus={true}
                             events={{ change: true, blur: true }}/>
                     </div>
 
