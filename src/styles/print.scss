@@ -1,0 +1,13 @@
+@media print {
+    * {
+        background-color: none !important;
+    }
+
+    nav, header, footer {
+        display: none;
+    }
+
+    .collapse {
+        display: block;
+    }
+}
