@@ -64,10 +64,10 @@ export default class HomePage extends React.Component {
 
         if (eventType === Constants.EventTypes.SET_ACTIVE_SHEET_EVENT) {
             this.refs.loadSheetDialog.close();
-            this._moveToParticipantsPage();
-        }
-
-        if (eventType === Constants.EventTypes.ADD_SHEET_EVENT) {
+            // @FIXME: without delaying the page transition modal's _onHide
+            // is not called leaving window resize listeners active
+            //this._moveToParticipantsPage();
+        } else if (eventType === Constants.EventTypes.ADD_SHEET_EVENT) {
             this._moveToParticipantsPage();
         }
     }
@@ -169,6 +169,7 @@ export default class HomePage extends React.Component {
                         className="button-primary u-full-width"
                         required={true}>
                         { t(this.state.currentSheet ? 'home.button.edit' : 'home.button.add_and_continue') }
+                        &nbsp;<i className="fa fa-angle-double-right"></i>
                     </button>
                 </form>
                 <div className="row">
