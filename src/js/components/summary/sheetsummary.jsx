@@ -1,11 +1,11 @@
-'use strict';
-
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import {ExpenseList} from '../expenses/expenselist.jsx';
 import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
+import pages from '../../constants/pages';
+import {Navigation} from '../navigation/navigation.jsx';
 
 export default class SheetSummary extends React.Component {
 
@@ -35,6 +35,8 @@ export default class SheetSummary extends React.Component {
                 <br/>
 
                 <div>{t('summary.preview_created')} @ { new Date().toLocaleString() }</div>
+
+                <Navigation prev={pages.TRANSACTIONS}/>
             </div>
         );
     }

@@ -31,8 +31,8 @@ export default Object.freeze({
     },
 
     SUMMARY: {
-        href: '/summary/static',
+        href: '/summary',
         label: 'lang.summary',
-        displayInNavigation: false
+        displayInNavigation: true
     }
 });

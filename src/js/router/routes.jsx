@@ -61,8 +61,8 @@ var routes = {
         renderer.renderContentView(transactionsPage);
     },
 
-    '/summary/static': function() {
-        console.log('page: /summary/static');
+    '/summary': function() {
+        console.log('page: /summary');
         var currentSheet = DataStore.getCurrentSheet();
         var sheetSummary = getComponent(SheetSummary, {
             sheet: currentSheet

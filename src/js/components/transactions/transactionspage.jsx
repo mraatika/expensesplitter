@@ -32,16 +32,9 @@ export class TransactionsPage extends React.Component {
                     sharesAndBalances={this.props.sharesAndBalances}
                     expenses={expenses}/>
 
-                <div className="text-right">
-                    <a
-                        className="button"
-                        aria-role="button"
-                        href={pages.SUMMARY.href}>
-                        {t(pages.SUMMARY.label)}
-                    </a>
-                </div>
-
-                <Navigation prev={pages.EXPENSES}/>
+                <Navigation
+                    prev={pages.EXPENSES}
+                    next={pages.SUMMARY} />
             </section>
         );
     }
