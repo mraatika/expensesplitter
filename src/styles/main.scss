@@ -33,10 +33,15 @@
 
 .positive { background-color: $color-success; }
 .negative { background-color: $color-danger; }
-.error { background-color: $color-danger; }
 .bold { font-weight: bold; }
 .no-border { border: 0 !important; }
 .wrap-content { overflow: auto; }
+
+input, select {
+    &.error:not(:focus) {
+        border-color: $color-danger;
+    }
+}
 
 .button-container {
     button,
