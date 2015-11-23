@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 
@@ -44,12 +42,12 @@ export class MessageContainer extends React.Component {
     }
 
     render() {
-        var className = 'message-container ' + this.props.type;
-        var colorClass = 'text-' + this._getColorClass(this.props.type);
+        const className = 'message-container ' + this.props.type;
+        const colorClass = 'text-' + this._getColorClass(this.props.type);
 
         return (
             <div
-                style={{ display: this.state.isOpen ? 'block' : 'none' }}
+                style={{ display: (this.state.isOpen || this.props.openOnMount) ? 'block' : 'none' }}
                 className={className}>
 
                 <i

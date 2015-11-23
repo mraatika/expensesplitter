@@ -176,16 +176,19 @@ export default class ExpenseAddForm extends React.Component {
     }
 
     render() {
-        let expense = this.state.expense;
-        let errors = this.state.errors;
-        let errorTexts = _.chain(errors)
+        const expense = this.state.expense;
+        const errorTexts = _.chain(this.state.errors)
             .values()
             .compact()
             .value();
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>
-                <MessageContainer ref="errorMessageContainer" errorTexts={errorTexts} type="danger">
+                <MessageContainer
+                    ref="errorMessageContainer"
+                    errorTexts={errorTexts}
+                    type="danger"
+                    openOnMount={errorTexts.length}>
                     {errorTexts.map(function (error) {
                         return ([
                             <span className="message-text">{error}</span>,

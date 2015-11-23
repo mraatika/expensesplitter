@@ -60,7 +60,7 @@
     "error.participant.name.type" : "Name should be alphanumeric",
     "error.sheet.name.required" : "Name is required for sheet",
 
-    "expenseaddform.error.participants" : "Current sheet doesn't contain any participants. Go back to participants page to add participants.",
+    "expenseaddform.error.participants" : "Current sheet doesn't contain any participants. Go back to the participants page to add them.",
     "expenses.add_expense" : "Add expense",
     "expenses.no_expenses" : "No expenses added",
     "expenses.per_participant" : "Per person",
