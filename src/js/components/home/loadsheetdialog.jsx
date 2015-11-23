@@ -16,7 +16,7 @@ export default class LoadSheetDialog extends React.Component {
      * @return {undefined}
      */
     open() {
-        this.refs.dialog.open();
+        this._dialog.open();
     }
 
     /**
@@ -24,7 +24,7 @@ export default class LoadSheetDialog extends React.Component {
      * @return {undefined}
      */
     close() {
-        this.refs.dialog.close();
+        this._dialog.close();
     }
 
     _handleRemoveClick(sheet) {
@@ -43,8 +43,7 @@ export default class LoadSheetDialog extends React.Component {
     render() {
         return (
             <ModalDialog
-                ref="dialog"
-                showModal={false}
+                ref={c => this._dialog = c}
                 onCloseRequest={this.props.onCloseRequest}
                 header={t('loadsheetdialog.header')}>
                 <section id="load-sheet-dialog">
