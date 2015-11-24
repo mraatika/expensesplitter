@@ -1,6 +1,5 @@
-'use strict';
-
 import {cid} from '../util/utils';
+import {t} from '../dictionary/dictionary.js';
 
 var SheetFactory = {
 
@@ -9,6 +8,9 @@ var SheetFactory = {
             id: cid(),
             createdOn: new Date(),
             name: (sheetName || '').trim(),
+            settings: {
+                currencySymbol: t('settings.default_currency_symbol')
+            },
             participants: [],
             expenses: [],
             transactions: []

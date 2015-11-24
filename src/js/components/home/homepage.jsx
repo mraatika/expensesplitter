@@ -1,6 +1,7 @@
 import React from 'react';
 import page from 'page';
 import _ from 'lodash';
+import Settings from './settings.jsx';
 import DataStore from '../../stores/datastore';
 import ActionCreator from '../..//actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
@@ -41,8 +42,8 @@ export default class HomePage extends React.Component {
      * @return {object}
      */
     _getDefaultState() {
-        let currentSheet = DataStore.getCurrentSheet();
-        let allSheets = DataStore.getSheets();
+        const currentSheet = DataStore.getCurrentSheet();
+        const allSheets = DataStore.getSheets();
 
         return {
             currentSheet: currentSheet,
@@ -67,8 +68,6 @@ export default class HomePage extends React.Component {
             // @FIXME: without delaying the page transition modal's _onHide
             // is not called leaving window resize listeners active
             //this._moveToParticipantsPage();
-        } else if (eventType === Constants.EventTypes.ADD_SHEET_EVENT) {
-            this._moveToParticipantsPage();
         }
     }
 
@@ -129,7 +128,13 @@ export default class HomePage extends React.Component {
         if (this.state.currentSheet) ActionCreator.removeSheet(this.state.currentSheet.id);
     }
 
+    _handleSettingsClick() {
+        this._settings.toggle();
+    }
+
     render() {
+        const {currentSheet, currentSheetName} = this.state;
+
         return (
             <section className="home-page">
                 <p>
@@ -143,7 +148,7 @@ export default class HomePage extends React.Component {
 
                 <form onSubmit={this._handleFormSubmit.bind(this)}>
                     <div className="row">
-                        <div className="three columns">
+                        <div className="two columns">
                             <label htmlFor="sheet-name">
                             { t( this.state.currentSheet ? 'lang.current_sheet' : 'home.name_your_sheet') }:
                             </label>
@@ -158,29 +163,52 @@ export default class HomePage extends React.Component {
                                 ref="sheetNameInput"
                                 type="text"
                                 placeholder={ t('home.sheet_name_placeholder') + '...' }
-                                value={this.state.currentSheetName}
-                                disabled={!!this.state.currentSheet}
+                                value={currentSheetName}
+                                disabled={currentSheet}
                                 onChange={this._handleCurrentSheetNameChange.bind(this)} />
                         </div>
+
+                        <div className="one columns">
+                            <button
+                                className="u-full-width settings-button"
+                                type="button"
+                                disabled={!currentSheet}
+                                onClick={this._handleSettingsClick.bind(this)}>
+                                <i className="fa fa-gear fa-fw fa-2x"/>
+                            </button>
+                        </div>
                     </div>
+                    {
+                        (() => {
+                            if (this.state.currentSheet) {
+                                return <Settings
+                                    ref={c => this._settings = c}
+                                    sheet={currentSheet}/>;
+                            }
+                        })()
+                    }
 
                     <button
                         type="submit"
                         className="button-primary u-full-width"
                         required={true}>
-                        { t(this.state.currentSheet ? 'home.button.edit' : 'home.button.add_and_continue') }
-                        &nbsp;<i className="fa fa-angle-double-right"></i>
+                        { t(currentSheet ? 'home.button.edit' : 'home.button.add') }
+                        &nbsp;
+                        <i
+                            style={!currentSheet ? { display: 'none' } : {}}
+                            className="fa fa-angle-double-right" />
                     </button>
                 </form>
+
                 <div className="row">
                     <div className="four columns">
                         <button
                             id="button-add-sheet"
                             className="u-full-width"
-                            disabled={!this.state.currentSheet}
+                            disabled={!currentSheet}
                             onClick={this._handleAddSheetClick.bind(this)}>
                             <i className="fa fa-file-o fa-fw fa-lg" />
-                            { t('home.button.add') }
+                            { t('home.button.new') }
                         </button>
                     </div>
 
@@ -188,7 +216,7 @@ export default class HomePage extends React.Component {
                         <button
                             id="button-remove-sheet"
                             className="u-full-width"
-                            disabled={!this.state.currentSheet}
+                            disabled={!currentSheet}
                             onClick={this._handleRemoveSheetClick.bind(this)}>
                             <i className="fa fa-trash-o fa-fw fa-lg" />
                             { t('home.button.remove') }
@@ -217,7 +245,7 @@ export default class HomePage extends React.Component {
                 <LoadSheetDialog
                     ref="loadSheetDialog"
                     sheets={this.state.sheets}
-                    currentSheet={this.state.currentSheet} />
+                    currentSheet={currentSheet} />
 
             </section>
         );

@@ -21,6 +21,16 @@
 .success, .button-success {
     background-color: $color-success;
     border-color: $color-success;
+    color: #fff;
+
+    &:hover {
+        background-color: darken($color-success, 10%);
+        border-color: darken($color-success, 10%);
+    }
+
+    &:hover, &:focus {
+        color: #fff;
+    }
 }
 
 .warning, .button-warning {

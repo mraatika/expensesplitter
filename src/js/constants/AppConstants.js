@@ -17,7 +17,8 @@ export default {
         REMOVE_EXPENSE_EVENT: Symbol(),
         REMOVE_PARTICIPANT_EVENT: Symbol(),
         REMOVE_SHEET_EVENT: Symbol(),
-        SET_ACTIVE_SHEET_EVENT: Symbol()
+        SET_ACTIVE_SHEET_EVENT: Symbol(),
+        SETTINGS_CHANGED_EVENT: Symbol()
     },
 
     ActionTypes: {
@@ -28,7 +29,8 @@ export default {
         REMOVE_PARTICIPANT: Symbol(),
         REMOVE_ALL_EXPENSES: Symbol(),
         REMOVE_SHEET: Symbol(),
-        SET_ACTIVE_SHEET: Symbol()
+        SET_ACTIVE_SHEET: Symbol(),
+        SET_SETTINGS: Symbol()
     },
 
     ActionSources: {

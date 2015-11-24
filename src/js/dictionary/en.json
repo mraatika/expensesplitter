@@ -6,8 +6,8 @@
     "expenses.remove_all_confirmation": "All expenses will be permanently removed. Are you sure you want to remove all the expenses?",
     "expenses.remove_all_expenses": "Remove all expenses",
 
-    "home.button.add" : "New sheet",
-    "home.button.add_and_continue" : "Add sheet & continue",
+    "home.button.new" : "New sheet",
+    "home.button.add" : "Add sheet",
     "home.button.edit" : "Edit current sheet",
     "home.button.load" : "Load sheet",
     "home.button.remove" : "Remove current sheet",
@@ -38,6 +38,7 @@
     "lang.remove_all": "Remove all",
     "lang.total": "Total",
     "lang.transaction_plural": "Transactions",
+    "lang.settings": "Settings",
     "lang.share": "Share",
     "lang.share_plural": "Shares",
     "lang.sum": "Sum",
@@ -69,6 +70,10 @@
     "participants.confirm_removal": "Selected participant has related expenses. Those will also be removed.",
     "participants.no_participants": "No particpants added yet!",
     "participants.remove_participant": "Remove participant",
+
+    "settings.currency_symbol": "Currency symbol",
+    "settings.default_currency_symbol": "$",
+    "settings.save": "Save settings",
 
     "shares.participants_expenses" : "Participant's expenses",
 

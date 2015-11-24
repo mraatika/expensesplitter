@@ -64,5 +64,14 @@ export default {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.REMOVE_ALL_EXPENSES
         });
+    },
+
+// settings
+
+    setSettings: function (settings) {
+        AppDispatcher.handleViewAction({
+            type: Constants.ActionTypes.SET_SETTINGS,
+            settings: settings
+        });
     }
 };

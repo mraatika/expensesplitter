@@ -132,6 +132,12 @@ function saveCurrentSheet() {
     dataStore.storage.set(dataStore.getCurrentSheetId(), dataStore.getCurrentSheet());
 }
 
+function setSettings(settings) {
+    const sheet = dataStore.getCurrentSheet();
+    sheet.settings = settings;
+    return sheet;
+}
+
 var handleDispatcherEvent = function(payload) {
     var action = payload.action;
 
@@ -203,6 +209,14 @@ var handleDispatcherEvent = function(payload) {
             dataStore.emitChange(Constants.EventTypes.REMOVE_EXPENSE_EVENT);
         }
 
+        break;
+
+    case Constants.ActionTypes.SET_SETTINGS:
+        {
+            let settings = action.settings;
+            setSettings(settings);
+            dataStore.emitChange(Constants.EventTypes.SETTINGS_CHANGED_EVENT);
+        }
         break;
     }
 
