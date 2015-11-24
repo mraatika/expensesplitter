@@ -47,6 +47,9 @@
     "testPathDirs": [
       "<rootDir>/src/js/__tests__/"
     ],
+    "testPathIgnorePatterns": [
+      "__tests__/support"
+    ],
     "testFileExtensions": [
       "es6",
       "js",
