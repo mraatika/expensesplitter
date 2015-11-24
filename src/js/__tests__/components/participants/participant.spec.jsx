@@ -3,10 +3,9 @@ jest.autoMockOff();
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
+import sinon from 'sinon';
 
 const Participant = require('../../../components/participants/participant.jsx').default;
-const ActionCreators = require('../../../actions/dataactioncreators').default;
-const ExpensesService = require('../../../service/expensesservice').default;
 
 describe('Component:Participant', function() {
     var participantListItem;
@@ -17,11 +16,11 @@ describe('Component:Participant', function() {
 
     var page = {};
 
-    const renderListItem = (sheet) => {
+    const renderListItem = (sheet, props) => {
         var ListWrapper = React.createClass({
             render: function() {
                 return (
-                    <ul><Participant participant={participantModel} sheet={sheet} /></ul>
+                    <ul><Participant participant={participantModel} sheet={sheet} {...props} /></ul>
                 );
             }
         });
@@ -47,49 +46,13 @@ describe('Component:Participant', function() {
             expenses: []
         };
 
-        beforeEach(function () {
-            renderListItem(sheet);
-        });
-
-        it('should call ActionCreators.removeParticipant when remove button is clicked', function () {
-            // set up spy
-            spyOn(ActionCreators, 'removeParticipant');
+        it('should call given callback when remove button is clicked', function () {
+            const spy = sinon.spy();
+            renderListItem(sheet, { onRemoveClick: spy });
             // Simulate a click and verify that the action creator is called
             TestUtils.Simulate.click(page.removeButton);
-            expect(ActionCreators.removeParticipant).toHaveBeenCalledWith(participantModel);
-        });
-
-        it('should ask for confirmation when the participant has expenses participated in', function () {
-            let dialog = participantListItem.refs.removeConfirmationDialog;
-
-            spyOn(ExpensesService.prototype, 'findExpensesByParticipant').andReturn([1]);
-            spyOn(ExpensesService.prototype, 'findExpensesPaidByParticipant').andReturn([]);
-            spyOn(ActionCreators, 'removeParticipant');
-
-            TestUtils.Simulate.click(page.removeButton);
-
-            expect(dialog.state.showModal).toEqual(true);
-
-            expect(ActionCreators.removeParticipant).not.toHaveBeenCalled();
-        });
-
-        it('should ask for confirmation when there are expenses paid by the given participant', function () {
-            let dialog = participantListItem.refs.removeConfirmationDialog;
-
-            spyOn(ExpensesService.prototype, 'findExpensesByParticipant').andReturn([]);
-            spyOn(ExpensesService.prototype, 'findExpensesPaidByParticipant').andReturn([1]);
-            spyOn(ActionCreators, 'removeParticipant');
-
-            TestUtils.Simulate.click(page.removeButton);
-
-            expect(dialog.state.showModal).toEqual(true);
-
-            expect(ActionCreators.removeParticipant).not.toHaveBeenCalled();
-
-            // buttons are transfered to dialog in properties
-            dialog.props.buttons[0].click();
-
-            expect(ActionCreators.removeParticipant).toHaveBeenCalledWith(participantModel);
+            expect(spy.callCount).toEqual(1);
+            expect(spy.calledWithExactly(participantModel)).toEqual(true);
         });
     });
 });

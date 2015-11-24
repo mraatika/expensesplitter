@@ -149,7 +149,7 @@ describe('Component:HomePage', function() {
         it('should display a confirmation dialog for remove action', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-remove-sheet');
             var dialog = homePage.refs.removeSheetConfirmationDialog;
-            var modal = dialog.refs.modal;
+            var modal = dialog._modal;
 
             spyOn(ActionCreators, 'removeSheet');
 
@@ -165,7 +165,7 @@ describe('Component:HomePage', function() {
         it('should clear current sheet when remove button is pressed', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-remove-sheet');
             var dialog = homePage.refs.removeSheetConfirmationDialog;
-            var modal = dialog.refs.modal;
+            var modal = dialog._modal;
 
             spyOn(ActionCreators, 'removeSheet');
             TestUtils.Simulate.click(button);
@@ -214,7 +214,7 @@ describe('Component:HomePage', function() {
         it('should open the load sheet dialog when load button is pressed', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-load-sheet');
             var dialog = TestUtils.findRenderedComponentWithType(homePage, LoadSheetDialog);
-            var modal = dialog.refs.dialog;
+            var modal = dialog._dialog;
 
             expect(modal.state.showModal).toEqual(false);
 

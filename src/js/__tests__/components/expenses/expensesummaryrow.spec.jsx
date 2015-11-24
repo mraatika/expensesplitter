@@ -1,16 +1,19 @@
 jest.autoMockOff();
 
 import React from 'react';
-import ReactDom from 'react-dom';
+import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 import _ from 'lodash';
 
 const ExpenseSummaryRow = require('../../../components/expenses/expensesummaryrow.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
+const RemovalConfirmationDialog = require('../../../components/common/removalconfirmationdialog.jsx').default;
+const ModalDialog = require('../../../components/common/modaldialog.jsx').ModalDialog;
 
 describe('Component:ExpenseSummaryRow', function() {
-    var expenseTableRow;
-    var expenses = [
+    let expenseTableRow;
+    const page = {};
+    const expenses = [
         {
             name: 'Beer',
             price: 250,
@@ -41,6 +44,7 @@ describe('Component:ExpenseSummaryRow', function() {
         });
         var table = TestUtils.renderIntoDocument(<Table/>);
         expenseTableRow = TestUtils.findRenderedComponentWithType(table, ExpenseSummaryRow);
+        page.removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
     });
 
     it('should display the total amount of expenses', function() {
@@ -50,12 +54,20 @@ describe('Component:ExpenseSummaryRow', function() {
         expect(+cells[1].textContent).toEqual(totalSum);
     });
 
+    it('should display a confirmation dialog when clicking the remove all button', function () {
+        TestUtils.Simulate.click(page.removeButton);
+        const dialog = TestUtils.findRenderedComponentWithType(expenseTableRow, RemovalConfirmationDialog);
+        expect(dialog._modal.state.showModal).toEqual(true);
+    });
+
     it('should call ActionCreators.removeAllExpenses when remove all button is clicked', function () {
         // set up spy
         spyOn(ActionCreators, 'removeAllExpenses');
         // Simulate a click and verify that the action creator is called
-        var removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
-        TestUtils.Simulate.click(removeButton);
+        TestUtils.Simulate.click(page.removeButton);
+        const modal = TestUtils.findRenderedComponentWithType(expenseTableRow, ModalDialog);
+        // "click" the confirm button
+        modal.props.buttons[0].click();
         expect(ActionCreators.removeAllExpenses).toHaveBeenCalled();
     });
 });

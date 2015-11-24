@@ -3,9 +3,9 @@ jest.autoMockOff();
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
+import sinon from 'sinon';
 
 const Sheet = require('../../../components/home/sheet.jsx').default;
-const ActionCreators = require('../../../actions/dataactioncreators').default;
 
 describe('Component:Sheet', function() {
     var sheetListItem;
@@ -15,11 +15,11 @@ describe('Component:Sheet', function() {
         createdOn: new Date(1,0,2015)
     };
 
-    var renderComponent = function(isCurrentSheet) {
+    var renderComponent = function(isCurrentSheet, props) {
         var ListWrapper = React.createClass({
             render: function() {
                 return (
-                    <ul><Sheet sheet={sheet} isCurrentSheet={isCurrentSheet} /></ul>
+                    <ul><Sheet sheet={sheet} isCurrentSheet={isCurrentSheet} {...props} /></ul>
                 );
             }
         });
@@ -50,21 +50,14 @@ describe('Component:Sheet', function() {
         expect(ReactDOM.findDOMNode(sheetListItem).className.indexOf('active')).toEqual(-1);
     });
 
-    it('should call ActionCreators.removeSheet when remove button is clicked', function () {
+    it('should call remove callback when remove button is clicked', function () {
+        const spy = sinon.spy();
+        renderComponent(false, { onRemoveClick: spy });
         // set up spy
-        spyOn(ActionCreators, 'removeSheet');
         // Simulate a click and verify that the action creator is called
         var removeButton = TestUtils.findRenderedDOMComponentWithClass(sheetListItem, 'icon-button');
         TestUtils.Simulate.click(removeButton);
-        expect(ActionCreators.removeSheet).toHaveBeenCalledWith(sheet.id);
-    });
-
-    it('should call ActionCreators.setActiveSheet when the list item is clicked', function () {
-        // set up spy
-        spyOn(ActionCreators, 'setActiveSheet');
-        var listItem = TestUtils.findRenderedDOMComponentWithTag(sheetListItem, 'li');
-        // Simulate a click and verify that the action creator is called
-        TestUtils.Simulate.click(listItem);
-        expect(ActionCreators.setActiveSheet).toHaveBeenCalledWith(sheet.id);
+        expect(spy.callCount).toEqual(1);
+        expect(spy.calledWithExactly(sheet)).toEqual(true);
     });
 });

@@ -13,7 +13,7 @@ var page = {};
 
 var renderComponent = function(participants) {
     expenseAddForm = TestUtils.renderIntoDocument(
-        <ExpenseAddForm participants={participants} />
+        <ExpenseAddForm participants={participants} expenses={[]}/>
     );
 
     page.nameField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-name');
