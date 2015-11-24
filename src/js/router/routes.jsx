@@ -9,7 +9,7 @@ import HomePage from '../components/home/homepage.jsx';
 import ParticipantsPage from '../components/participants/participantspage.jsx';
 import ExpensesPage from '../components/expenses/expensespage.jsx';
 import {TransactionsPage} from '../components/transactions/transactionspage.jsx';
-import SheetSummary from '../components/summary/sheetsummary.jsx';
+import SummaryPage from '../components/summary/summarypage.jsx';
 
 /**
  *  Use factory to create component with data
@@ -64,7 +64,7 @@ var routes = {
     '/summary': function() {
         console.log('page: /summary');
         var currentSheet = DataStore.getCurrentSheet();
-        var sheetSummary = getComponent(SheetSummary, {
+        var sheetSummary = getComponent(SummaryPage, {
             sheet: currentSheet
         });
         renderer.renderContentView(sheetSummary);
