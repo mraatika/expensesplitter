@@ -215,7 +215,7 @@ export default class ExpenseAddForm extends React.Component {
                     </div>
 
                     <div className="three columns">
-                        <label htmlFor="expense-price">{t('lang.price')}:</label>
+                        <label htmlFor="expense-price">{t('lang.price') + ` (${this.props.currencySymbol})` }:</label>
                         <ValidatedInput
                             type="number"
                             name="price"

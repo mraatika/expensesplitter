@@ -24,13 +24,15 @@ export class TransactionsPage extends React.Component {
                 <h1>{ t('lang.transaction_plural') }</h1>
                 <TransactionsList
                     transactions={this.props.transactions}
-                    participants={participants} />
+                    participants={participants}
+                    settings={sheet.settings}/>
 
                 <h2>{ t('lang.expense_plural') }</h2>
                 <ParticipantSummaryList
                     participants={participants}
                     sharesAndBalances={this.props.sharesAndBalances}
-                    expenses={expenses}/>
+                    expenses={expenses}
+                    settings={sheet.settings}/>
 
                 <Navigation
                     prev={pages.EXPENSES}

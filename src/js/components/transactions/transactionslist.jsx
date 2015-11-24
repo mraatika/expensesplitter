@@ -13,17 +13,14 @@ export default class TransactionsList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {participants, transactions} = this.props;
+        const {transactions} = this.props;
 
         return (
             <table id="transactions-list" className="u-full-width">
             <tbody>
                 {
-                    transactions.length ? this.props.transactions.map(transaction =>
-                        <Transaction
-                            key={transaction.from + '-' + transaction.to}
-                            transaction={transaction}
-                            participants={participants} />
+                    transactions.length ? transactions.map(transaction =>
+                        <Transaction key={transaction.from + '-' + transaction.to} transaction={transaction} {...this.props}/>
                     ) : <tr><td><i>{ t('transactions.no_transactions') }</i></td></tr>
                 }
             </tbody>

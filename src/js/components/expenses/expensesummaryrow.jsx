@@ -30,7 +30,7 @@ export default class ExpenseSummaryRow extends React.Component {
         return (
             <tr>
                 <td><strong>{t('lang.total')}:</strong></td>
-                <td><strong>{totalSum}</strong></td>
+                <td><strong>{totalSum} {this.props.settings.currencySymbol}</strong></td>
                 <td colSpan="4" className="text-right">
                     {
                         this.props.isRemoveAllowed ?

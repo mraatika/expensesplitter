@@ -1,6 +1,6 @@
 import React from 'react';
 import {Panel} from 'react-bootstrap';
-import ParticipantSummaryListItemHeader from './participantsummarylistitemheader.jsx';
+import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
 import {ExpenseList} from '../expenses/expenselist.jsx';
 
 /**
@@ -30,20 +30,28 @@ export default class ParticipantSummaryListItem extends React.Component {
     }
 
     /**
+     * Return header for the panel
+     * @private
      * @return {ReactComponent}
      */
-    render() {
-        const header = <ParticipantSummaryListItemHeader
+    _getHeader() {
+        return <CollapsiblePanelHeader
             headerText={this.props.participantName}
             isExpanded={this.state.isExpanded}
             onExpand={this._onExpand.bind(this)} />;
+    }
 
+    /**
+     * @return {ReactComponent}
+     */
+    render() {
         return (
-            <Panel collapsible expanded={this.state.isExpanded} header={header}>
+            <Panel collapsible expanded={this.state.isExpanded} header={this._getHeader()}>
                 <ExpenseList
                     expenses={this.props.expenses}
                     participants={this.props.participants}
-                    isRemoveAllowed={false}/>
+                    isRemoveAllowed={false}
+                    settings={this.props.settings}/>
             </Panel>
         );
     }

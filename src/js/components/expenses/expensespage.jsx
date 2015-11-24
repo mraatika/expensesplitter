@@ -55,7 +55,8 @@ export default class ExpensesPage extends React.Component {
                         <ExpenseList
                             expenses={sheet.expenses}
                             participants={sheet.participants}
-                            isRemoveAllowed={true} />
+                            isRemoveAllowed={true}
+                            settings={sheet.settings}/>
                     </div>
                     <div className="four columns">
                         <aside role="complementary" className="shares-section-container">
@@ -67,7 +68,8 @@ export default class ExpensesPage extends React.Component {
                 <section className="clear-float">
                     <ExpenseAddForm
                         participants={sheet.participants}
-                        expenses={sheet.expenses} />
+                        expenses={sheet.expenses}
+                        currencySymbol={sheet.settings.currencySymbol}/>
                 </section>
 
                 <Navigation

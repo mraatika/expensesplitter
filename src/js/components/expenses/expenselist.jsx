@@ -47,7 +47,10 @@ export class ExpenseList extends React.Component {
                 {
                     this.props.hideFooter ? '' :
                     <tfoot>
-                        <ExpenseSummaryRow expenses={expenses} isRemoveAllowed={this.props.isRemoveAllowed} />
+                        <ExpenseSummaryRow
+                            expenses={expenses}
+                            isRemoveAllowed={this.props.isRemoveAllowed}
+                            settings={this.props.settings}/>
                     </tfoot>
                 }
             </table>

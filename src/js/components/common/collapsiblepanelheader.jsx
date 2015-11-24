@@ -1,15 +1,15 @@
 import React from 'react';
 
 /**
- * @class ParticipantSummaryListItemHeader
+ * @class CollapsiblePanelHeader
  * @description Header for the collapsible expenses list
  * @extends {ReactComponent}
  */
-export default class ParticipantSummaryListItemHeader extends React.Component {
+export default class CollapsiblePanelHeader extends React.Component {
 
     /**
      * @constructor
-     * @see ParticipantSummaryListItemHeader.propTypes for params
+     * @see CollapsiblePanelHeader.propTypes for params
      */
 
     /**
@@ -29,7 +29,7 @@ export default class ParticipantSummaryListItemHeader extends React.Component {
  * Constructor param types
  * @type {object}
  */
-ParticipantSummaryListItemHeader.propTypes = {
+CollapsiblePanelHeader.propTypes = {
     /**
      * Callback function for the collapse toggle button
      * @type {function}
