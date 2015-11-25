@@ -140,13 +140,6 @@ option.current {
     box-shadow: inset 1px 1px 6px #bbb;
 }
 
-
-/**
- *  Home page
- *
- *
- */
-
 #app-description {
     color: $dark-grey;
 }
@@ -163,6 +156,9 @@ option.current {
 }
 
 #participants-list {
+
+    margin-bottom: 1.5rem;
+
     .fa-user {
         margin-right: 4px;
     }
