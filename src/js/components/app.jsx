@@ -4,7 +4,7 @@ import DataStore from '../stores/datastore';
 import storageFactory from '../factory/storagefactory';
 import {name as appName, version} from '../../../package.json';
 
-export class App extends React.Component {
+export default class App extends React.Component {
 
     componentWillMount() {
         DataStore.init(storageFactory.create());

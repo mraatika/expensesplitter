@@ -107,6 +107,7 @@ export default class Settings extends React.Component {
             <label htmlFor="settings-currency">
                 { t('settings.currency_symbol') }:
             </label>
+
             <input
                 type="text"
                 maxLength="3"
@@ -115,6 +116,7 @@ export default class Settings extends React.Component {
                 value={newSettings.currencySymbol}
                 onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
                 id="settings-currency"/>
+
             <SaveButton
                 type="button"
                 className="u-full-width"
