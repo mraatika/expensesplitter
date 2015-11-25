@@ -22,7 +22,8 @@ export default class SaveButton extends React.Component {
         return (
             <button
                 {...this.props}
-                className={buttonClassName}>
+                className={buttonClassName}
+                aria-label={beforeSaveText}>
                 <i className={`fa fa-fw fa-${isSaved ? 'check' : 'save'}`}/>&nbsp;
                 { isSaved ? afterSaveText : beforeSaveText }
             </button>
