@@ -104,7 +104,7 @@ export default class Settings extends React.Component {
 
         return <section>
             <label htmlFor="settings-currency">
-                { t('settings.currency_symbol') }
+                { t('settings.currency_symbol') }:
             </label>
             <input
                 type="text"
