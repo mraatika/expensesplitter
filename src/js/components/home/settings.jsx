@@ -52,7 +52,8 @@ export default class Settings extends React.Component {
 
         return {
             isSaved: false,
-            newSettings: _.clone(settings)
+            newSettings: _.clone(settings),
+            show: (this.state || {}).show || false
         };
     }
 
@@ -90,7 +91,7 @@ export default class Settings extends React.Component {
      */
     _getHeader() {
         return <CollapsiblePanelHeader
-            onExpand={this.toggle.bind(this)}
+            onExpand={() => this.toggle()}
             headerText={ t('lang.settings') }
             isExpanded={this.state.show} />;
     }
