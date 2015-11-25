@@ -130,6 +130,7 @@ export default class HomePage extends React.Component {
 
     _handleSettingsClick() {
         this._settings.toggle();
+        this.setState({ isSettingsActive: !this.state.isSettingsActive });
     }
 
     render() {
@@ -170,7 +171,7 @@ export default class HomePage extends React.Component {
 
                         <div className="one columns">
                             <button
-                                className="u-full-width settings-button"
+                                className={'u-full-width settings-button' + (this.state.isSettingsActive ? ' active' : '')}
                                 type="button"
                                 disabled={!currentSheet}
                                 onClick={this._handleSettingsClick.bind(this)}>
@@ -187,7 +188,6 @@ export default class HomePage extends React.Component {
                             }
                         })()
                     }
-
                     <button
                         type="submit"
                         className="button-primary u-full-width"

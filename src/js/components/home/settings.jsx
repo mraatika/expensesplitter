@@ -91,10 +91,7 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getHeader() {
-        return <CollapsiblePanelHeader
-            onExpand={() => this.toggle()}
-            headerText={ t('lang.settings') }
-            isExpanded={this.state.show} />;
+        return <CollapsiblePanelHeader headerText={ t('lang.settings') }/>;
     }
 
     /**
