@@ -31,12 +31,14 @@ export default class SheetSummary extends React.Component {
                     settings={settings}/>
 
                 <h2>{t('lang.share_plural')}:</h2>
+
                 <SharesTable
                     participants={participants}
                     expenses={expenses} />
-                <br/>
 
-                <div>{t('summary.preview_created')} @ { new Date().toLocaleString() }</div>
+                <div id="summary-date">
+                    {t('summary.preview_created')} @ { new Date().toLocaleString() }
+                </div>
 
                 <Navigation prev={pages.TRANSACTIONS}/>
             </div>
