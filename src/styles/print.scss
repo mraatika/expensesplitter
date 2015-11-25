@@ -1,4 +1,8 @@
 @media print {
+    body {
+        font-family: Arial, sans-serif;
+    }
+
     * {
         background-color: none !important;
     }
