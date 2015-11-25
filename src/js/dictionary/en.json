@@ -1,4 +1,5 @@
 {
+    "app.description" : "ExpenseSplitter is a tool for splitting shared expenses. It optimizes payments so that the minimum amount of transactions are required. These expense sheets can also be shared with the people involved.",
     "app.info" : "Split shared expenses without a hassle",
 
     "common.confirm_removal": "Confirm removal",
@@ -75,6 +76,7 @@
     "settings.currency_symbol": "Currency symbol",
     "settings.default_currency_symbol": "$",
     "settings.save": "Save settings",
+    "settings.toggle_settings": "Show/hide the settings section",
 
     "shares.participants_expenses" : "Participant's expenses",
 

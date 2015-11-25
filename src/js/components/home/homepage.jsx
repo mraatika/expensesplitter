@@ -137,10 +137,8 @@ export default class HomePage extends React.Component {
         const {currentSheet, currentSheetName} = this.state;
 
         return (
-            <section className="home-page">
-                <p>
-                    Insert translated app description here.
-                </p>
+            <section id="home-page">
+                <p id="app-description">{ t('app.description') }</p>
 
                 <MessageContainer ref="infoMessageContainer" type="info">
                     { t('home.prev_sheet_saved') + ' ' }
@@ -174,6 +172,7 @@ export default class HomePage extends React.Component {
                                 className={'u-full-width settings-button' + (this.state.isSettingsActive ? ' active' : '')}
                                 type="button"
                                 disabled={!currentSheet}
+                                aria-label={ t('settings.toggle_settings') }
                                 onClick={this._handleSettingsClick.bind(this)}>
                                 <i className="fa fa-gear fa-fw fa-2x"/>
                             </button>

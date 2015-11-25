@@ -116,11 +116,15 @@ option.current {
  *
  *
  */
-.home-page {
+#home-page {
     button {
         margin-bottom: 1.5rem;
     }
 
+}
+
+#app-description {
+    color: $dark-grey;
 }
 
 /**
