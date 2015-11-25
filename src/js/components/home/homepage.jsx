@@ -10,6 +10,7 @@ import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import {MessageContainer} from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
+import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
 /**
  * @class Homepage
@@ -153,29 +154,27 @@ export default class HomePage extends React.Component {
                             </label>
                         </div>
 
-                        <div className="nine columns">
-                            <input
-                                id="sheet-name"
-                                className="u-full-width"
-                                required
-                                autoFocus={true}
-                                ref="sheetNameInput"
-                                type="text"
-                                placeholder={ t('home.sheet_name_placeholder') + '...' }
-                                value={currentSheetName}
-                                disabled={currentSheet}
-                                onChange={this._handleCurrentSheetNameChange.bind(this)} />
-                        </div>
-
-                        <div className="one columns">
-                            <button
-                                className={'u-full-width settings-button' + (this.state.isSettingsActive ? ' active' : '')}
-                                type="button"
-                                disabled={!currentSheet}
-                                aria-label={ t('settings.toggle_settings') }
-                                onClick={this._handleSettingsClick.bind(this)}>
-                                <i className="fa fa-gear fa-fw fa-2x"/>
-                            </button>
+                        <div className="ten columns">
+                            <InputButtonSplit>
+                                <input
+                                    id="sheet-name"
+                                    required
+                                    autoFocus={true}
+                                    ref="sheetNameInput"
+                                    type="text"
+                                    placeholder={ t('home.sheet_name_placeholder') + '...' }
+                                    value={currentSheetName}
+                                    disabled={currentSheet}
+                                    onChange={this._handleCurrentSheetNameChange.bind(this)} />
+                                <button
+                                    className={'settings-button' + (this.state.isSettingsActive ? ' active' : '')}
+                                    type="button"
+                                    disabled={!currentSheet}
+                                    aria-label={ t('settings.toggle_settings') }
+                                    onClick={this._handleSettingsClick.bind(this)}>
+                                    <i className="fa fa-gear fa-fw fa-2x"/>
+                                </button>
+                            </InputButtonSplit>
                         </div>
                     </div>
                     {

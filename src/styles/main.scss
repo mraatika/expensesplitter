@@ -96,8 +96,38 @@ option.current {
     color: #888;
 }
 
-.settings-button {
-    padding: 3px 0 0 2px;
+/**
+ * Splitted input/button
+ */
+.split-button {
+    display: table;
+    position: relative;
+    border-collapse: separate;
+
+    &>* {
+        display: table-cell;
+    }
+
+    input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        position: relative;
+        z-index: 2;
+        float: left;
+        width: 100%;
+    }
+
+    .button-container {
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    button {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: 0;
+    }
 }
 
 /**
@@ -112,16 +142,10 @@ option.current {
 
 
 /**
- *  Participants page
+ *  Home page
  *
  *
  */
-#home-page {
-    button {
-        margin-bottom: 1.5rem;
-    }
-
-}
 
 #app-description {
     color: $dark-grey;
