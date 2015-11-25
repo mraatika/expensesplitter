@@ -16,10 +16,18 @@ export default class CollapsiblePanelHeader extends React.Component {
      * @return {ReactComponent}
      */
     render() {
+        const onExpand = this.props.onExpand;
+        let toggleButton = '';
+
+        // only if onExpand callback is defined is the toggle button relevant
+        if (onExpand) {
+            toggleButton = <i className={'u-pull-right fa fa-' + (this.props.isExpanded ? 'minus' : 'plus') + '-square-o'}/>;
+        }
+
         return (
-            <div className="wrap-content" onClick={this.props.onExpand}>
+            <div className="wrap-content" onClick={onExpand || function() {}}>
                 <span className="u-pull-left bold">{this.props.headerText}</span>
-                <i className={'u-pull-right fa fa-' + (this.props.isExpanded ? 'minus' : 'plus') + '-square-o'}></i>
+                {toggleButton}
             </div>
         );
     }
@@ -31,7 +39,8 @@ export default class CollapsiblePanelHeader extends React.Component {
  */
 CollapsiblePanelHeader.propTypes = {
     /**
-     * Callback function for the collapse toggle button
+     * Callback function for the collapse toggle button.
+     * If omitted the component doesn't have the toggle button.
      * @type {function}
      */
     onExpand: React.PropTypes.func,
