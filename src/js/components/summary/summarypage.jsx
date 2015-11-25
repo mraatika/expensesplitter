@@ -14,7 +14,7 @@ export default class SheetSummary extends React.Component {
         var transactions = new TransactionsService(this.props.sheet).calculateTransactions();
 
         return (
-            <div id="summary-preview">
+            <div id="summary-page">
                 <h1>{this.props.sheet.name}</h1>
 
                 <h2>{t('lang.transaction_plural')}:</h2>

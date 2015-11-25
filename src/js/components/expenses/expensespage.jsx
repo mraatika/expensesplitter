@@ -51,7 +51,7 @@ export default class ExpensesPage extends React.Component {
             <section id="expenses-page">
                 <section className="row">
                     <div className="expenses-list eight columns">
-                        <h1>{ t('lang.expense_plural') }</h1>
+                        <h2>{ t('lang.expense_plural') }</h2>
                         <ExpenseList
                             expenses={sheet.expenses}
                             participants={sheet.participants}

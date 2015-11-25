@@ -79,8 +79,8 @@ export default class ParticipantsPage extends React.Component {
         const sheet = this.state.currentSheet;
 
         return (
-            <section className="participants-page">
-                <h1>{ t('lang.participant_plural') }</h1>
+            <section id="participants-page">
+                <h2>{ t('lang.participant_plural') }</h2>
                 <ParticipantList
                     sheet={sheet}
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>

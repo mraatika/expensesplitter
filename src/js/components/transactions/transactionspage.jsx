@@ -20,8 +20,8 @@ export class TransactionsPage extends React.Component {
         const {participants, expenses} = sheet;
 
         return (
-            <section className="transactions-page">
-                <h1>{ t('lang.transaction_plural') }</h1>
+            <section id="transactions-page">
+                <h2>{ t('lang.transaction_plural') }</h2>
                 <TransactionsList
                     transactions={this.props.transactions}
                     participants={participants}
