@@ -139,7 +139,11 @@ export default class HomePage extends React.Component {
 
         return (
             <section id="home-page">
-                <p id="app-description">{ t('app.description') }</p>
+                <h5 className="text-center">{t('app.info') }</h5>
+
+                <p id="app-description">
+                    { t('app.description') }
+                </p>
 
                 <MessageContainer ref="infoMessageContainer" type="info">
                     { t('home.prev_sheet_saved') + ' ' }
