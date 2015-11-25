@@ -76,6 +76,7 @@
     "settings.currency_symbol": "Currency symbol",
     "settings.default_currency_symbol": "$",
     "settings.save": "Save settings",
+    "settings.settings_for_sheet": "Settings for sheet",
     "settings.toggle_settings": "Show/hide the settings section",
 
     "shares.participants_expenses" : "Participant's expenses",

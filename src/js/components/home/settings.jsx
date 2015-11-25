@@ -91,7 +91,8 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getHeader() {
-        return <CollapsiblePanelHeader headerText={ t('lang.settings') }/>;
+        return <CollapsiblePanelHeader
+            headerText={ `${t('settings.settings_for_sheet')} ${this.props.sheet.name}` }/>;
     }
 
     /**
