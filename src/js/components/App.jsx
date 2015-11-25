@@ -1,11 +1,10 @@
-'use strict';
-
 import React from 'react';
 import Router from '../router/router';
 import DataStore from '../stores/datastore';
 import storageFactory from '../factory/storagefactory';
 import {t} from '../dictionary/dictionary';
 import {name as appName} from '../../../package.json';
+import packageJSON from '../../../package.json';
 
 export class App extends React.Component {
 
@@ -19,7 +18,7 @@ export class App extends React.Component {
 
     render() {
         return (
-            <div id="app-wrapper">
+            <div id="app-wrapper" className="container">
                 <header role="banner">
                     <h1>
                         <a href="/">{ appName }</a>
@@ -27,10 +26,10 @@ export class App extends React.Component {
                     </h1>
                 </header>
 
-                <main role="main" id="content" className="container"></main>
+                <main role="main" id="content"></main>
 
-                <footer role="contentinfo">
-                    <small>{ 'Footer init @ ' + new Date().toLocaleString() }</small>
+                <footer role="contentinfo" className="text-right">
+                    <small>{ `${packageJSON.name} v${packageJSON.version}` }</small>
                 </footer>
             </div>
         );
