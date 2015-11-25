@@ -3,7 +3,8 @@ import _ from 'lodash';
 import {Panel} from 'react-bootstrap';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
-import ActionCreators from '../..//actions/dataactioncreators';
+import ActionCreators from '../../actions/dataactioncreators';
+import SaveButton from '../common/savebutton.jsx';
 
 /**
  * @class Settings
@@ -116,13 +117,13 @@ export default class Settings extends React.Component {
                 value={newSettings.currencySymbol}
                 onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
                 id="settings-currency"/>
-            <button
+            <SaveButton
                 type="button"
-                className={`u-full-width button-${isSaved ? 'success' : 'primary'}`}
-                onClick={this._onSaveClick.bind(this)}>
-                <i className={`fa fa-fw fa-${isSaved ? 'check' : 'save'}`}/>&nbsp;
-                { t('settings.save') }
-            </button>
+                className="u-full-width"
+                isSaved={isSaved}
+                beforeSaveText={t('settings.save')}
+                afterSaveText={t('lang.saved')}
+                onClick={this._onSaveClick.bind(this)} />
         </section>;
     }
 
