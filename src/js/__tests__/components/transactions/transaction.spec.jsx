@@ -18,12 +18,19 @@ describe('Component:Transaction', function() {
         { id: '2', name: 'Pertsa' }
     ];
     let page = {};
+    let settings= {
+        currencySymbol: '$'
+    };
 
     beforeEach(function () {
         var TableWrapper = React.createClass({
             render: function() {
                 return (
-                    <table><tbody><Transaction transaction={ transactionModel } participants={ participants }/></tbody></table>
+                    <table>
+                    <tbody>
+                        <Transaction transaction={ transactionModel } participants={ participants } settings={settings}/>
+                    </tbody>
+                    </table>
                 );
             }
         });
@@ -46,8 +53,8 @@ describe('Component:Transaction', function() {
         expect(page.toCell.textContent).toEqual(participants[1].name);
     });
 
-    it('Renders transaction\'s amount', function() {
+    it('Renders transaction\'s amount with currency symbol', function() {
         // verify amount text
-        expect(page.amountCell.textContent).toEqual('' + transactionModel.amount);
+        expect(page.amountCell.textContent).toEqual(`${transactionModel.amount} ${settings.currencySymbol}`);
     });
 });

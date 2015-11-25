@@ -92,19 +92,19 @@ describe('Component:HomePage', function() {
     });
 
     describe('State when current sheet is defined', function () {
-        var sheet = { name: 'Camping Trip' };
+        var sheet = { name: 'Camping Trip', settings: {} };
 
         beforeEach(function() {
             renderComponent(sheet);
         });
 
         it('should display label for sheet input (text refers to editing current sheet)', function () {
-            var label = TestUtils.findRenderedDOMComponentWithTag(homePage, 'label');
+            var label = TestUtils.findRenderedDOMComponentWithAttributeValue(homePage, 'for', 'sheet-name');
             expect(label.textContent).toEqual(dictionary.t('lang.current_sheet') + ':');
         });
 
         it('should display disabled sheet name input with current sheet\'s name', function() {
-            var input = TestUtils.findRenderedDOMComponentWithTag(homePage, 'input');
+            var input = TestUtils.findRenderedDOMComponentWithId(homePage, 'sheet-name');
             expect(input.value).toEqual(sheet.name);
             expect(homePage.state.currentSheet).toEqual(sheet);
             expect(homePage.state.currentSheetName).toEqual(sheet.name);
@@ -140,7 +140,7 @@ describe('Component:HomePage', function() {
     });
 
     describe('Removing current sheet', function () {
-        var sheet = { id: '1', name: 'Camping Trip' };
+        var sheet = { id: '1', name: 'Camping Trip', settings: {} };
 
         beforeEach(function() {
             renderComponent(sheet);
@@ -179,14 +179,14 @@ describe('Component:HomePage', function() {
     });
 
     describe('Adding new sheet when current sheet is present', function () {
-        var sheet = { id: '2', name: 'Camping Trip'};
+        var sheet = { id: '2', name: 'Camping Trip', settings: {}};
 
         beforeEach(function() {
             renderComponent(sheet);
         });
 
         it('should clear current sheet name from input', function () {
-            var input = TestUtils.findRenderedDOMComponentWithTag(homePage, 'input');
+            var input = TestUtils.findRenderedDOMComponentWithId(homePage, 'sheet-name');
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-add-sheet');
 
             TestUtils.Simulate.click(button);
