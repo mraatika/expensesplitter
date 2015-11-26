@@ -1,54 +1,38 @@
-jest.autoMockOff();
+jest.dontMock('../../stores/datastore');
+
+import sinon from 'sinon';
+import _ from 'lodash';
 
 const DataStore = require('../../stores/datastore').default;
 const ActionCreators = require('../../actions/dataactioncreators').default;
 const Constants = require('../../constants/AppConstants').default;
 
-var sheets = [
-    {
-        id: '1',
-        participants: [],
-        expenses: []
-    },
-    {
-        id: '2',
-        participants: [],
-        expenses: []
-    },
-    {
-        id: '3',
-        participants: [],
-        expenses: []
-    }
-];
-
-var currentSheetId = '1';
-
-var storageMock = {
-    get: jest.genMockFunction().mockImplementation(function(key) {
-        if (key === 'currentSheetId') return currentSheetId;
-        return sheets[key];
-    }),
-    set: jest.genMockFunction(),
-    remove: jest.genMockFunction()
-};
-
 describe('DataStore', function() {
 
-    beforeEach(function () {
+    const storageMock = {
+        get: jest.genMockFunction(),
+        set: jest.genMockFunction(),
+        remove: jest.genMockFunction()
+    };
+
+    const initDataStore = (sheets, currentSheetId) => {
+        var stub = sinon.stub(storageMock, 'get');
+
+        stub.withArgs('currentSheetId').returns(currentSheetId);
+        stub.withArgs('sheets').returns(sheets);
+
         DataStore.init(storageMock);
-    });
+    };
 
     afterEach(function() {
         DataStore.removeAllListeners();
-        sheets.forEach((s) => {
-            s.participants = [];
-            s.expenses = [];
-        });
+        storageMock.get.restore();
     });
 
     describe('Sheet', function () {
+
         describe('Creating a sheet', function () {
+            beforeEach(() => initDataStore([]));
 
             it('should fire change event after sheet is succesfully added', function () {
                 var spy = jasmine.createSpy();
@@ -74,20 +58,24 @@ describe('DataStore', function() {
         });
 
         describe('Removing a sheet', function () {
+            const currentSheetId = '2';
+            const sheets = [{ id: '1'},{ id: '2'},{ id: '3'}];
+
+            beforeEach(() => initDataStore(sheets, currentSheetId));
 
             it('should fire change event after a sheet is succesfully removed', function () {
-                var sheetId = '2';
+                var sheetId = sheets[0].id;
                 var spy = jasmine.createSpy();
-                spyOn(storageMock, 'remove');
+                spyOn(storageMock, 'set');
 
                 DataStore.addChangeListener(spy);
 
                 ActionCreators.removeSheet(sheetId);
 
+                expect(storageMock.set).toHaveBeenCalledWith('sheets', _.without(sheets, sheets[0]));
                 expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_SHEET_EVENT);
-                expect(storageMock.remove).toHaveBeenCalledWith(sheetId);
 
-                storageMock.remove.reset();
+                storageMock.set.reset();
             });
 
             it('should clear current sheet if removing the current sheet', function () {
@@ -95,7 +83,6 @@ describe('DataStore', function() {
 
                 ActionCreators.removeSheet(currentSheetId);
 
-                expect(storageMock.remove).toHaveBeenCalledWith(currentSheetId);
                 expect(storageMock.remove).toHaveBeenCalledWith('currentSheetId');
 
                 storageMock.remove.reset();
@@ -104,6 +91,8 @@ describe('DataStore', function() {
             it('should throw an error when trying to remove sheet without sheet id', function () {
                 var expectedError = 'IllegalArgumentsException: sheetId is missing or invalid!';
 
+                spyOn(storageMock, 'set');
+
                 expect(function() {
                     ActionCreators.removeSheet();
                 }).toThrow(expectedError);
@@ -111,15 +100,23 @@ describe('DataStore', function() {
                 expect(function() {
                     ActionCreators.removeSheet(' ');
                 }).toThrow(expectedError);
+
+                expect(storageMock.set).not.toHaveBeenCalled();
+
+                storageMock.set.reset();
             });
         });
     });
 
     describe('Participant', function () {
+
         describe('Creating a participant', function () {
+            const currentSheetId = '2';
+            const sheets = [{ id: '2', participants: []}];
+
+            beforeEach(() => initDataStore(sheets, currentSheetId));
 
             it('should fire a change event after participant is succesfully added', function () {
-
                 var spy = jasmine.createSpy();
 
                 DataStore.addChangeListener(spy);
@@ -153,52 +150,61 @@ describe('DataStore', function() {
         });
 
         describe('Removing a participant', function () {
+            const currentSheetId = '2';
 
             it('should throw when trying to remove non existing participant', function () {
+                const sheets = [{ id: '2', participants: [], expenses: []}];
+                initDataStore(sheets, currentSheetId);
+
                 expect(function() {
                     ActionCreators.removeParticipant({ id: '1' });
                 }).toThrow('Unable to remove entity: Entity with id 1 not found!');
             });
 
             it('should remove a participant with id', function () {
-                var spy = jasmine.createSpy();
+                const sheet = { id: '2', participants: [{ id: '2', name: 'Seppo'}], expenses: []};
+                initDataStore([sheet], currentSheetId);
+
+                const spy = jasmine.createSpy();
                 DataStore.addChangeListener(spy);
 
-                sheets[currentSheetId].participants.push({ id: '2', name: 'Seppo'});
                 ActionCreators.removeParticipant({ id: '2' });
 
                 expect(spy.callCount).toEqual(1);
                 expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_PARTICIPANT_EVENT);
-                expect(sheets[currentSheetId].participants.length).toEqual(0);
+                expect(sheet.participants.length).toEqual(0);
             });
 
             it('should remove all the expenses of the to-be-removed participant', function () {
-                var spy = jasmine.createSpy();
-                var currentSheet = sheets[currentSheetId];
+                const expenses = [
+                    { id: '1', name: 'beer', price: 1, participants: ['1', '2'], payer: '1' },
+                    { id: '2', name: 'sausage', price: 1, participants: ['2'], payer: '1' },
+                    { id: '3', name: 'pizza', price: 1, participants: ['1'], payer: '2' },
+                    { id: '4', name: 'coke', price: 1, participants: ['3'], payer: '1' }
+                ];
+                const sheet = { id: '2', participants: [{ id: '2', name: 'Seppo'}], expenses: expenses};
+                initDataStore([sheet], currentSheetId);
+
+                const spy = jasmine.createSpy();
 
                 DataStore.addChangeListener(spy);
 
-                sheets[currentSheetId].participants.push({ id: 2, name: 'Seppo'});
-                sheets[currentSheetId].expenses.push(
-                    { id: 1, name: 'beer', price: 1, participants: [1, 2], payer: 1 },
-                    { id: 2, name: 'sausage', price: 1, participants: [2], payer: 1 },
-                    { id: 3, name: 'pizza', price: 1, participants: [1], payer: 2 },
-                    { id: 4, name: 'coke', price: 1, participants: [3], payer: 1 }
-                );
-
-                let remainingExpenses = currentSheet.expenses.filter(expense => expense.id === 4);
-
-                ActionCreators.removeParticipant({ id: 2 });
+                ActionCreators.removeParticipant({ id: '2' });
                 expect(spy.callCount).toEqual(1);
-                expect(currentSheet.participants.length).toEqual(0);
-                expect(currentSheet.expenses.length).toEqual(1);
-                expect(remainingExpenses.length).toEqual(1);
+                expect(sheet.participants.length).toEqual(0);
+                expect(sheet.expenses.length).toEqual(1);
+                expect(sheet.expenses[0].id).toEqual('4');
             });
         });
     });
 
     describe('Expense', function () {
         describe('Creating an expense', function () {
+
+            const currentSheetId = '2';
+            const sheets = [{ id: '2', expenses: []}];
+
+            beforeEach(() => initDataStore(sheets, currentSheetId));
 
             it('should fire a change event after expense is succesfully created', function () {
                 var spy = jasmine.createSpy();
@@ -238,9 +244,15 @@ describe('DataStore', function() {
             });
         });
 
-        describe('Removing a participant', function () {
+        describe('Removing an expense', function () {
 
-            it('should throw when trying to remove non existing participant', function () {
+            const currentSheetId = '2';
+            const expense = { id:'2', name: 'food', price: 20, participants: [1,2], payer: 2 };
+            const sheet = { id: '2', expenses: [expense]};
+
+            beforeEach(() => initDataStore([sheet], currentSheetId));
+
+            it('should throw when trying to remove non existing expense', function () {
                 expect(function() {
                     ActionCreators.removeExpense({ id: '1' });
                 }).toThrow('Unable to remove entity: Entity with id 1 not found!');
@@ -248,15 +260,13 @@ describe('DataStore', function() {
 
             it('should remove a participant with id', function () {
                 var spy = jasmine.createSpy();
-                var expense =  { id:'2', name: 'food', price: 20, participants: [1,2], payer: 2 };
                 DataStore.addChangeListener(spy);
 
-                sheets[currentSheetId].expenses.push(expense);
                 ActionCreators.removeExpense(expense);
 
                 expect(spy.callCount).toEqual(1);
                 expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_EXPENSE_EVENT);
-                expect(sheets[currentSheetId].expenses.length).toEqual(0);
+                expect(sheet.expenses.length).toEqual(0);
             });
         });
     });

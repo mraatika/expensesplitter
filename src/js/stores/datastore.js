@@ -25,8 +25,18 @@ function findAndRemove(collection, id) {
     throw new Error(`Unable to remove entity: Entity with id ${id} not found!`);
 }
 
+function modifySheets(sheet, modifierFn) {
+    let sheets = dataStore.getSheets();
+
+    if (_.isFunction(modifierFn)) {
+        sheets = modifierFn.call(null, sheets);
+    }
+
+    dataStore.storage.set('sheets', sheets);
+}
+
 function addSheet(sheetName) {
-    var errors;
+    let errors;
 
     if (!StringUtils.isNonEmptyString(sheetName)) throw new Error('IllegalArgumentsException: sheetName missing or invalid!');
 
@@ -39,7 +49,10 @@ function addSheet(sheetName) {
         return;
     }
 
-    dataStore.storage.set(sheet.id, sheet);
+    modifySheets(sheet, sheets => {
+        sheets.push(sheet);
+        return sheets;
+    });
 
     setActiveSheet(sheet.id);
 
@@ -47,13 +60,15 @@ function addSheet(sheetName) {
 }
 
 function removeSheet(sheetId) {
-    var currentSheetId;
+    let currentSheetId;
 
     if (!StringUtils.isNonEmptyString(sheetId)) throw new Error('IllegalArgumentsException: sheetId is missing or invalid!');
 
     currentSheetId = dataStore.getCurrentSheetId();
 
-    dataStore.storage.remove(sheetId);
+    let sheet = dataStore.getSheet(sheetId);
+
+    modifySheets(sheet, sheets => _.without(sheets, sheet));
 
     if (sheetId === currentSheetId) {
         dataStore.storage.remove('currentSheetId');
@@ -129,13 +144,25 @@ function removeAllExpenses() {
 }
 
 function saveCurrentSheet() {
-    dataStore.storage.set(dataStore.getCurrentSheetId(), dataStore.getCurrentSheet());
+    let sheet = dataStore.getCurrentSheet();
+
+    modifySheets(sheet, sheets => {
+        sheets = _.without(sheets, sheet);
+        sheets.push(sheet);
+        return sheets;
+    });
 }
 
 function setSettings(settings) {
     const sheet = dataStore.getCurrentSheet();
     sheet.settings = settings;
     return sheet;
+}
+
+function setLanguage(langCode) {
+    const globalSettings = dataStore.getSettings() || {};
+    globalSettings.language = langCode;
+    dataStore.storage.set('settings', globalSettings);
 }
 
 var handleDispatcherEvent = function(payload) {
@@ -218,6 +245,14 @@ var handleDispatcherEvent = function(payload) {
             dataStore.emitChange(Constants.EventTypes.SETTINGS_CHANGED_EVENT);
         }
         break;
+
+    case Constants.ActionTypes.SET_LANGUAGE:
+        {
+            let langCode = action.language;
+            setLanguage(langCode);
+            dataStore.emitChange(Constants.EventTypes.LANGUAGE_CHANGED_EVENT);
+        }
+        break;
     }
 
     // save made changes to storage
@@ -241,18 +276,23 @@ class DataStore extends EventEmitter {
     }
 
     getSheets() {
-        return _.chain(this.storage.getAll())
-            .omit('currentSheetId')
-            .toArray()
-            .value();
+        return _.toArray(this.storage.get('sheets'));
+    }
+
+    getSheet(sheetId) {
+        return _.find(this.getSheets(), sheet => sheet.id == sheetId);
     }
 
     getCurrentSheet() {
-        return this.storage.get(this.getCurrentSheetId());
+        return this.getSheet(this.getCurrentSheetId());
     }
 
     getCurrentSheetId() {
         return this.storage.get('currentSheetId');
+    }
+
+    getSettings() {
+        return this.storage.get('settings') || {};
     }
 
     // Allow Controller-View to register itself with store

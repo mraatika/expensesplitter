@@ -69,5 +69,14 @@ module.exports = {
     fonts: {
         src: 'bower_components/font-awesome/fonts/*.*',
         dest: dest + '/fonts'
+    },
+
+    images: {
+        src: 'src/img/*',
+        dest: 'dist/img',
+        settings: {
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}]
+        }
     }
 };
