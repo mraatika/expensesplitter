@@ -5,7 +5,7 @@ import Router from '../router/router';
 import SheetStore from '../stores/sheetstore.js';
 import SettingsStore from '../stores/settingsstore.js';
 import storageFactory from '../factory/storagefactory';
-import LanguagesSection from './header/languagessection.jsx';
+import LanguagesSection from './language/languagessection.jsx';
 import Constants from '../constants/AppConstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
 
@@ -23,7 +23,6 @@ export default class App extends React.Component {
      */
     constructor(props) {
         super(props);
-
         SheetStore.init(storageFactory.create(Constants.SHEET_STORE_NAME));
         SettingsStore.init(storageFactory.create(Constants.SETTINGS_STORE_NAME));
         this._onChange = this._onChange.bind(this);
