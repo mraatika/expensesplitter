@@ -1,5 +1,5 @@
 import React from 'react';
-import DataStore from '../../stores/datastore';
+import SheetStore from '../../stores/sheetstore.js';
 import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import {Navigation} from '../navigation/navigation.jsx';
@@ -25,11 +25,11 @@ export default class ExpensesPage extends React.Component {
     }
 
     componentDidMount() {
-        DataStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
-        DataStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
     }
 
     /**
@@ -38,7 +38,7 @@ export default class ExpensesPage extends React.Component {
      * @return {undefined}
      */
     _onChange() {
-        this.setState({ currentSheet: DataStore.getCurrentSheet() });
+        this.setState({ currentSheet: SheetStore.getCurrentSheet() });
     }
 
     /**

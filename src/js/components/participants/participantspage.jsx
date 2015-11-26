@@ -1,5 +1,5 @@
 import React from 'react';
-import DataStore from '../../stores/datastore';
+import SheetStore from '../../stores/sheetstore.js';
 import pages from '../../constants/pages';
 import ParticipantList from './participantlist.jsx';
 import {ParticipantAddForm} from './participantaddform.jsx';
@@ -27,20 +27,20 @@ export default class ParticipantsPage extends React.Component {
     }
 
     componentDidMount() {
-        DataStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
-        DataStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
     }
 
     /**
-     * Callback for DataStore's events
+     * Callback for SheetStore's events
      * @private
      * @return {undefined}
      */
     _onChange() {
-        this.setState({ currentSheet: DataStore.getCurrentSheet() });
+        this.setState({ currentSheet: SheetStore.getCurrentSheet() });
     }
 
     /**

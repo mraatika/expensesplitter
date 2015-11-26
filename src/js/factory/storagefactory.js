@@ -1,12 +1,9 @@
-'use strict';
-
-import Constants from '../constants/AppConstants';
 import LocalStorageAdapter from '../util/localstorageadapter';
 
 var StorageFactory = {
 
-    create: function() {
-        var storage = new LocalStorageAdapter(Constants.STORE_NAME);
+    create: function(storeName) {
+        var storage = new LocalStorageAdapter(storeName);
         return storage;
     }
 };

@@ -1,7 +1,5 @@
-'use strict';
-
 import React from 'react';
-import DataStore from '../stores/datastore';
+import SheetStore from '../stores/sheetstore.js';
 import renderer from '../util/renderer';
 import TransactionsService from '../service/transactionsservice';
 import ExpensesService from '../service/expensesservice';
@@ -36,21 +34,21 @@ var routes = {
 
     '/participants': function() {
         console.log('page: /participants');
-        var currentSheet = DataStore.getCurrentSheet();
+        var currentSheet = SheetStore.getCurrentSheet();
         var participantsPage = getComponent(ParticipantsPage, { currentSheet: currentSheet });
         renderer.renderContentView(participantsPage);
     },
 
     '/expenses': function() {
         console.log('page: /expenses');
-        var currentSheet = DataStore.getCurrentSheet();
+        var currentSheet = SheetStore.getCurrentSheet();
         var expensesPage = getComponent(ExpensesPage, { currentSheet: currentSheet });
         renderer.renderContentView(expensesPage);
     },
 
     '/transactions': function() {
         console.log('page: /transactions');
-        var currentSheet = DataStore.getCurrentSheet();
+        var currentSheet = SheetStore.getCurrentSheet();
         var transactions = new TransactionsService(currentSheet).calculateTransactions();
         var sharesAndBalances = new ExpensesService(currentSheet).getAllBalancesAndShares();
         var transactionsPage = getComponent(TransactionsPage, {
@@ -63,7 +61,7 @@ var routes = {
 
     '/summary': function() {
         console.log('page: /summary');
-        var currentSheet = DataStore.getCurrentSheet();
+        var currentSheet = SheetStore.getCurrentSheet();
         var sheetSummary = getComponent(SummaryPage, {
             sheet: currentSheet
         });

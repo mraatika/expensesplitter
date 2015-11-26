@@ -1,6 +1,6 @@
 import React from 'react';
-import DataStore from '../../stores/datastore';
-import ActionCreators from '../..//actions/dataactioncreators';
+import SheetStore from '../../stores/sheetstore.js';
+import ActionCreators from '../../actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
@@ -26,11 +26,11 @@ export default class HomePage extends React.Component {
     }
 
     componentDidMount() {
-        DataStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
-        DataStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
     }
 
     /**
@@ -39,8 +39,8 @@ export default class HomePage extends React.Component {
      * @return {object}
      */
     _getDefaultState() {
-        const currentSheet = DataStore.getCurrentSheet();
-        const allSheets = DataStore.getSheets();
+        const currentSheet = SheetStore.getCurrentSheet();
+        const allSheets = SheetStore.getSheets();
 
         return {
             currentSheet: currentSheet,
@@ -49,7 +49,7 @@ export default class HomePage extends React.Component {
     }
 
     /**
-     * Callback for DataStore's change events
+     * Callback for SheetStore's change events
      * @private
      * @param  {EventType} eventType
      * @return {undefined}

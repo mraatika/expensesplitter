@@ -3,8 +3,8 @@ import {EventEmitter} from 'events';
 import Constants from '../constants/AppConstants';
 
 /**
- * Actial dataStore's public API
- * @type {Object}
+ * @class DataStore
+ * @description Base class for Store classes
  * @extends {EventEmitter}
  */
 export default class DataStore extends EventEmitter {
@@ -52,6 +52,9 @@ export default class DataStore extends EventEmitter {
         this.emit(Constants.ErrorEventTypes.ERROR_EVENT, eventType, errors);
     }
 
+    /**
+     * @abstract
+     */
     handleDispatcherEvent() {
         throw new Error('Method _handleDispatcherEvent should be implemented in inheriting class!');
     }

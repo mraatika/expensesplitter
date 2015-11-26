@@ -70,7 +70,7 @@ export default {
 
     setSettings: function (settings) {
         AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.SET_SETTINGS,
+            type: Constants.ActionTypes.SET_SHEET_SETTINGS,
             settings: settings
         });
     },

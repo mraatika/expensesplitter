@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import ExpensesService from '../../service/expensesservice';
-import DataStore from '../../stores/datastore';
+import SheetStore from '../../stores/sheetstore.js';
 import {t} from '../../dictionary/dictionary';
 import Share from './share.jsx';
 import {ShareSummaryRow} from './sharesummaryrow.jsx';
@@ -27,11 +27,11 @@ export default class SharesTable extends React.Component {
     }
 
     componentDidMount() {
-        DataStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
-        DataStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
     }
 
     /**
@@ -52,7 +52,7 @@ export default class SharesTable extends React.Component {
     }
 
     /**
-     * Callback for DataStore's events
+     * Callback for SheetStore's events
      * @private
      * @return {undefined}
      */

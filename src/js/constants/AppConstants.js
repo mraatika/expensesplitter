@@ -1,6 +1,7 @@
 export default {
 
-    STORE_NAME: 'expensesplitter',
+    SHEET_STORE_NAME: 'expensesplitter-sheets',
+    SETTINGS_STORE_NAME: 'expensesplitter-settings',
 
     ErrorEventTypes: {
         ADD_PARTICIPANT: Symbol(),
@@ -31,7 +32,7 @@ export default {
         REMOVE_ALL_EXPENSES: Symbol(),
         REMOVE_SHEET: Symbol(),
         SET_ACTIVE_SHEET: Symbol(),
-        SET_SETTINGS: Symbol(),
+        SET_SHEET_SETTINGS: Symbol(),
         SET_LANGUAGE: Symbol()
     },
 
