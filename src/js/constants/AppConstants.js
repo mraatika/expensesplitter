@@ -1,6 +1,6 @@
 export default {
 
-    STORE_NAME: 'expensesplitter-sheets',
+    STORE_NAME: 'expensesplitter',
 
     ErrorEventTypes: {
         ADD_PARTICIPANT: Symbol(),
@@ -18,7 +18,8 @@ export default {
         REMOVE_PARTICIPANT_EVENT: Symbol(),
         REMOVE_SHEET_EVENT: Symbol(),
         SET_ACTIVE_SHEET_EVENT: Symbol(),
-        SETTINGS_CHANGED_EVENT: Symbol()
+        SETTINGS_CHANGED_EVENT: Symbol(),
+        LANGUAGE_CHANGED_EVENT: Symbol()
     },
 
     ActionTypes: {
@@ -30,11 +31,17 @@ export default {
         REMOVE_ALL_EXPENSES: Symbol(),
         REMOVE_SHEET: Symbol(),
         SET_ACTIVE_SHEET: Symbol(),
-        SET_SETTINGS: Symbol()
+        SET_SETTINGS: Symbol(),
+        SET_LANGUAGE: Symbol()
     },
 
     ActionSources: {
         SERVER_ACTION: Symbol(),
         VIEW_ACTION: Symbol()
+    },
+
+    Languages: {
+        FI: 'fi',
+        EN: 'en'
     }
 };

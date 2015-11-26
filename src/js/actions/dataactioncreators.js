@@ -73,5 +73,12 @@ export default {
             type: Constants.ActionTypes.SET_SETTINGS,
             settings: settings
         });
+    },
+
+    setLanguage: function(langCode) {
+        AppDispatcher.handleViewAction({
+            type: Constants.ActionTypes.SET_LANGUAGE,
+            language: langCode
+        });
     }
 };

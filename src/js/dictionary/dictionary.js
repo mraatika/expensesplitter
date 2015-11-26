@@ -1,17 +1,20 @@
-import english from './en.json';
+import english from './languages/en.json';
+import finnish from './languages/fi.json';
 
-/**
- * Dictionary to be used
- * @type {object}
- */
-export const lang = english;
+const languages = {
+    en: english,
+    fi: finnish
+};
+
+let currentLanguage= languages.en;
+
 /**
  * Translate function
  * @param  {string} key Translation key
  * @return {string}     translated value
  */
 export const t = (key) => {
-    var str = lang[key] || null;
+    var str = currentLanguage[key] || null;
 
     if (str == null) {
         console.error(`Translation not found for ${key}`);
@@ -19,4 +22,8 @@ export const t = (key) => {
     }
 
     return str;
+};
+
+export const setLanguage = langCode => {
+    currentLanguage = languages[langCode];
 };
