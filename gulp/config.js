@@ -63,7 +63,24 @@ module.exports = {
 
     watch: {
         src: ['src/**/*.*', '!src/js/__tests__/**/*.*'],
-        tasks: ['build']
+        watchers: [
+            {
+                src: ['src/js/**/*.{js,jsx}', '!src/js/__tests__/**/*.*'],
+                tasks: ['browserify']
+            },
+            {
+                src: 'src/styles/**/*.{sass,scss,css}',
+                tasks: ['styles']
+            },
+            {
+                src: 'src/**/*.html',
+                tasks: ['html']
+            },
+            {
+                src: 'src/img/**/*.*',
+                tasks: ['images']
+            }
+        ]
     },
 
     fonts: {
