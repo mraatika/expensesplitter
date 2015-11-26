@@ -1,16 +1,12 @@
 import React from 'react';
-import page from 'page';
-import _ from 'lodash';
-import Settings from './settings.jsx';
 import DataStore from '../../stores/datastore';
-import ActionCreator from '../..//actions/dataactioncreators';
+import ActionCreators from '../..//actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
-import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import {MessageContainer} from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
-import InputButtonSplit from '../common/inputbuttonsplit.jsx';
+import SheetForm from './sheetform.jsx';
 
 /**
  * @class Homepage
@@ -48,7 +44,6 @@ export default class HomePage extends React.Component {
 
         return {
             currentSheet: currentSheet,
-            currentSheetName: (currentSheet || {}).name,
             sheets: allSheets
         };
     }
@@ -66,35 +61,7 @@ export default class HomePage extends React.Component {
 
         if (eventType === Constants.EventTypes.SET_ACTIVE_SHEET_EVENT) {
             this.refs.loadSheetDialog.close();
-            // @FIXME: without delaying the page transition modal's _onHide
-            // is not called leaving window resize listeners active
-            //this._moveToParticipantsPage();
         }
-    }
-
-    _editCurrentSheetAndContinue() {
-        // move to participants section
-        if (this.state.currentSheet) this._moveToParticipantsPage();
-    }
-
-    _moveToParticipantsPage() {
-        _.defer(() => page(pages.PARTICIPANTS.href));
-    }
-
-    _addSheet() {
-        var sheetName = this.state.currentSheetName;
-        if (sheetName) ActionCreator.addSheet(sheetName);
-    }
-
-    _handleFormSubmit(e) {
-        e.preventDefault();
-
-        if (this.state.currentSheet) {
-            this._editCurrentSheetAndContinue();
-            return;
-        }
-
-        this._addSheet();
     }
 
     _handleLoadSheetClick(e) {
@@ -106,36 +73,23 @@ export default class HomePage extends React.Component {
         this.refs.removeSheetConfirmationDialog.open();
     }
 
-    _handleAddSheetClick() {
-        var self = this;
-
+    _onSheetRemovalConfirmed() {
         if (this.state.currentSheet) {
-            this.setState({
-                currentSheet: null,
-                currentSheetName: null
-            }, function() {
-                self.refs.infoMessageContainer.open();
-                self.refs.sheetNameInput.focus();
+            ActionCreators.removeSheet(this.state.currentSheet.id);
+        }
+    }
+
+    _handleAddSheetClick() {
+        if (this.state.currentSheet) {
+            this.setState({ currentSheet: null }, () => {
+                this.refs.infoMessageContainer.open();
+                this._sheetForm.sheetNameInput.focus();
             });
         }
-
-    }
-
-    _handleCurrentSheetNameChange(e) {
-        this.setState({ currentSheetName: e.target.value });
-    }
-
-    _onSheetRemovalConfirmed() {
-        if (this.state.currentSheet) ActionCreator.removeSheet(this.state.currentSheet.id);
-    }
-
-    _handleSettingsClick() {
-        this._settings.toggle();
-        this.setState({ isSettingsActive: !this.state.isSettingsActive });
     }
 
     render() {
-        const {currentSheet, currentSheetName} = this.state;
+        const {currentSheet} = this.state;
 
         return (
             <section id="home-page">
@@ -150,57 +104,7 @@ export default class HomePage extends React.Component {
                     <a href="/" onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</a>.
                 </MessageContainer>
 
-                <form onSubmit={this._handleFormSubmit.bind(this)}>
-                    <div className="row">
-                        <div className="two columns">
-                            <label htmlFor="sheet-name">
-                            { t( this.state.currentSheet ? 'lang.current_sheet' : 'home.name_your_sheet') }:
-                            </label>
-                        </div>
-
-                        <div className="ten columns">
-                            <InputButtonSplit>
-                                <input
-                                    id="sheet-name"
-                                    required
-                                    autoFocus={true}
-                                    ref="sheetNameInput"
-                                    type="text"
-                                    placeholder={ t('home.sheet_name_placeholder') + '...' }
-                                    value={currentSheetName}
-                                    disabled={currentSheet}
-                                    onChange={this._handleCurrentSheetNameChange.bind(this)} />
-                                <button
-                                    className={'settings-button' + (this.state.isSettingsActive ? ' active' : '')}
-                                    type="button"
-                                    disabled={!currentSheet}
-                                    aria-label={ t('settings.toggle_settings') }
-                                    onClick={this._handleSettingsClick.bind(this)}>
-                                    <i className="fa fa-gear fa-fw fa-2x"/>
-                                </button>
-                            </InputButtonSplit>
-                        </div>
-                    </div>
-                    {
-                        (() => {
-                            if (this.state.currentSheet) {
-                                return <Settings
-                                    ref={c => this._settings = c}
-                                    sheet={currentSheet}/>;
-                            }
-                        })()
-                    }
-                    <button
-                        type="submit"
-                        className="button-primary u-full-width"
-                        required={true}>
-                        { t(currentSheet ? 'home.button.edit' : 'home.button.add') }
-                        &nbsp;
-                        <i
-                            style={!currentSheet ? { display: 'none' } : {}}
-                            className="fa fa-angle-double-right" />
-                    </button>
-                </form>
+                <SheetForm ref={c => this._sheetForm = c } currentSheet={currentSheet} />
 
                 <div className="row">
                     <div className="four columns">

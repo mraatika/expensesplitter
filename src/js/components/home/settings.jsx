@@ -103,7 +103,7 @@ export default class Settings extends React.Component {
     _getSettingsSection() {
         const {newSettings, isSaved} = this.state;
 
-        return <section>
+        return <section id="sheet-settings">
             <label htmlFor="settings-currency">
                 { t('settings.currency_symbol') }:
             </label>

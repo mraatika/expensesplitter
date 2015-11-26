@@ -1,4 +1,4 @@
-jest.autoMockOff();
+jest.dontMock('../../../components/home/sheet.jsx');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
