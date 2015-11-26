@@ -36,6 +36,9 @@
         "experimentalObjectRestSpread": true,
         "modules": true
     },
+    "globals": {
+        "require": true
+    },
     "plugins": [
         "react"
     ]

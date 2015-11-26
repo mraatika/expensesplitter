@@ -96,6 +96,16 @@ option.current {
     color: #888;
 }
 
+.flag {
+    width: 16px;
+    height: 11px;
+    background:url('../img/flags.png') no-repeat;
+    display: inline-block;
+
+    &.fi { background-position: -16px 0 }
+    &.en { background-position: 0 -11px }
+}
+
 /**
  * Splitted input/button
  */
@@ -203,4 +213,14 @@ option.current {
 nav a.button:hover {
     color: $color-link-hover;
     border-color: $color-link-hover;
+}
+
+/**
+ * Footer
+ */
+footer {
+    .flag {
+        margin-right: .4rem;
+        cursor: pointer;
+    }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import page from 'page';
 import {name as appName, version} from '../../../package.json';
 import Router from '../router/router';
 import SheetStore from '../stores/sheetstore.js';
@@ -8,11 +9,25 @@ import LanguagesSection from './header/languagessection.jsx';
 import Constants from '../constants/AppConstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
 
+/**
+ * @class App
+ * @description Main component for ExpenseSplitter
+ * @extends {ReactComponent}
+ */
 export default class App extends React.Component {
 
-    componentWillMount() {
+    /**
+     * @constructor
+     * @param  {object} props
+     * @return {App}
+     */
+    constructor(props) {
+        super(props);
+
         SheetStore.init(storageFactory.create(Constants.SHEET_STORE_NAME));
         SettingsStore.init(storageFactory.create(Constants.SETTINGS_STORE_NAME));
+        this._onChange = this._onChange.bind(this);
+        this._setInitialLanguage();
     }
 
     componentDidMount() {
@@ -24,12 +39,35 @@ export default class App extends React.Component {
         SettingsStore.removeChangeListener(this._onChange);
     }
 
+    /**
+     * Change listener for the settings store
+     * @param  {Symbol} eventType
+     * @return {undefined}
+     */
     _onChange(eventType) {
         if (eventType == Constants.EventTypes.LANGUAGE_CHANGED_EVENT) {
             setLanguage(SettingsStore.getSettings().language);
+            // reload route to completely rerender the page
+            page(Router.getCurrentRoute());
         }
     }
 
+    /**
+     * Load saved language and set it to dictionary
+     * @private
+     * @return {undefined}
+     */
+    _setInitialLanguage() {
+        const currentLanguage = SettingsStore.getSettings().language;
+
+        if (currentLanguage) {
+            setLanguage(currentLanguage);
+        }
+    }
+
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         return (
             <div id="app-wrapper" className="container">
@@ -41,7 +79,7 @@ export default class App extends React.Component {
 
                 <footer role="contentinfo" className="text-right">
                     <div className="u-pull-left">
-                        <LanguagesSection/>
+                        <LanguagesSection />
                     </div>
                     <small className="u-pull-right">{ `${appName} v${version}` }</small>
                 </footer>

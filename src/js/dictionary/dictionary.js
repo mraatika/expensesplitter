@@ -1,12 +1,7 @@
-import english from './languages/en.json';
-import finnish from './languages/fi.json';
+import languages from './languages.js';
 
-const languages = {
-    en: english,
-    fi: finnish
-};
-
-let currentLanguage= languages.en;
+// default language is english
+let currentLanguage = languages.en;
 
 /**
  * Translate function
