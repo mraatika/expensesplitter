@@ -1,0 +1,9 @@
+const gulp = require('gulp');
+const imagemin = require('gulp-imagemin');
+var config = require('../config').images;
+
+gulp.task('images', () => {
+    return gulp.src(config.src)
+        .pipe(imagemin(config.settings))
+        .pipe(gulp.dest(config.dest));
+});
