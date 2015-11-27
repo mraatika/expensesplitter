@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import page from 'page';
+import pages from '../constants/pages.js';
 import routes from './routes.jsx';
 
 var _currentRoute = null;
@@ -28,6 +29,35 @@ class Router {
     }
 
     /**
+     * Navigate to next page. Next page is defined in pages config.
+     * @return {undefined}
+     */
+    next() {
+        if (_currentRoute && _currentRoute.next) {
+            this.navigateTo(pages[_currentRoute.next].href);
+        }
+    }
+
+    /**
+     * Navigate to previous page. Previous page is defined in pages config.
+     * @return {undefined}
+     */
+    prev() {
+        if (_currentRoute && _currentRoute.prev) {
+            this.navigateTo(pages[_currentRoute.prev].href);
+        }
+    }
+
+    /**
+     * Navigate to given path
+     * @param  {string} path
+     * @return {undefined}
+     */
+    navigateTo(path) {
+        page(path);
+    }
+
+    /**
      * Register all routes defined in routes.jsx
      * @return {undefined}
      */
@@ -50,7 +80,7 @@ class Router {
      * @return {undefined}
      */
     _onRouteChange(callback, route) {
-        _currentRoute = route;
+        _currentRoute = _.find(pages, page => page.href === route);
         callback();
     }
 

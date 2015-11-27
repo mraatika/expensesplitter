@@ -1,5 +1,4 @@
 import React from 'react';
-import page from 'page';
 import {name as appName, version} from '../../../package.json';
 import Router from '../router/router';
 import SheetStore from '../stores/sheetstore.js';
@@ -47,7 +46,7 @@ export default class App extends React.Component {
         if (eventType == Constants.EventTypes.LANGUAGE_CHANGED_EVENT) {
             setLanguage(SettingsStore.getSettings().language);
             // reload route to completely rerender the page
-            page(Router.getCurrentRoute());
+            Router.navigateTo(Router.getCurrentRoute().href);
         }
     }
 
@@ -75,6 +74,8 @@ export default class App extends React.Component {
                 </header>
 
                 <main role="main" id="content"></main>
+
+
 
                 <footer role="contentinfo" className="text-right">
                     <div className="u-pull-left">

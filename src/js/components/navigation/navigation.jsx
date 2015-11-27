@@ -1,7 +1,6 @@
-'use strict';
-
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
+import pages from '../../constants/pages.js';
 import {NavigationSelect} from './navigationselect.jsx';
 
 /**
@@ -12,19 +11,22 @@ import {NavigationSelect} from './navigationselect.jsx';
 export class Navigation extends React.Component {
 
     render() {
-        let nextLink = '';
+        const {currentPage} = this.props;
+        const nextPage = pages[currentPage.next];
+        const prevPage = pages[currentPage.prev];
         let prevLink = '';
+        let nextLink = '';
 
-        if (this.props.prev) {
-            prevLink = <a href={this.props.prev.href} className="button u-full-width">
+        if (prevPage) {
+            prevLink = <a href={prevPage.href} className="button u-full-width">
                 <i className="fa fa-angle-double-left"></i>&nbsp;
-                {t (this.props.prev.label) }
+                {t (prevPage.label) }
             </a>;
         }
 
-        if (this.props.next) {
-            nextLink = <a href={this.props.next.href} className="button u-full-width">
-                { t(this.props.next.label) }&nbsp;
+        if (nextPage) {
+            nextLink = <a href={nextPage.href} className="button u-full-width">
+                { t(nextPage.label) }&nbsp;
                 <i className="fa fa-angle-double-right"></i>
             </a>;
         }
@@ -38,7 +40,7 @@ export class Navigation extends React.Component {
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="four columns">
-                        <NavigationSelect className="u-full-width" />
+                        <NavigationSelect className="u-full-width" currentPage={currentPage}/>
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="three columns">

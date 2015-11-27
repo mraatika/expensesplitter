@@ -72,9 +72,8 @@ export default class ExpensesPage extends React.Component {
                         currencySymbol={sheet.settings.currencySymbol}/>
                 </section>
 
-                <Navigation
-                    prev={pages.PARTICIPANTS}
-                    next={pages.TRANSACTIONS} />
+                <Navigation currentPage={pages.EXPENSES} />
+
             </section>
         );
     }

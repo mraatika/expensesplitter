@@ -41,7 +41,7 @@ export default class SheetSummary extends React.Component {
                     {t('summary.preview_created')} { DateUtils.format(new Date(), t('app.locales.date_format')) }
                 </div>
 
-                <Navigation prev={pages.TRANSACTIONS}/>
+                <Navigation currentPage={pages.SUMMARY} />
             </div>
         );
     }

@@ -34,9 +34,8 @@ export class TransactionsPage extends React.Component {
                     expenses={expenses}
                     settings={sheet.settings}/>
 
-                <Navigation
-                    prev={pages.EXPENSES}
-                    next={pages.SUMMARY} />
+                <Navigation currentPage={pages.TRANSACTIONS} />
+
             </section>
         );
     }

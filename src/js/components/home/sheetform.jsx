@@ -1,5 +1,5 @@
 import React from 'react';
-import page from 'page';
+import Router from '../../router/router.js';
 import {t} from '../../dictionary/dictionary.js';
 import ActionCreators from '../../actions/dataactioncreators';
 import pages from '../../constants/pages';
@@ -55,7 +55,7 @@ export default class SheetForm extends React.Component {
      */
     _continueWithCurrentSheet() {
         // move to participants section
-        if (this.props.currentSheet) page(pages.PARTICIPANTS.href);
+        if (this.props.currentSheet) Router.navigateTo(pages.PARTICIPANTS.href);
     }
 
     /**

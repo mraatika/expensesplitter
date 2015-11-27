@@ -1,9 +1,8 @@
 import React from 'react';
-import page from 'page';
+import Router from '../../router/router.js';
 import pages from '../../constants/pages';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
-import Router from '../../router/router';
 
 /**
  * @class NavigationSelect
@@ -20,7 +19,7 @@ export class NavigationSelect extends React.Component {
     _onChange() {
         const link = this._select.options[this._select.selectedIndex].value;
         // defer to allow the pending update to be completed
-        _.defer(() => page(link));
+        _.defer(() => Router.navigateTo(link));
     }
 
     /**
@@ -28,7 +27,7 @@ export class NavigationSelect extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const currentRoute = Router.getCurrentRoute();
+        const {href:currentRoute} = this.props.currentPage;
         const navigablePages = _.pick(pages, page => page.displayInNavigation);
 
         return (

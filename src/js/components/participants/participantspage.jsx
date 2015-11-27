@@ -85,9 +85,8 @@ export default class ParticipantsPage extends React.Component {
                     sheet={sheet}
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm participants={sheet.participants} />
-                <Navigation
-                    prev={pages.HOME}
-                    next={pages.EXPENSES} />
+
+                <Navigation currentPage={pages.PARTICIPANTS} />
 
                 <RemovalConfirmationDialog
                     ref={c => this._removeConfirmationDialog = c}
