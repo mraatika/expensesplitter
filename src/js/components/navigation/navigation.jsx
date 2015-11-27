@@ -30,17 +30,29 @@ export class Navigation extends React.Component {
         }
 
         return (
-            <nav role="navigation" className="row">
-                <div className="three columns">
-                    { prevLink }
+            <nav role="navigation">
+                { /* display desktop sized screens only */}
+                <div className="row desktop-only">
+                    <div className="three columns">
+                        { prevLink }
+                    </div>
+                    <div className="one column">&nbsp;</div>
+                    <div className="four columns">
+                        <NavigationSelect className="u-full-width" />
+                    </div>
+                    <div className="one column">&nbsp;</div>
+                    <div className="three columns">
+                        { nextLink }
+                    </div>
                 </div>
-                <div className="one column">&nbsp;</div>
-                <div className="four columns">
-                    <NavigationSelect className="u-full-width" />
-                </div>
-                <div className="one column">&nbsp;</div>
-                <div className="three columns">
-                    { nextLink }
+                { /* display on screens smaller than desktop */}
+                <div className="row no-desktop">
+                    <div className="six columns">
+                        { prevLink }
+                    </div>
+                    <div className="six columns">
+                        { nextLink }
+                    </div>
                 </div>
             </nav>
         );
