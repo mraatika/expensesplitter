@@ -1,5 +1,5 @@
 import React from 'react';
-import {TrashButton} from '../common/trashbutton.jsx';
+import TrashButton from '../common/trashbutton.jsx';
 
 export default class Participant extends React.Component {
     render() {

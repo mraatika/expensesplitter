@@ -1,9 +1,7 @@
-'use strict';
-
 import _ from 'lodash';
 import React from 'react';
 import ActionCreator from '../../actions/dataactioncreators';
-import {TrashButton} from '../common/trashbutton.jsx';
+import TrashButton from '../common/trashbutton.jsx';
 import {NumberUtils} from '../../util/utils';
 
 /**
@@ -11,7 +9,7 @@ import {NumberUtils} from '../../util/utils';
  * @description A table row element to display details of an expense
  * @extends React.Component
  */
-export class Expense extends React.Component {
+export default class Expense extends React.Component {
 
     /**
      * Callback for the remove button

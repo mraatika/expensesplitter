@@ -7,7 +7,7 @@ import {t} from '../../dictionary/dictionary';
  * @description Icon only button with a trash icon
  * @extends React.Component
  */
-export class TrashButton extends React.Component {
+export default class TrashButton extends React.Component {
 
     render() {
         const iconClassName = classNames(

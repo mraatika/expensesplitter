@@ -1,14 +1,14 @@
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import pages from '../../constants/pages.js';
-import {NavigationSelect} from './navigationselect.jsx';
+import NavigationSelect from './navigationselect.jsx';
 
 /**
  * @class Navigation
  * @description Navigation component for pages
  * @extends {React.Component}
  */
-export class Navigation extends React.Component {
+export default class Navigation extends React.Component {
 
     render() {
         const {currentPage} = this.props;

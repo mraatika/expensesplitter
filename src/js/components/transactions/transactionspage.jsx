@@ -2,7 +2,7 @@ import React from 'react';
 import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import TransactionsList from './transactionslist.jsx';
-import {Navigation} from '../navigation/navigation.jsx';
+import Navigation from '../navigation/navigation.jsx';
 import ParticipantSummaryList from '../shares/participantsummarylist.jsx';
 
 /**
@@ -10,7 +10,7 @@ import ParticipantSummaryList from '../shares/participantsummarylist.jsx';
  * @description Page displaying transactions
  * @extends {ReactComponent}
  */
-export class TransactionsPage extends React.Component {
+export default class TransactionsPage extends React.Component {
 
     /**
      * @return {ReactComponent}

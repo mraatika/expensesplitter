@@ -9,7 +9,7 @@ import {t} from '../../dictionary/dictionary';
  * @description A select input used to navigate directly to a page
  * @extends {React.Component}
  */
-export class NavigationSelect extends React.Component {
+export default class NavigationSelect extends React.Component {
 
     /**
      * Navigate to selected page

@@ -2,9 +2,9 @@ import React from 'react';
 import ActionCreator from '../../actions/dataactioncreators';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
-import {MessageContainer} from '../common/messagecontainer.jsx';
+import MessageContainer from '../common/messagecontainer.jsx';
 
-export class ParticipantAddForm extends React.Component {
+export default class ParticipantAddForm extends React.Component {
 
     constructor() {
         super();

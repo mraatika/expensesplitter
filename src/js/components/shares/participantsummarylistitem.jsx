@@ -1,7 +1,7 @@
 import React from 'react';
 import {Panel} from 'react-bootstrap';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
-import {ExpenseList} from '../expenses/expenselist.jsx';
+import ExpenseList from '../expenses/expenselist.jsx';
 
 /**
  * @class ParticipantSummaryListItem

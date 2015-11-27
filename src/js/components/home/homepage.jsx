@@ -4,7 +4,7 @@ import ActionCreators from '../../actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
-import {MessageContainer} from '../common/messagecontainer.jsx';
+import MessageContainer from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 import SheetForm from './sheetform.jsx';
 

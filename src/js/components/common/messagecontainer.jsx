@@ -6,7 +6,7 @@ import {t} from '../../dictionary/dictionary';
  * @description A togglable container to display messages with styling chosen by type
  * @extends React.Component
  */
-export class MessageContainer extends React.Component {
+export default class MessageContainer extends React.Component {
 
     /**
      * @constructor

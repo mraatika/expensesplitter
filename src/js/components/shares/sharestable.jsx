@@ -4,7 +4,7 @@ import ExpensesService from '../../service/expensesservice';
 import SheetStore from '../../stores/sheetstore.js';
 import {t} from '../../dictionary/dictionary';
 import Share from './share.jsx';
-import {ShareSummaryRow} from './sharesummaryrow.jsx';
+import ShareSummaryRow from './sharesummaryrow.jsx';
 
 /**
  * @class SharesTable

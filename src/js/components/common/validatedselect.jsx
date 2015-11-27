@@ -1,13 +1,13 @@
 import React from 'react';
 import _ from 'lodash';
-import {ValidatedInput} from './validatedinput.jsx';
+import ValidatedInput from './validatedinput.jsx';
 
 /**
  * @class ValidatedSelect
  * @description A select element that's validated against a schema
  * @extends ValidatedInput
  */
-export class ValidatedSelect extends ValidatedInput {
+export default class ValidatedSelect extends ValidatedInput {
     /**
      * Callback for the select's change/blur/etc. event
      * @private

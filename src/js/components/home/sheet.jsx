@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import ActionCreators from '../../actions/dataactioncreators';
-import {TrashButton} from '../common/trashbutton.jsx';
+import TrashButton from '../common/trashbutton.jsx';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
 

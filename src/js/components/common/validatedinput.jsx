@@ -7,7 +7,7 @@ import classNames from 'classnames';
  * @description An input field that is validated against a schema
  * @extends {React.Component}
  */
-export class ValidatedInput extends React.Component {
+export default class ValidatedInput extends React.Component {
 
     /**
      * @constructor

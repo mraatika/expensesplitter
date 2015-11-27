@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import Q from 'kew';
 import {t} from '../../dictionary/dictionary';
-import {ModalDialog} from '../common/modaldialog.jsx';
+import ModalDialog from '../common/modaldialog.jsx';
 
 /**
  * @class RemovalConfirmationDialog

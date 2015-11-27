@@ -1,7 +1,7 @@
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import SheetsList from './sheetslist.jsx';
-import {ModalDialog} from '../common/modaldialog.jsx';
+import ModalDialog from '../common/modaldialog.jsx';
 import ActionCreators from '../..//actions/dataactioncreators';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 

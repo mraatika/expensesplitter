@@ -1,5 +1,5 @@
 import React from 'react';
-import {Expense} from './expense.jsx';
+import Expense from './expense.jsx';
 import ExpenseSummaryRow from './expensesummaryrow.jsx';
 import {t} from '../../dictionary/dictionary';
 
@@ -9,7 +9,7 @@ import {t} from '../../dictionary/dictionary';
  * expenses added to the current sheet
  * @extends {ReactComponent}
  */
-export class ExpenseList extends React.Component {
+export default class ExpenseList extends React.Component {
 
     /**
      * @return {ReactComponent}

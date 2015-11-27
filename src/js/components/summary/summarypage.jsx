@@ -1,11 +1,11 @@
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
-import {ExpenseList} from '../expenses/expenselist.jsx';
+import ExpenseList from '../expenses/expenselist.jsx';
 import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
 import pages from '../../constants/pages';
-import {Navigation} from '../navigation/navigation.jsx';
+import Navigation from '../navigation/navigation.jsx';
 import {DateUtils} from '../../util/utils.js';
 
 export default class SheetSummary extends React.Component {

@@ -10,7 +10,7 @@ import {Modal} from 'react-bootstrap';
  * @description Wrapper for react-bootstrap's modal component
  * @extends {ReactComponent}
  */
-export class ModalDialog extends React.Component {
+export default class ModalDialog extends React.Component {
 
     /**
      * @constructor
