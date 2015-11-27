@@ -25,7 +25,7 @@ function addSheet(sheetName) {
 
     if (!StringUtils.isNonEmptyString(sheetName)) throw new Error('IllegalArgumentsException: sheetName missing or invalid!');
 
-    const sheet = Object.freeze(sheetFactory.create(sheetName));
+    const sheet = sheetFactory.create(sheetName);
 
     errors = validation.validate(sheet, Schema.Sheet);
 
@@ -128,7 +128,7 @@ function saveCurrentSheet() {
 }
 
 function setSettings(settings) {
-    const sheet = sheetStore.getCurrentSheet();
+    let sheet = sheetStore.getCurrentSheet();
     sheet.settings = settings;
     return sheet;
 }
