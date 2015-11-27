@@ -16,7 +16,6 @@ class Router {
      * @return {Router}
      */
     constructor() {
-        console.log('Router init called');
         this.setUpRoutes();
     }
 

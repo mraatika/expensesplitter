@@ -27,27 +27,23 @@ var getComponent = function(Component, data) {
 var routes = {
 
     '/': function() {
-        console.log('page: /');
         var homePage = getComponent(HomePage);
         renderer.renderContentView(homePage);
     },
 
     '/participants': function() {
-        console.log('page: /participants');
         var currentSheet = SheetStore.getCurrentSheet();
         var participantsPage = getComponent(ParticipantsPage, { currentSheet: currentSheet });
         renderer.renderContentView(participantsPage);
     },
 
     '/expenses': function() {
-        console.log('page: /expenses');
         var currentSheet = SheetStore.getCurrentSheet();
         var expensesPage = getComponent(ExpensesPage, { currentSheet: currentSheet });
         renderer.renderContentView(expensesPage);
     },
 
     '/transactions': function() {
-        console.log('page: /transactions');
         var currentSheet = SheetStore.getCurrentSheet();
         var transactions = new TransactionsService(currentSheet).calculateTransactions();
         var sharesAndBalances = new ExpensesService(currentSheet).getAllBalancesAndShares();
@@ -60,7 +56,6 @@ var routes = {
     },
 
     '/summary': function() {
-        console.log('page: /summary');
         var currentSheet = SheetStore.getCurrentSheet();
         var sheetSummary = getComponent(SummaryPage, {
             sheet: currentSheet
