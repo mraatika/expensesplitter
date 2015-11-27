@@ -2,6 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import ActionCreators from '../../actions/dataactioncreators';
 import {TrashButton} from '../common/trashbutton.jsx';
+import {DateUtils} from '../../util/utils.js';
+import {t} from '../../dictionary/dictionary.js';
 
 export default class Sheet extends React.Component {
 
@@ -29,11 +31,9 @@ export default class Sheet extends React.Component {
                             className={iconClassName}
                             aria-hidden={!isCurrentSheet} />
                     </div>
-                    <div className="five columns">
-                        <span className="sheet-list-date">{sheet.createdOn.toLocaleString()}</span>
-                    </div>
-                    <div className="two columns text-center">
-                        <TrashButton onClick={this._handleRemoveClick.bind(this)}/>
+                    <div className="seven columns">
+                        <span className="sheet-list-date">{DateUtils.format(sheet.createdOn, t('app.locales.date_format'))}</span>
+                        <TrashButton className="u-pull-right" onClick={this._handleRemoveClick.bind(this)}/>
                     </div>
                 </div>
             </li>
