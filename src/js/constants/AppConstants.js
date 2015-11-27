@@ -42,7 +42,7 @@ export default {
     },
 
     Languages: {
-        FI: 'fi',
-        EN: 'en'
+        EN: 'en',
+        FI: 'fi'
     }
 };
