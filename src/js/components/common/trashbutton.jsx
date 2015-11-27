@@ -1,6 +1,5 @@
-'use strict';
-
 import React from 'react';
+import classNames from 'classnames';
 import {t} from '../../dictionary/dictionary';
 
 /**
@@ -11,9 +10,14 @@ import {t} from '../../dictionary/dictionary';
 export class TrashButton extends React.Component {
 
     render() {
+        const iconClassName = classNames(
+            this.props.className,
+            ['fa', 'fa-trash-o', 'fa-lg', 'fa-fw', 'icon-button']
+        );
+
         return (
             <i
-                className="fa fa-trash-o fa-lg fa-fw icon-button"
+                className={iconClassName}
                 aria-role="button"
                 aria-label={ t('lang.remove') }
                 title={ t('lang.remove') }
@@ -24,4 +28,8 @@ export class TrashButton extends React.Component {
 
 TrashButton.defaultProps = {
     onClick: () => {}
+};
+
+TrashButton.propTypes = {
+    onClick: React.PropTypes.func
 };
