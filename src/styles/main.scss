@@ -240,12 +240,13 @@ footer {
     }
 }
 
-@media (#{$bp-smaller-than-tablet}) {
-
+@media (#{$bp-smaller-than-phablet}) {
     .no-mobile {
         display: none;
     }
+}
 
+@media (#{$bp-smaller-than-tablet}) {
     .modal-dialog .button-container button {
         width: 100%;
     }
