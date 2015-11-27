@@ -1,4 +1,5 @@
 import React from 'react';
+import Swipeable from 'react-swipeable';
 import {name as appName, version} from '../../../package.json';
 import Router from '../router/router';
 import SheetStore from '../stores/sheetstore.js';
@@ -68,22 +69,27 @@ export default class App extends React.Component {
      */
     render() {
         return (
-            <div id="app-wrapper" className="container">
-                <header role="banner">
-                    <h1><a href="/">{ appName }</a></h1>
-                </header>
+            <Swipeable
+                onSwipedRight={() => Router.prev()}
+                onSwipedLeft={() => Router.next()}>
 
-                <main role="main" id="content"></main>
+                <div id="app-wrapper" className="container">
+                    <header role="banner">
+                        <h1><a href="/">{ appName }</a></h1>
+                    </header>
+
+                    <main role="main" id="content"></main>
 
 
 
-                <footer role="contentinfo" className="text-right">
-                    <div className="u-pull-left">
-                        <LanguagesSection />
-                    </div>
-                    <small className="u-pull-right">{ `${appName} v${version}` }</small>
-                </footer>
-            </div>
+                    <footer role="contentinfo" className="text-right">
+                        <div className="u-pull-left">
+                            <LanguagesSection />
+                        </div>
+                        <small className="u-pull-right">{ `${appName} v${version}` }</small>
+                    </footer>
+                </div>
+            </Swipeable>
         );
     }
 }

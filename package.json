@@ -81,6 +81,7 @@
     "react": "^0.14.0",
     "react-bootstrap": "^0.28.1",
     "react-cond": "^0.3.0",
-    "react-dom": "^0.14.0"
+    "react-dom": "^0.14.0",
+    "react-swipeable": "^3.0.2"
   }
 }
