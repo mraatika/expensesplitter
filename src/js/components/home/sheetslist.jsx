@@ -17,7 +17,7 @@ export default class SheetsList extends React.Component {
 
         return (
             <ul className="list-selectable">
-                <li className="list-header row">
+                <li className="list-header row no-mobile">
                     <div className="five columns">
                         {t('home.sheet_name')}:
                     </div>
