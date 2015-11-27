@@ -24,11 +24,11 @@ function bundle() {
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source(config.outputName))
     .pipe(buffer())
-    .pipe(sourcemaps.init(config.sourcemaps.settings))
+    .pipe(gulpif(config.debug, sourcemaps.init(config.sourcemaps.settings)))
         // Add transformation tasks to the pipeline here.
         .pipe(gulpif(!config.debug, uglify()))
         .on('error', gutil.log)
-    .pipe(sourcemaps.write(config.sourcemaps.dest))
+    .pipe(gulpif(config.debug, sourcemaps.write(config.sourcemaps.dest)))
     .pipe(gulp.dest(config.dest))
     .pipe(connect.reload());
 }
