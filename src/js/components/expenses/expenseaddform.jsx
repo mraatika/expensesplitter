@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import ActionCreator from '../..//actions/dataactioncreators';
@@ -186,7 +185,6 @@ export default class ExpenseAddForm extends React.Component {
         e.preventDefault();
         ActionCreator.addExpense(expense);
         this._setIntitialExpense();
-        ReactDOM.findDOMNode(this._nameField).focus();
     }
 
     render() {
@@ -224,7 +222,6 @@ export default class ExpenseAddForm extends React.Component {
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
-                            autoFocus={!this.props.expenses.length}
                             events={{ change: true, blur: true }}/>
                     </div>
 

@@ -15,7 +15,7 @@ export class MessageContainer extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { isOpen: false };
+        this.state = { isOpen: this.props.openOnMount };
     }
 
     open() {
@@ -47,7 +47,7 @@ export class MessageContainer extends React.Component {
 
         return (
             <div
-                style={{ display: (this.state.isOpen || this.props.openOnMount) ? 'block' : 'none' }}
+                style={{ display: (this.state.isOpen) ? 'block' : 'none' }}
                 className={className}>
 
                 <i
