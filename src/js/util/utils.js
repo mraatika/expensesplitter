@@ -1,4 +1,4 @@
-'use strict';
+import _ from 'lodash';
 
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -15,9 +15,9 @@ export const cid = () => {
 
 /**
  * Number utils
- * @type {Object}
+ * @type {object}
  */
-export const Number = {
+export const NumberUtils = {
     /**
      * Round number to given decimal
      * @param  {number} value
@@ -33,9 +33,9 @@ export const Number = {
 
 /**
  * String utils
- * @type {Object}
+ * @type {object}
  */
-export const String = {
+export const StringUtils = {
     /**
      * Checks if given value is a non empty string
      * @param {string} string
@@ -43,5 +43,28 @@ export const String = {
      */
     isNonEmptyString: function(string) {
         return (typeof string == 'string') && string.trim().length;
+    }
+};
+
+/**
+ * Date utils
+ * @type {object}
+ */
+export const DateUtils = {
+    /**
+     * Format date to given format
+     * @param  {Date} date
+     * @param  {string} format Format string e.g. "${year}/${month}/${day} ${hour}:${minute}"
+     * @return {string}
+     */
+    format(date, format) {
+        if (!_.isDate(date)) date = new Date(date);
+
+        return format
+            .replace('${year}', date.getFullYear())
+            .replace('${month}', date.getMonth() + 1)
+            .replace('${day}', date.getDate())
+            .replace('${hour}', date.getHours())
+            .replace('${minute}', date.getMinutes());
     }
 };
