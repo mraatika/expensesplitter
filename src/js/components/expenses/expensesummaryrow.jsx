@@ -30,10 +30,10 @@ export default class ExpenseSummaryRow extends React.Component {
         return (
             <tr>
                 <td><strong>{t('lang.total')}:</strong></td>
-                <td><strong>{totalSum} {this.props.settings.currencySymbol}</strong></td>
-                <td colSpan="4" className="text-right">
+                <td colSpan="2" ><strong>{totalSum} {this.props.settings.currencySymbol}</strong></td>
+                <td colSpan="3" className="text-right">
                     {
-                        this.props.isRemoveAllowed ?
+                        !this.props.isRemoveAllowed ? '' :
                         <div>
                             <button
                                 type="button"
@@ -48,7 +48,7 @@ export default class ExpenseSummaryRow extends React.Component {
                                 contentText={ t('expenses.remove_all_confirmation') }
                                 okButtonLabel={ t('expenses.remove_all_expenses') }
                             />
-                        </div>: ''
+                        </div>
                     }
                 </td>
             </tr>
