@@ -28,6 +28,14 @@ export default class ExpenseAddForm extends React.Component {
         this.state = this._getDefaultState();
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     /**
      * Returns the default (initial) state
      * @private
@@ -85,6 +93,10 @@ export default class ExpenseAddForm extends React.Component {
      * @return {undefined}
      */
     _setValidationError(property, error) {
+        // since execution of this method is delayed check
+        // if this component is still mounted
+        if (!this._isMounted) return;
+
         let errors = this.state.errors;
         errors[property] = error || null;
         this.setState({ 'errors': errors }, this._toggleErrorText.bind(this));
@@ -131,7 +143,9 @@ export default class ExpenseAddForm extends React.Component {
      */
     _onValidationError(property, value, error) {
         this._setExpenseValue(property, value);
-        this._setValidationError(property, error);
+        // delay displaying the error so it doesn't prevent the first click
+        // on elements below it on the screen
+        _.delay(() => this._setValidationError(property, error), 100);
     }
 
     /**
