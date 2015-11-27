@@ -44,6 +44,11 @@ input, select {
     }
 }
 
+button, a.button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .button-container {
     button,
     .button {
@@ -180,16 +185,6 @@ option.current {
  */
 .shares-section-container {
     display: none;
-
-    @media (#{$bp-larger-than-desktop}) {
-        display: inline;
-    }
-}
-
-.expenses-list {
-    @media (#{$bp-smaller-than-desktop}) {
-        width: 100% !important;
-    }
 }
 
 /**
@@ -222,5 +217,50 @@ footer {
     .flag {
         margin-right: .4rem;
         cursor: pointer;
+    }
+}
+
+/**
+ * Media queries
+ */
+@media (#{$bp-larger-than-mobile}) {
+    .mobile-only {
+        display: none;
+    }
+}
+@media (#{$bp-larger-than-tablet}) {
+    .no-desktop {
+        display: none;
+    }
+}
+
+@media (#{$bp-larger-than-desktop}) {
+    .shares-section-container {
+        display: inline;
+    }
+}
+
+@media (#{$bp-smaller-than-tablet}) {
+
+    .no-mobile {
+        display: none;
+    }
+
+    .modal-dialog .button-container button {
+        width: 100%;
+    }
+}
+
+@media (#{$bp-smaller-than-desktop}) {
+    .expenses-list {
+        width: 100% !important;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    button {
+        padding: 0 6px;
     }
 }
