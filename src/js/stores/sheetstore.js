@@ -6,7 +6,7 @@ import expenseFactory from '../factory/expensefactory';
 import participantFactory from '../factory/participantfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';
-import {String as StringUtils} from '../util/utils';
+import {StringUtils} from '../util/utils';
 
 let sheetStore;
 

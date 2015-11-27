@@ -1,5 +1,5 @@
 import ExpensesService from './expensesservice';
-import * as utils from '../util/utils';
+import {NumberUtils} from '../util/utils';
 import _ from 'lodash';
 
 /**
@@ -15,7 +15,7 @@ const calculateTransActionAmount = (from, to) => from > to ? to : from;
  * @param  {object} balance
  * @return {boolean}
  */
-const zeroBalanceFilterer = balance => !utils.Number.round(balance.balance, 3);
+const zeroBalanceFilterer = balance => !NumberUtils.round(balance.balance, 3);
 
 /**
  * @class TransactionService

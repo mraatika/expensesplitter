@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import ActionCreator from '../../actions/dataactioncreators';
 import {TrashButton} from '../common/trashbutton.jsx';
-import {Number as NumberUtils} from '../../util/utils';
+import {NumberUtils} from '../../util/utils';
 
 /**
  * @class Expense

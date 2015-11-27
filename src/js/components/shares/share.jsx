@@ -1,5 +1,5 @@
 import React from 'react';
-import {Number as NumberUtils} from '../../util/utils';
+import {NumberUtils} from '../../util/utils';
 
 /**
  * @class Share

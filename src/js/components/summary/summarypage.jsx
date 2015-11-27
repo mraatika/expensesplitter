@@ -6,6 +6,7 @@ import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
 import pages from '../../constants/pages';
 import {Navigation} from '../navigation/navigation.jsx';
+import {DateUtils} from '../../util/utils.js';
 
 export default class SheetSummary extends React.Component {
 
@@ -37,7 +38,7 @@ export default class SheetSummary extends React.Component {
                     expenses={expenses} />
 
                 <div id="summary-date">
-                    {t('summary.preview_created')} @ { new Date().toLocaleString() }
+                    {t('summary.preview_created')} { DateUtils.format(new Date(), t('app.locales.date_format')) }
                 </div>
 
                 <Navigation prev={pages.TRANSACTIONS}/>
