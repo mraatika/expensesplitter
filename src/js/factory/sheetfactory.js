@@ -9,7 +9,7 @@ var SheetFactory = {
             createdOn: new Date(),
             name: (sheetName || '').trim(),
             settings: {
-                currencySymbol: t('settings.default_currency_symbol')
+                currencySymbol: t('app.locales.currency_symbol')
             },
             participants: [],
             expenses: [],

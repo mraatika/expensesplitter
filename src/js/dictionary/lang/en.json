@@ -2,6 +2,9 @@
     "app.description" : "ExpenseSplitter is a tool for splitting shared expenses. It optimizes payments so that the minimum amount of transactions are required. These expense sheets can also be shared with the people involved.",
     "app.info" : "Split your shared expenses hassle-free",
 
+    "app.locales.currency_symbol": "$",
+    "app.locales.date_format": "${year}/${month}/${day} ${hour}:${minute}",
+
     "common.confirm_removal": "Confirm removal",
 
     "expenses.remove_all_confirmation": "All expenses will be permanently removed. Are you sure you want to remove all the expenses?",
@@ -74,7 +77,6 @@
     "participants.remove_participant": "Remove participant",
 
     "settings.currency_symbol": "Currency symbol",
-    "settings.default_currency_symbol": "$",
     "settings.save": "Save settings",
     "settings.settings_for_sheet": "Settings for sheet",
     "settings.toggle_settings": "Show/hide the settings section",

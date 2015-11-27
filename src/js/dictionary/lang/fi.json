@@ -2,6 +2,9 @@
     "app.description" : "ExpenseSplitter on työkalu, jolla voit jakaa yhteisiä kuluja helposti. ExpenseSplitter optimoi tarvittavat maksut siten, että niitä tarvitaan mahdollisimman vähän. Laskelmat voidaan tallentaa ja niitä voidaan myös jakaa muille osallistujille muokattavaksi.",
     "app.info" : "Jaa yhteisiä kuluja vaivattomasti",
 
+    "app.locales.currency_symbol": "€",
+    "app.locales.date_format": "${day}.${month}.${year} ${hour}:${minute}",
+
     "common.confirm_removal": "Vahvista poisto",
 
     "expenses.remove_all_confirmation": "Kaikki kulut poistetaan pysyvästi. Oletko varma, että haluat poistaa kaikki kulut?",
@@ -24,7 +27,7 @@
     "lang.balance": "Balanssi",
     "lang.cancel": "Peruuta",
     "lang.close": "Sulje",
-    "lang.created_on": "Luoto pvm",
+    "lang.created_on": "Luotu pvm",
     "lang.current_sheet": "Nykyinen laskelma",
     "lang.email": "E-mail",
     "lang.expense": "Kulu",
@@ -74,7 +77,6 @@
     "participants.remove_participant": "Poista osallistuja",
 
     "settings.currency_symbol": "Valuuttasymboli",
-    "settings.default_currency_symbol": "€",
     "settings.save": "Tallenna asetukset",
     "settings.settings_for_sheet": "Asetukset laskelmalle",
     "settings.toggle_settings": "Näytä/piilota asetukset",
