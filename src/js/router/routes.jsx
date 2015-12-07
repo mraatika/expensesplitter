@@ -56,10 +56,7 @@ var routes = {
     },
 
     '/summary': function() {
-        var currentSheet = SheetStore.getCurrentSheet();
-        var sheetSummary = getComponent(SummaryPage, {
-            sheet: currentSheet
-        });
+        var sheetSummary = getComponent(SummaryPage);
         renderer.renderContentView(sheetSummary);
     }
 };

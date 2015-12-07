@@ -85,5 +85,7 @@
 
     "summary.preview_created" : "Laskelman yhteenveto luotu",
 
-    "transactions.no_transactions" : "Ei maksuja"
+    "transactions.no_transactions" : "Ei maksuja",
+    "transactions.save_sheet": "Tallenna laskelma",
+    "transactions.remove_sheet": "Poista laskelma"
 }

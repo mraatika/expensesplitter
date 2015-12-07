@@ -1,6 +1,7 @@
 var dest = './dist';
 var src = './src';
 var gutil = require('gulp-util');
+var modRewrite = require('connect-modrewrite');
 
 var isDev = gutil.env.type === 'dev';
 
@@ -12,6 +13,17 @@ module.exports = {
             port: 8080,
             livereload: {
                 port: 35929
+            },
+            middleware: function() {
+                console.log('middleware');
+                return [
+                    modRewrite(
+                        [
+                            '^/api/(.*)$ http://localhost:8888/$1 [P]',
+                            '!\\.\\w+$ /index.html [L]'
+                        ]
+                    )
+                ];
             }
         }
     },

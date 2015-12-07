@@ -1,5 +1,3 @@
-'use strict';
-
 import AppDispatcher from '../dispatchers/appdispatcher';
 import Constants from '../constants/AppConstants';
 
@@ -25,6 +23,13 @@ export default {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.SET_ACTIVE_SHEET,
             sheetId: sheetId
+        });
+    },
+
+    changeSheet: function(sheet) {
+        AppDispatcher.handleServerAction({
+            type: Constants.ActionTypes.CHANGE_SHEET,
+            sheet: sheet
         });
     },
 

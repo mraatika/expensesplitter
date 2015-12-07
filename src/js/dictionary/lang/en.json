@@ -85,5 +85,7 @@
 
     "summary.preview_created" : "Sheet summary created",
 
-    "transactions.no_transactions" : "No transactions"
+    "transactions.no_transactions" : "No transactions",
+    "transactions.save_sheet" : "Save sheet",
+    "transactions.remove_sheet": "Delete sheet"
 }

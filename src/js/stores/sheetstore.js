@@ -41,6 +41,11 @@ function addSheet(sheetName) {
     return sheet;
 }
 
+function updateSheet(sheet) {
+    sheetStore.storage.set(sheet.id, sheet);
+    return sheet;
+}
+
 function removeSheet(sheetId) {
     let currentSheetId;
 
@@ -154,6 +159,10 @@ class SheetStore extends DataStore {
         case Constants.ActionTypes.SET_ACTIVE_SHEET:
             setActiveSheet(action.sheetId);
             sheetStore.emitChange(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT);
+            break;
+        case Constants.ActionTypes.CHANGE_SHEET:
+            updateSheet(action.sheet);
+            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             break;
         case Constants.ActionTypes.ADD_PARTICIPANT:
             if (addParticipant(action.participant)) sheetStore.emitChange(Constants.EventTypes.ADD_PARTICIPANT_EVENT);

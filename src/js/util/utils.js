@@ -10,7 +10,7 @@ function S4() {
  * @returns {string}
  */
 export const cid = () => {
-    return (S4()+S4()+'-'+S4()+'-'+S4()+'-'+S4()+'-'+S4()+S4()+S4());
+    return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
 };
 
 /**

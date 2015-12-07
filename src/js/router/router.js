@@ -24,7 +24,7 @@ class Router {
      * @return {undefined}
      */
     start() {
-        page({ hashbang: true });
+        page({ hashbang: false });
     }
 
     /**
