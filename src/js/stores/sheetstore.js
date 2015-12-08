@@ -7,6 +7,7 @@ import participantFactory from '../factory/participantfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';
 import {StringUtils} from '../util/utils';
+import SheetService from '../service/sheetservice.js';
 
 let sheetStore;
 
@@ -46,12 +47,17 @@ function updateSheet(sheet) {
     return sheet;
 }
 
-function removeSheet(sheetId) {
+function removeSheet(sheet) {
     let currentSheetId;
+    const sheetId = sheet.id;
 
     if (!StringUtils.isNonEmptyString(sheetId)) throw new Error('IllegalArgumentsException: sheetId is missing or invalid!');
 
     currentSheetId = sheetStore.getCurrentSheetId();
+
+    if (!sheet._isNew) {
+        new SheetService().removeSheet(sheet);
+    }
 
     sheetStore.storage.remove(sheetId);
 
@@ -70,6 +76,10 @@ function setActiveSheet(sheetId) {
     if (currentSheetId === sheetId) return;
 
     sheetStore.storage.set('currentSheetId', sheetId);
+}
+
+function saveSheet(sheet) {
+    new SheetService().saveSheet(sheet);
 }
 
 function addParticipant(participantProperties) {
@@ -153,15 +163,19 @@ class SheetStore extends DataStore {
             if (addSheet(action.sheetName)) sheetStore.emitChange(Constants.EventTypes.ADD_SHEET_EVENT);
             break;
         case Constants.ActionTypes.REMOVE_SHEET:
-            removeSheet(action.sheetId);
+            removeSheet(action.sheet);
             sheetStore.emitChange(Constants.EventTypes.REMOVE_SHEET_EVENT);
             break;
         case Constants.ActionTypes.SET_ACTIVE_SHEET:
             setActiveSheet(action.sheetId);
             sheetStore.emitChange(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT);
             break;
-        case Constants.ActionTypes.CHANGE_SHEET:
+        case Constants.ActionTypes.UPDATE_SHEET:
             updateSheet(action.sheet);
+            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            break;
+        case Constants.ActionTypes.SAVE_SHEET:
+            saveSheet(action.sheet);
             sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             break;
         case Constants.ActionTypes.ADD_PARTICIPANT:

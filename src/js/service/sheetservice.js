@@ -52,10 +52,7 @@ export default class SheetService {
         const q = Q.defer();
 
         axios.delete(`/api/sheet/${sheet.id}`)
-            .then((response) => {
-                ActionCreators.removeSheet(sheet.id);
-                q.resolve(response);
-            })
+            .then((response) => q.resolve(response))
             .catch((err) => q.reject(err));
 
         return q.promise;

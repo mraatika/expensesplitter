@@ -34,7 +34,7 @@ export default class LoadSheetDialog extends React.Component {
     }
 
     _removeSheet(sheet) {
-        ActionCreators.removeSheet(sheet.id);
+        ActionCreators.removeSheet(sheet);
     }
 
     /**

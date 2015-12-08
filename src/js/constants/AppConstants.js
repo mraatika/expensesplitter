@@ -13,7 +13,7 @@ export default {
         ADD_SHEET: Symbol(),
         UPDATE_SHEET: Symbol(),
         REMOVE_SHEET: Symbol(),
-        ERROR_EVENT: Symbol()
+        SAVE_SHEET: Symbol()
     },
 
     EventTypes: {
@@ -26,16 +26,12 @@ export default {
         REMOVE_SHEET_EVENT: Symbol(),
         SET_ACTIVE_SHEET_EVENT: Symbol(),
         SETTINGS_CHANGED_EVENT: Symbol(),
-        LANGUAGE_CHANGED_EVENT: Symbol(),
-        NOTIFICATION_ADDED: Symbol(),
-        SERVER_SUCCESS: Symbol(),
-        UPDATE_SHEET_EVENT: Symbol()
+        LANGUAGE_CHANGED_EVENT: Symbol()
     },
 
     ActionTypes: {
         ADD_EXPENSE: Symbol(),
         ADD_PARTICIPANT: Symbol(),
-        CHANGE_SHEET: Symbol(),
         CREATE_SHEET: Symbol(),
         REMOVE_EXPENSE: Symbol(),
         REMOVE_PARTICIPANT: Symbol(),
@@ -43,7 +39,9 @@ export default {
         REMOVE_SHEET: Symbol(),
         SET_ACTIVE_SHEET: Symbol(),
         SET_SHEET_SETTINGS: Symbol(),
-        SET_LANGUAGE: Symbol()
+        SET_LANGUAGE: Symbol(),
+        UPDATE_SHEET: Symbol(),
+        SAVE_SHEET: Symbol()
     },
 
     ActionSources: {

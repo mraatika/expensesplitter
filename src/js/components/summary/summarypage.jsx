@@ -9,7 +9,7 @@ import SharesTable from '../shares/sharestable.jsx';
 import pages from '../../constants/pages';
 import Navigation from '../navigation/navigation.jsx';
 import {DateUtils, URLUtils} from '../../util/utils.js';
-import SheetService from '../../service/sheetservice.js';
+import ActionCreators from '../../actions/dataactioncreators.js';
 import Router from '../../router/router.js';
 import SaveButton from '../common/savebutton.jsx';
 import MessageContainer from '../common/messagecontainer.jsx';
@@ -58,7 +58,11 @@ export default class SheetSummaryPage extends React.Component {
      */
     _onChange(eventType) {
         if (eventType === Constants.EventTypes.CHANGE_EVENT) {
-            this.setState({ sheet: SheetStore.getCurrentSheet() });
+            this.setState({
+                sheet: SheetStore.getCurrentSheet(),
+                isSavingToServer: false,
+                isSavedToServer: true
+            });
         }
     }
 
@@ -68,19 +72,8 @@ export default class SheetSummaryPage extends React.Component {
      * @return  {undefined}
      */
     _saveSheet() {
-        var isSavedToServer;
-
         this.setState({ isSavingToServer: true });
-
-        new SheetService().saveSheet(this.state.sheet)
-            .then(() => isSavedToServer = true)
-            .fail(() => isSavedToServer = false)
-            .fin(() => {
-                this.setState({
-                    isSavingToServer: false,
-                    isSavedToServer: isSavedToServer
-                });
-            });
+        ActionCreators.saveSheet(this.state.sheet);
     }
 
     /**
@@ -89,7 +82,7 @@ export default class SheetSummaryPage extends React.Component {
      * @return  {undefined}
      */
     _removeSheet() {
-        new SheetService().removeSheet(this.state.sheet);
+        ActionCreators.removeSheet(this.state.sheet);
         // optimistic
         Router.navigateTo(pages.HOME.href);
     }
