@@ -25,7 +25,19 @@ export default class HomePage extends React.Component {
         this._onChange = this._onChange.bind(this);
     }
 
+    componentWillMount() {
+        const {currentSheetPromise} = this.props;
+
+        if (currentSheetPromise) {
+            currentSheetPromise
+                .then((sheet) => {
+                    this.setState({ currentSheet: sheet });
+                });
+        }
+    }
+
     componentDidMount() {
+        console.log(this.props);
         SheetStore.addChangeListener(this._onChange);
     }
 
@@ -75,7 +87,7 @@ export default class HomePage extends React.Component {
 
     _onSheetRemovalConfirmed() {
         if (this.state.currentSheet) {
-            ActionCreators.removeSheet(this.state.currentSheet.id);
+            ActionCreators.removeSheet(this.state.currentSheet);
         }
     }
 

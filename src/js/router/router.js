@@ -78,9 +78,9 @@ class Router {
      * @param  {object}   route     Route object
      * @return {undefined}
      */
-    _onRouteChange(callback, route) {
+    _onRouteChange(callback, route, ctx, next) {
         _currentRoute = _.find(pages, page => page.href === route);
-        callback();
+        callback(ctx, next);
     }
 
     /**
@@ -91,7 +91,7 @@ class Router {
      * @return {undefined}
      */
     _registerRoute(callback, route) {
-        page(route, () => this._onRouteChange(callback, route));
+        page(route, (ctx, next) => this._onRouteChange(callback, route, ctx, next));
     }
 }
 
