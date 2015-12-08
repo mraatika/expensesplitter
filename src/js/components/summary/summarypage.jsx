@@ -34,6 +34,7 @@ export default class SheetSummaryPage extends React.Component {
 
         this.state = {
             isSavedToServer: false,
+            isSavingToServer: false,
             sheet: sheet,
             shareURL: URLUtils.formSheetUrl(sheet.id)
         };
@@ -67,10 +68,18 @@ export default class SheetSummaryPage extends React.Component {
      * @return  {undefined}
      */
     _saveSheet() {
+        var isSavedToServer;
+
+        this.setState({ isSavingToServer: true });
+
         new SheetService().saveSheet(this.state.sheet)
-            .then((response) => {
-                this.setState({ isSavedToServer: true });
-                console.log(response);
+            .then(() => isSavedToServer = true)
+            .fail(() => isSavedToServer = false)
+            .fin(() => {
+                this.setState({
+                    isSavingToServer: false,
+                    isSavedToServer: isSavedToServer
+                });
             });
     }
 
@@ -80,8 +89,9 @@ export default class SheetSummaryPage extends React.Component {
      * @return  {undefined}
      */
     _removeSheet() {
-        new SheetService().removeSheet(this.state.sheet)
-            .then(() => Router.navigateTo(pages.HOME.href));
+        new SheetService().removeSheet(this.state.sheet);
+        // optimistic
+        Router.navigateTo(pages.HOME.href);
     }
 
     _shareLink() {
@@ -160,8 +170,10 @@ export default class SheetSummaryPage extends React.Component {
                                 type="button"
                                 className="u-full-width"
                                 isSaved={this.state.isSavedToServer}
+                                isSaving={this.state.isSavingToServer}
                                 beforeSaveText={t('transactions.save_sheet')}
                                 afterSaveText={t('lang.saved')}
+                                onSavingText={t('lang.saving')}
                                 onClick={this._saveSheet.bind(this)} />
                         </div>
                         <div className="four columns">
