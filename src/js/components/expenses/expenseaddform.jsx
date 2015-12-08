@@ -198,7 +198,6 @@ export default class ExpenseAddForm extends React.Component {
             <form onSubmit={this._handleAddExpense.bind(this)}>
                 <MessageContainer
                     ref="errorMessageContainer"
-                    errorTexts={errorTexts}
                     type="danger"
                     openOnMount={errorTexts.length}>
                     {errorTexts.map(function (error) {
