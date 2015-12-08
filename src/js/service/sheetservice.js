@@ -20,7 +20,7 @@ export default class SheetService {
      * @return {Promise}
      */
     saveSheet(sheet) {
-        var q = Q.defer();
+        const q = Q.defer();
 
         if (sheet._isNew) {
             // omit _isNew parameter before post since
@@ -28,7 +28,7 @@ export default class SheetService {
             // to the database
             let newSheet = _.omit(sheet, '_isNew');
 
-            axios.post('api/sheet', { sheet: newSheet })
+            axios.post('/api/sheet', { sheet: newSheet })
                 .then((response) => {
                     ActionCreators.changeSheet(newSheet);
                     q.resolve(response);
@@ -49,9 +49,9 @@ export default class SheetService {
      * @return {Promise}
      */
     removeSheet(sheet) {
-        var q = Q.defer();
+        const q = Q.defer();
 
-        axios.delete('api/sheet/' + sheet.id)
+        axios.delete(`/api/sheet/${sheet.id}`)
             .then((response) => {
                 ActionCreators.removeSheet(sheet.id);
                 q.resolve(response);
