@@ -150,9 +150,17 @@ option.current {
  *
  *
  */
-.settings-button.active {
-    background-color: #eee;
-    box-shadow: inset 1px 1px 6px #bbb;
+.settings-button{
+
+    &.active {
+        background-color: #eee;
+        box-shadow: inset 1px 1px 6px #bbb;
+    }
+
+    .fa {
+        position: relative;
+        top: 3px;
+    }
 }
 
 #app-description {
