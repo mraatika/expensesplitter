@@ -8,10 +8,12 @@ import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
 import pages from '../../constants/pages';
 import Navigation from '../navigation/navigation.jsx';
-import {DateUtils} from '../../util/utils.js';
+import {DateUtils, URLUtils} from '../../util/utils.js';
 import SheetService from '../../service/sheetservice.js';
 import Router from '../../router/router.js';
 import SaveButton from '../common/savebutton.jsx';
+import MessageContainer from '../common/messagecontainer.jsx';
+import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
 /**
  * @class SheetSummaryPage
@@ -27,10 +29,15 @@ export default class SheetSummaryPage extends React.Component {
      */
     constructor(props) {
         super(props);
+
+        const sheet = SheetStore.getCurrentSheet();
+
         this.state = {
             isSavedToServer: false,
-            sheet: SheetStore.getCurrentSheet()
+            sheet: sheet,
+            shareURL: URLUtils.formSheetUrl(sheet.id)
         };
+
         this._onChange = this._onChange.bind(this);
     }
 
@@ -77,6 +84,10 @@ export default class SheetSummaryPage extends React.Component {
             .then(() => Router.navigateTo(pages.HOME.href));
     }
 
+    _shareLink() {
+        console.log('Share link');
+    }
+
     /**
      * @return {ReactComponent}
      */
@@ -111,23 +122,56 @@ export default class SheetSummaryPage extends React.Component {
                     {t('summary.preview_created')} { DateUtils.format(new Date(), t('app.locales.date_format')) }
                 </div>
 
-                <div id="server-actions" className="row">
-                    <div className="four columns">
-                        <SaveButton
-                            type="button"
-                            className="u-full-width"
-                            isSaved={this.state.isSavedToServer}
-                            beforeSaveText={t('transactions.save_sheet')}
-                            afterSaveText={t('lang.saved')}
-                            onClick={this._saveSheet.bind(this)} />
+                <div id="server-actions">
+                    <div className="row">
+                        <div className={ 'twelve columns' + (!this.state.sheet._isNew ? ' hidden' : '')}>
+                            <MessageContainer
+                                ref={(c) => this._messageContainer = c}
+                                type="info"
+                                openOnMount={this.state.sheet._isNew}>
+                                {t('transactions.save_sheet_to_share')}
+                            </MessageContainer>
+                        </div>
+
+                        <div className={'twelve columns' + (this.state.sheet._isNew ? ' hidden' : '')}>
+                            <label htmlFor="sheet-share-url">{t('transactions.share_url')}:</label>
+                            <InputButtonSplit>
+                                <input
+                                    id="sheet-share-url"
+                                    ref={c => this._shareUrlField = c}
+                                    type="text"
+                                    readOnly
+                                    defaultValue={this.state.shareURL}
+                                    onClick={() => this._shareUrlField.select() } />
+                                <button
+                                    type="button"
+                                    title={ t('transactions.share_link') }
+                                    aria-label={ t('transactions.share_link') }
+                                    onClick={this._shareLink.bind(this)}>
+                                    <i className="fa fa-lg fa-fw fa-share-alt"/>
+                                </button>
+                            </InputButtonSplit>
+                        </div>
                     </div>
-                    <div className="four columns">
-                        <button className="button-danger u-full-width" onClick={this._removeSheet.bind(this)}>
-                            <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
-                            { t('transactions.remove_sheet') }
-                        </button>
-                    </div>
-                    <div className="four columns">
+
+                    <div className="row">
+                        <div className="four columns">
+                            <SaveButton
+                                type="button"
+                                className="u-full-width"
+                                isSaved={this.state.isSavedToServer}
+                                beforeSaveText={t('transactions.save_sheet')}
+                                afterSaveText={t('lang.saved')}
+                                onClick={this._saveSheet.bind(this)} />
+                        </div>
+                        <div className="four columns">
+                            <button className="button-danger u-full-width" onClick={this._removeSheet.bind(this)}>
+                                <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
+                                { t('transactions.remove_sheet') }
+                            </button>
+                        </div>
+                        <div className="four columns">
+                        </div>
                     </div>
                 </div>
 

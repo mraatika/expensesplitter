@@ -15,7 +15,7 @@ export const cid = () => {
 
 /**
  * Number utils
- * @type {object}
+ * @type {Object}
  */
 export const NumberUtils = {
     /**
@@ -33,7 +33,7 @@ export const NumberUtils = {
 
 /**
  * String utils
- * @type {object}
+ * @type {Object}
  */
 export const StringUtils = {
     /**
@@ -48,7 +48,7 @@ export const StringUtils = {
 
 /**
  * Date utils
- * @type {object}
+ * @type {Object}
  */
 export const DateUtils = {
     /**
@@ -66,5 +66,20 @@ export const DateUtils = {
             .replace('${day}', date.getDate())
             .replace('${hour}', date.getHours())
             .replace('${minute}', date.getMinutes());
+    }
+};
+
+/**
+ * URL related utils
+ * @type {Object}
+ */
+export const URLUtils = {
+    /**
+     * Form a shareable url for given sheet
+     * @param  {string} sheetId
+     * @return {string}
+     */
+    formSheetUrl(sheetId) {
+        return `${window.location.origin}/sheet/${sheetId}`;
     }
 };
