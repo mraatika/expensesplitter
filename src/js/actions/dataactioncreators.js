@@ -8,28 +8,35 @@ export default {
     addSheet: function(sheetName) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.CREATE_SHEET,
-            sheetName: sheetName
+            sheetName
         });
     },
 
-    removeSheet: function(sheetId) {
+    removeSheet: function(sheet) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.REMOVE_SHEET,
-            sheetId: sheetId
+            sheet
         });
     },
 
     setActiveSheet: function(sheetId) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.SET_ACTIVE_SHEET,
-            sheetId: sheetId
+            sheetId
         });
     },
 
-    changeSheet: function(sheet) {
+    updateSheet: function(sheet) {
         AppDispatcher.handleServerAction({
-            type: Constants.ActionTypes.CHANGE_SHEET,
-            sheet: sheet
+            type: Constants.ActionTypes.UPDATE_SHEET,
+            sheet
+        });
+    },
+
+    saveSheet: function(sheet) {
+        AppDispatcher.handleViewAction({
+            type: Constants.ActionTypes.SAVE_SHEET,
+            sheet
         });
     },
 
@@ -38,14 +45,14 @@ export default {
     addParticipant: function(participant) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.ADD_PARTICIPANT,
-            participant: participant
+            participant
         });
     },
 
     removeParticipant: function(participant) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.REMOVE_PARTICIPANT,
-            participant: participant
+            participant
         });
     },
 
@@ -54,14 +61,14 @@ export default {
     addExpense: function(expense) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.ADD_EXPENSE,
-            expense: expense
+            expense
         });
     },
 
     removeExpense: function(expense) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.REMOVE_EXPENSE,
-            expense: expense
+            expense
         });
     },
 
@@ -76,7 +83,7 @@ export default {
     setSettings: function (settings) {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.SET_SHEET_SETTINGS,
-            settings: settings
+            settings
         });
     },
 
