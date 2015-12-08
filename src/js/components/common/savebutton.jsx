@@ -13,7 +13,7 @@ export default class SaveButton extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {isSaved, beforeSaveText, afterSaveText} = this.props;
+        const {isSaved, isSaving, beforeSaveText, afterSaveText, onSavingText} = this.props;
         const buttonClassName = classNames(this.props.className, {
             'button-success': isSaved,
             'button-primary': !isSaved
@@ -24,8 +24,8 @@ export default class SaveButton extends React.Component {
                 {...this.props}
                 className={buttonClassName}
                 aria-label={beforeSaveText}>
-                <i className={`fa fa-fw fa-${isSaved ? 'check' : 'save'}`}/>&nbsp;
-                { isSaved ? afterSaveText : beforeSaveText }
+                <i className={`fa fa-fw fa-${isSaving ? 'spinner' : isSaved ? 'check' : 'save'}`}/>&nbsp;
+                { isSaving ? onSavingText : isSaved ? afterSaveText : beforeSaveText }
             </button>
         );
     }
@@ -33,8 +33,10 @@ export default class SaveButton extends React.Component {
 
 SaveButton.defaultProps = {
     isSaved: false,
+    isSaving: false,
     beforeSaveText: 'Save',
-    afterSaveText: 'Saved'
+    afterSaveText: 'Saved',
+    onSavingText: 'Saving'
 };
 
 SaveButton.propTypes = {
@@ -44,10 +46,20 @@ SaveButton.propTypes = {
      */
     isSaved: React.PropTypes.bool,
     /**
+     * Should the component display saving state
+     * @type {Boolean}
+     */
+    isSaving: React.PropTypes.bool,
+    /**
      * Button text before saving is done
      * @type {String}
      */
     beforeSaveText: React.PropTypes.string,
+    /**
+     * Button text when saving is in process
+     * @type {String}
+     */
+    onSavingText: React.PropTypes.string,
     /**
      * Button text after saving is done
      * @type {String}
