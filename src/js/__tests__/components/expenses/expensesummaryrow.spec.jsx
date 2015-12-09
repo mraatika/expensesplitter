@@ -1,14 +1,12 @@
 jest.autoMockOff();
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 import _ from 'lodash';
 
 const ExpenseSummaryRow = require('../../../components/expenses/expensesummaryrow.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 const RemovalConfirmationDialog = require('../../../components/common/removalconfirmationdialog.jsx').default;
-const ModalDialog = require('../../../components/common/modaldialog.jsx').ModalDialog;
 
 describe('Component:ExpenseSummaryRow', function() {
     let expenseTableRow;
@@ -65,7 +63,7 @@ describe('Component:ExpenseSummaryRow', function() {
         spyOn(ActionCreators, 'removeAllExpenses');
         // Simulate a click and verify that the action creator is called
         TestUtils.Simulate.click(page.removeButton);
-        const modal = TestUtils.findRenderedComponentWithType(expenseTableRow, ModalDialog);
+        const modal = TestUtils.findRenderedComponentWithType(expenseTableRow, RemovalConfirmationDialog)._modal;
         // "click" the confirm button
         modal.props.buttons[0].click();
         expect(ActionCreators.removeAllExpenses).toHaveBeenCalled();

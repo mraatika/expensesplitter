@@ -52,19 +52,27 @@ describe('Component:ExpenseAddForm', function() {
     });
 
     describe('Validating', function () {
+
         describe('name', function () {
-            it('should require a name', function () {
+            it('should require a name', function (done) {
                 page.nameField.value = '';
+
                 TestUtils.Simulate.change(page.nameField);
-                expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.required'));
-                expect(page.nameField.className.indexOf('error')).not.toEqual(-1);
+
+                setTimeout(() => {
+                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.required'));
+                    expect(page.nameField.className.indexOf('error')).not.toEqual(-1);
+                }, 105);
             });
 
             it('should require name to contain less than 100 characters', function () {
                 var str = _.range(0, 100).join('');
                 page.nameField.value = str;
                 TestUtils.Simulate.change(page.nameField);
-                expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.maxLength'));
+
+                setTimeout(() => {
+                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.maxLength'));
+                }, 105);
             });
         });
 
@@ -72,24 +80,31 @@ describe('Component:ExpenseAddForm', function() {
             it('should require a price', function () {
                 page.priceField.value = '';
                 TestUtils.Simulate.change(page.priceField);
-                // should be min cause the value gets casted to a number
-                expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.required'));
-                expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
 
+                setTimeout(() => {
+                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.required'));
+                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                }, 105);
             });
 
             it('should require price to be greater than 0', function () {
                 page.priceField.value = 0;
                 TestUtils.Simulate.change(page.priceField, { target: { value: 0 }});
-                expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.min'));
-                expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+
+                setTimeout(() => {
+                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.min'));
+                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                }, 105);
             });
 
             it('should require price less than 1000000', function () {
                 page.priceField.value = 1000001;
                 TestUtils.Simulate.change(page.priceField);
-                expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.max'));
-                expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+
+                setTimeout(() => {
+                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.max'));
+                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                }, 105);
             });
         });
     });

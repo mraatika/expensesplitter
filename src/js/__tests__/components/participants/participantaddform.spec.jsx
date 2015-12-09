@@ -3,7 +3,7 @@ jest.autoMockOff();
 import React from 'react';
 import TestUtils from 'react-testutils-additions';
 
-const ParticipantAddForm = require('../../../components/participants/participantaddform.jsx').ParticipantAddForm;
+const ParticipantAddForm = require('../../../components/participants/participantaddform.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 const dictionary = require('../../../dictionary/dictionary');
 

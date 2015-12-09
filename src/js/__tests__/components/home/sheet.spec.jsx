@@ -6,6 +6,8 @@ import TestUtils from 'react-testutils-additions';
 import sinon from 'sinon';
 
 const Sheet = require('../../../components/home/sheet.jsx').default;
+const t = require('../../../dictionary/dictionary.js').t;
+const DateUtils = require('../../../util/utils.js').DateUtils;
 
 describe('Component:Sheet', function() {
     var sheetListItem;
@@ -38,7 +40,7 @@ describe('Component:Sheet', function() {
 
     it('should render sheet\'s name', function() {
         var label = TestUtils.findRenderedDOMComponentWithClass(sheetListItem, 'sheet-list-date');
-        expect(label.textContent).toEqual(sheet.createdOn.toLocaleString());
+        expect(label.textContent).toEqual(DateUtils.format(sheet.createdOn, t('app.locales.date_format')));
     });
 
     it('should mark the current sheet with a marker', function () {

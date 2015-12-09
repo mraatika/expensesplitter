@@ -1,11 +1,10 @@
 jest.autoMockOff();
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TestUtils from 'react-testutils-additions';
 import sinon from 'sinon';
 
-const ValidatedInput = require('../../../components/common/validatedinput.jsx').ValidatedInput;
+const ValidatedInput = require('../../../components/common/validatedinput.jsx').default;
 
 
 describe('ValidatedInput', () => {

@@ -4,8 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtilsAdditions from 'react-testutils-additions';
 
-const Expense = require('../../../components/expenses/expense.jsx').Expense;
-const TrashButton = require('../../../components/common/trashbutton.jsx').TrashButton;
+const Expense = require('../../../components/expenses/expense.jsx').default;
+const TrashButton = require('../../../components/common/trashbutton.jsx').default;
 const ActionCreators = require('../../../actions/dataactioncreators').default;
 const Utils = require('../../../util/utils');
 
@@ -41,7 +41,7 @@ describe('Component:Expense', () => {
 
         expect(ReactDOM.findDOMNode(cells[0]).textContent).toEqual(expenseModel.name);
         expect(ReactDOM.findDOMNode(cells[1]).textContent).toEqual('' + expenseModel.price);
-        expect(ReactDOM.findDOMNode(cells[2]).textContent).toEqual('' + (Utils.Number.round(expenseModel.price / expenseModel.participants.length, 1)));
+        expect(ReactDOM.findDOMNode(cells[2]).textContent).toEqual('' + (Utils.NumberUtils.round(expenseModel.price / expenseModel.participants.length, 1)));
         expect(ReactDOM.findDOMNode(cells[3]).textContent).toEqual(participants.map(participant => participant.name).join(', '));
         expect(ReactDOM.findDOMNode(cells[4]).textContent).toEqual(participants[1].name);
     });

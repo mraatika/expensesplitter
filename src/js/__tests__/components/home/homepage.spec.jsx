@@ -7,7 +7,7 @@ import TestUtils from 'react-testutils-additions';
 import sinon from 'sinon';
 
 const HomePage = require('../../../components/home/homepage.jsx').default;
-const DataStore = require('../../../stores/datastore.js').default;
+const DataStore = require('../../../stores/sheetstore.js').default;
 const ActionCreators = require('../../../actions/dataactioncreators.js').default;
 const dictionary = require('../../../dictionary/dictionary.js');
 const LoadSheetDialog = require('../../../components/home/loadsheetdialog.jsx').default;
@@ -103,7 +103,7 @@ describe('Component:HomePage', function() {
 
             expect(modal.state.showModal).toEqual(false);
 
-            expect(ActionCreators.removeSheet).toHaveBeenCalledWith(sheet.id);
+            expect(ActionCreators.removeSheet).toHaveBeenCalledWith(sheet);
         });
     });
 
