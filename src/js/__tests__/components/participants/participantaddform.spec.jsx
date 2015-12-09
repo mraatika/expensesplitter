@@ -4,7 +4,6 @@ import React from 'react';
 import TestUtils from 'react-testutils-additions';
 
 const ParticipantAddForm = require('../../../components/participants/participantaddform.jsx').default;
-const ActionCreators = require('../../../actions/dataactioncreators').default;
 const dictionary = require('../../../dictionary/dictionary');
 
 describe('Component:ParticipantAddForm', function() {
@@ -19,7 +18,7 @@ describe('Component:ParticipantAddForm', function() {
         ];
 
         participantAddForm = TestUtils.renderIntoDocument(
-            <ParticipantAddForm participants={participants} />
+            <ParticipantAddForm participants={participants} onFormSubmit={jasmine.createSpy()}/>
         );
     });
 
@@ -35,19 +34,18 @@ describe('Component:ParticipantAddForm', function() {
         expect(nameField.getAttribute('placeholder')).toEqual(expectation);
     });
 
-    it('should call ActionCreators.addParticipant when add button is clicked', function () {
+    it('should call props.onFormSubmit when add button is clicked', function () {
         var participant = { name: 'Seppo' };
-        // set up spy
-        spyOn(ActionCreators, 'addParticipant');
 
         var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        TestUtils.Simulate.change(nameField, { target: { value: participant.name }});
+        nameField.value = participant.name;
+        TestUtils.Simulate.change(nameField);
 
         // Simulate a click and verify that the action creator is called
         var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
         TestUtils.Simulate.submit(form);
 
-        expect(ActionCreators.addParticipant).toHaveBeenCalledWith(participant);
+        expect(participantAddForm.props.onFormSubmit).toHaveBeenCalledWith(participant);
     });
 
     it('should use placeholder as name when the field is left empty', function () {
@@ -55,21 +53,19 @@ describe('Component:ParticipantAddForm', function() {
         var placeHolder = nameField.getAttribute('placeholder');
         var expected = { name: placeHolder };
 
-        // set up spy
-        spyOn(ActionCreators, 'addParticipant');
-
         // Simulate a click and verify that the action creator is called
         var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
         TestUtils.Simulate.submit(form);
 
-        expect(ActionCreators.addParticipant).toHaveBeenCalledWith(expected);
+        expect(participantAddForm.props.onFormSubmit).toHaveBeenCalledWith(expected);
     });
 
 
     it('should display an error text when trying to add participant with same name twice', function () {
         var name = participants[0].name;
         var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        TestUtils.Simulate.change(nameField, { target: { value: name }});
+        nameField.value = name;
+        TestUtils.Simulate.change(nameField);
 
         // Simulate a click and verify that the action creator is called
         var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');

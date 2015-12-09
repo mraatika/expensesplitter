@@ -1,10 +1,12 @@
+import makeStore from 'makestore';
 import Constants from '../constants/AppConstants';
-import DataStore from './datastore.js';
+import storageFactory from '../factory/storagefactory';
+import AppDispatcher from '../dispatchers/appdispatcher';
 
-let settingsStore;
+const storage = storageFactory.create(Constants.SHEET_STORE_NAME);
 
 function setLanguage(langCode) {
-    settingsStore.storage.set('language', langCode);
+    storage.set('language', langCode);
 }
 
 /**
@@ -12,17 +14,17 @@ function setLanguage(langCode) {
  * @description Store for app wide settings
  * @extends {DataStore}
  */
-class SettingsStore extends DataStore {
+const settingsStore = makeStore({
 
     /**
      * Return settings
      * @return {object} settings
      */
     getSettings() {
-        return this.storage.getAll();
-    }
+        return storage.getAll();
+    },
 
-    handleDispatcherEvent(payload) {
+    dispatcherIndex: AppDispatcher.register(payload => {
         const action = payload.action;
 
         switch(action.type) {
@@ -31,10 +33,8 @@ class SettingsStore extends DataStore {
             settingsStore.emitChange(Constants.EventTypes.LANGUAGE_CHANGED_EVENT);
             break;
         }
-    }
-}
-
-settingsStore = new SettingsStore();
+    })
+});
 
 export default settingsStore;
 

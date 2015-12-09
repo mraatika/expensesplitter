@@ -13,8 +13,7 @@ export default class ParticipantList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const sheet = this.props.sheet;
-        const participants = _.sortBy(sheet.participants, 'name');
+        const participants = _.sortBy(this.props.participants, 'name');
 
         return (
             <ul id="participants-list">
@@ -23,7 +22,6 @@ export default class ParticipantList extends React.Component {
                     <Participant
                         key={participant.id}
                         participant={participant}
-                        sheet={sheet}
                         onRemoveClick={this.props.onRemoveClick}/>
                 ) : <li><i>{ t('participants.no_participants') }</i></li>
             }
@@ -37,5 +35,5 @@ ParticipantList.propTypes = {
      * The current sheet. Required.
      * @type {object}
      */
-    sheet: React.PropTypes.object.isRequired
+    participants: React.PropTypes.array.isRequired
 };

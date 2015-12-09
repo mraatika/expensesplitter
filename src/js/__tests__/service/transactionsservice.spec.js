@@ -26,7 +26,7 @@ describe('Service: TransactionsService', function () {
             ]
         };
         const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
 
         expect(transactions.length).toEqual(2);
 
@@ -76,7 +76,7 @@ describe('Service: TransactionsService', function () {
             ]
         };
         const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
 
         expect(transactions.length).toEqual(2);
 
@@ -109,7 +109,7 @@ describe('Service: TransactionsService', function () {
         };
 
         const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
 
         console.log(transactions);
 

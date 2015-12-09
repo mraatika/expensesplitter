@@ -36,7 +36,7 @@ describe('Component:ExpenseSummaryRow', function() {
         var Table = React.createClass({
             render: function() {
                 return (
-                    <table><tbody><ExpenseSummaryRow expenses={expenses} isRemoveAllowed={true} settings={{}}/></tbody></table>
+                    <table><tbody><ExpenseSummaryRow expenses={expenses} isRemoveAllowed={true} sheet={{id:'1'}}settings={{}}/></tbody></table>
                 );
             }
         });

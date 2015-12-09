@@ -15,7 +15,6 @@ module.exports = {
                 port: 35929
             },
             middleware: function() {
-                console.log('middleware');
                 return [
                     modRewrite(
                         [

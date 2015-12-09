@@ -1,149 +1,52 @@
 import _ from 'lodash';
-import DataStore from './datastore.js';
+import makeStore from 'makestore';
+import AppDispatcher from '../dispatchers/appdispatcher';
 import Constants from '../constants/AppConstants';
 import sheetFactory from '../factory/sheetfactory';
-import expenseFactory from '../factory/expensefactory';
-import participantFactory from '../factory/participantfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';
-import {StringUtils} from '../util/utils';
-import SheetService from '../service/sheetservice.js';
+import {ValidationError} from '../util/errors.js';
 
-let sheetStore;
-
-function findAndRemove(collection, id) {
-    for (let i = 0; i < collection.length; i++) {
-        if (collection[i].id === id) {
-            collection.splice(i, 1);
-            return collection;
-        }
-    }
-    throw new Error(`Unable to remove entity: Entity with id ${id} not found!`);
-}
+let currentSheetId;
+let sheets = {};
 
 function addSheet(sheetName) {
     let errors;
-
-    if (!StringUtils.isNonEmptyString(sheetName)) throw new Error('IllegalArgumentsException: sheetName missing or invalid!');
 
     const sheet = sheetFactory.create(sheetName);
 
     errors = validation.validate(sheet, Schema.Sheet);
 
     if (!_.isEmpty(errors)) {
-        sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET, errors);
-        return;
+        throw new ValidationError('Sheet adding failed', errors);
     }
 
-    sheetStore.storage.set(sheet.id, sheet);
+    sheets[sheet.id] = sheet;
 
     setActiveSheet(sheet.id);
-
-    return sheet;
-}
-
-function updateSheet(sheet) {
-    sheetStore.storage.set(sheet.id, sheet);
-    return sheet;
 }
 
 function removeSheet(sheet) {
-    let currentSheetId;
     const sheetId = sheet.id;
 
-    if (!StringUtils.isNonEmptyString(sheetId)) throw new Error('IllegalArgumentsException: sheetId is missing or invalid!');
-
-    currentSheetId = sheetStore.getCurrentSheetId();
-
-    if (!sheet._isNew) {
-        new SheetService().removeSheet(sheet);
-    }
-
-    sheetStore.storage.remove(sheetId);
+    sheets = _.omit(sheets, sheet);
 
     if (sheetId === currentSheetId) {
-        sheetStore.storage.remove('currentSheetId');
+        currentSheetId = null;
     }
 }
 
 function setActiveSheet(sheetId) {
-    var currentSheetId;
-
-    if (!StringUtils.isNonEmptyString(sheetId)) throw new Error('IllegalArgumentsException: sheetId is missing or invalid!');
-
-    currentSheetId = sheetStore.getCurrentSheetId();
-
     if (currentSheetId === sheetId) return;
-
-    sheetStore.storage.set('currentSheetId', sheetId);
+    currentSheetId = sheetId;
 }
 
 function saveSheet(sheet) {
-    new SheetService().saveSheet(sheet);
-}
-
-function addParticipant(participantProperties) {
-    var errors;
-
-    if (!participantProperties) throw new Error('IllegalArgumentsException: participantProperties missing!');
-
-    const participant = Object.freeze(participantFactory.create(participantProperties));
-
-    errors = validation.validate(participant, Schema.Participant);
-
-    if (!_.isEmpty(errors)) {
-        sheetStore.emitError(Constants.ErrorEventTypes.ADD_PARTICIPANT, errors);
-        return;
-    }
-
-    sheetStore.getCurrentSheet().participants.push(participant);
-    return participant;
-}
-
-function removeParticipant(participantId) {
-    var currentSheet = sheetStore.getCurrentSheet();
-    var expenses = _.filter(currentSheet.expenses, function(expense) {
-        return expense.participants.indexOf(participantId) > -1 || expense.payer === participantId;
-    });
-
-    findAndRemove(currentSheet.participants, participantId);
-
-    for (let i = 0, len = expenses.length; i < len; i++) {
-        removeExpense(expenses[i].id);
-    }
-}
-
-function addExpense(expenseProperties) {
-    var errors;
-    if (!expenseProperties) throw new Error('IllegalArgumentsException: expenseProperties are missing!');
-    const expense = Object.freeze(expenseFactory.create(expenseProperties));
-
-    errors = validation.validate(expense, Schema.Expense);
-
-    if (!_.isEmpty(errors)) {
-        sheetStore.emitError(Constants.ErrorEventTypes.ADD_EXPENSE, errors);
-        return;
-    }
-
-    sheetStore.getCurrentSheet().expenses.push(expense);
-    return expense;
-}
-
-function removeExpense(expenseId) {
-    if (!expenseId) throw new Error('IllegalArgumentsException: expenseId missing!');
-    findAndRemove(sheetStore.getCurrentSheet().expenses, expenseId);
-}
-
-function removeAllExpenses() {
-    sheetStore.getCurrentSheet().expenses = [];
-}
-
-function saveCurrentSheet() {
-    sheetStore.storage.set(sheetStore.getCurrentSheetId(), sheetStore.getCurrentSheet());
+    if (sheet) sheets[sheet.id] = sheet;
 }
 
 function setSettings(settings) {
-    let sheet = sheetStore.getCurrentSheet();
+    let sheet = sheets[currentSheetId];
     sheet.settings = settings;
     return sheet;
 }
@@ -153,68 +56,59 @@ function setSettings(settings) {
  * @description Store for sheet objects
  * @extends {DataStore}
  */
-class SheetStore extends DataStore {
+const sheetStore = makeStore({
 
-    handleDispatcherEvent(payload) {
+    dispatcherIndex: AppDispatcher.register(payload => {
         const action = payload.action;
 
         switch(action.type) {
+    // ACTIONS
         case Constants.ActionTypes.CREATE_SHEET:
-            if (addSheet(action.sheetName)) sheetStore.emitChange(Constants.EventTypes.ADD_SHEET_EVENT);
+            try {
+                addSheet(action.sheetName);
+                sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            } catch(e) {
+                sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
+            }
             break;
         case Constants.ActionTypes.REMOVE_SHEET:
             removeSheet(action.sheet);
-            sheetStore.emitChange(Constants.EventTypes.REMOVE_SHEET_EVENT);
+            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             break;
         case Constants.ActionTypes.SET_ACTIVE_SHEET:
             setActiveSheet(action.sheetId);
             sheetStore.emitChange(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT);
             break;
-        case Constants.ActionTypes.UPDATE_SHEET:
-            updateSheet(action.sheet);
-            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
-            break;
-        case Constants.ActionTypes.SAVE_SHEET:
-            saveSheet(action.sheet);
-            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
-            break;
-        case Constants.ActionTypes.ADD_PARTICIPANT:
-            if (addParticipant(action.participant)) sheetStore.emitChange(Constants.EventTypes.ADD_PARTICIPANT_EVENT);
-            break;
-        case Constants.ActionTypes.REMOVE_PARTICIPANT:
-            removeParticipant(action.participant.id);
-            sheetStore.emitChange(Constants.EventTypes.REMOVE_PARTICIPANT_EVENT);
-            break;
-        case Constants.ActionTypes.ADD_EXPENSE:
-            if (addExpense(action.expense)) sheetStore.emitChange(Constants.EventTypes.ADD_EXPENSE_EVENT);
-            break;
-        case Constants.ActionTypes.REMOVE_EXPENSE:
-            removeExpense(action.expense.id);
-            sheetStore.emitChange(Constants.EventTypes.REMOVE_EXPENSE_EVENT);
-            break;
-        case Constants.ActionTypes.REMOVE_ALL_EXPENSES:
-            removeAllExpenses();
-            sheetStore.emitChange(Constants.EventTypes.REMOVE_EXPENSE_EVENT);
-            break;
         case Constants.ActionTypes.SET_SHEET_SETTINGS:
             setSettings(action.settings);
             sheetStore.emitChange(Constants.EventTypes.SETTINGS_CHANGED_EVENT);
             break;
+    // EVENTS:
+        case Constants.EventTypes.SAVE_SHEET_SUCCESS:
+            delete sheetStore.getCurrentSheet()._isNew;
+            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            break;
+        case Constants.ErrorEventTypes.SAVE_SHEET:
+            sheetStore.emitChange(Constants.EventTypes.ERROR_EVENT);
+            break;
+        case Constants.ErrorEventTypes.REMOVE_SHEET:
+            // restoreSheet(action.sheet);
+            break;
         }
         // save made changes to storage
-        saveCurrentSheet();
-    }
+        saveSheet(sheetStore.getCurrentSheet());
+    }),
 
     /**
      * Return all sheets from store
      * @return {array}
      */
     getSheets() {
-        return _.chain(this.storage.getAll())
+        return _.chain(sheets)
             .omit('currentSheetId')
             .toArray()
             .value();
-    }
+    },
 
     /**
      * Return a single sheet from store
@@ -222,27 +116,16 @@ class SheetStore extends DataStore {
      * @return {object}
      */
     getSheet(sheetId) {
-        return this.storage.get(sheetId);
-    }
+        return sheets[sheetId];
+    },
 
     /**
      * Return current sheet from store
      * @return {object}
      */
     getCurrentSheet() {
-        return this.getSheet(this.getCurrentSheetId());
+        return this.getSheet(currentSheetId);
     }
-
-    /**
-     * Return current sheet's id from store
-     * @return {string}
-     */
-    getCurrentSheetId() {
-        return this.storage.get('currentSheetId');
-    }
-}
-
-// export an instance (singleton)
-sheetStore = new SheetStore();
+});
 
 export default sheetStore;

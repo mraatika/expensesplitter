@@ -19,10 +19,6 @@ export const Sheet = {
 
     expenses: {
         type: 'array'
-    },
-
-    transactions: {
-        type: 'array'
     }
 };
 

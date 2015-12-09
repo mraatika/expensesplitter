@@ -1,8 +1,8 @@
 import React from 'react';
 import SheetStore from '../stores/sheetstore.js';
+import ParticipantStore from '../stores/participantstore.js';
+import ExpenseStore from '../stores/expensestore.js';
 import renderer from '../util/renderer';
-import TransactionsService from '../service/transactionsservice';
-import ExpensesService from '../service/expensesservice';
 import HomePage from '../components/home/homepage.jsx';
 import ParticipantsPage from '../components/participants/participantspage.jsx';
 import ExpensesPage from '../components/expenses/expensespage.jsx';
@@ -47,25 +47,31 @@ var routes = {
     },
 
     '/expenses': function() {
-        var currentSheet = SheetStore.getCurrentSheet();
-        var expensesPage = getComponent(ExpensesPage, { currentSheet: currentSheet });
+        const currentSheet = SheetStore.getCurrentSheet();
+        const participants = ParticipantStore.getParticipants(currentSheet.id);
+        var expensesPage = getComponent(ExpensesPage, { currentSheet, participants });
         renderer.renderContentView(expensesPage);
     },
 
     '/transactions': function() {
-        var currentSheet = SheetStore.getCurrentSheet();
-        var transactions = new TransactionsService(currentSheet).calculateTransactions();
-        var sharesAndBalances = new ExpensesService(currentSheet).getAllBalancesAndShares();
-        var transactionsPage = getComponent(TransactionsPage, {
-            currentSheet: currentSheet,
-            transactions: transactions,
-            sharesAndBalances: sharesAndBalances
+        const currentSheet = SheetStore.getCurrentSheet();
+        const participants = ParticipantStore.getParticipants(currentSheet.id);
+        const expenses = ExpenseStore.getExpenses(currentSheet.id);
+        const transactionsPage = getComponent(TransactionsPage, {
+            sheet: currentSheet,
+            participants,
+            expenses
         });
         renderer.renderContentView(transactionsPage);
     },
 
     '/summary': function() {
-        var sheetSummary = getComponent(SummaryPage);
+        const currentSheet = SheetStore.getCurrentSheet();
+        const participants = ParticipantStore.getParticipants(currentSheet.id);
+        const expenses = ExpenseStore.getExpenses(currentSheet.id);
+        const sheetSummary = getComponent(SummaryPage, {
+            participants, expenses
+        });
         renderer.renderContentView(sheetSummary);
     }
 };
