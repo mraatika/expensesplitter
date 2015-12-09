@@ -23,6 +23,7 @@ export default class SaveButton extends React.Component {
             <button
                 {...this.props}
                 className={buttonClassName}
+                disabled={this.isSaving}
                 aria-label={beforeSaveText}>
                 <i className={`fa fa-fw fa-${isSaving ? 'spinner' : isSaved ? 'check' : 'save'}`}/>&nbsp;
                 { isSaving ? onSavingText : isSaved ? afterSaveText : beforeSaveText }
