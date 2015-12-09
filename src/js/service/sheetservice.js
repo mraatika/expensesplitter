@@ -1,7 +1,8 @@
 import axios from 'axios';
 import _ from 'lodash';
 import Q from 'kew';
-import ActionCreators from '../actions/dataactioncreators.js';
+import ParticipantStore from '../stores/participantstore.js';
+import ExpenseStore from '../stores/expensestore.js';
 
 /**
  * @class SheetService
@@ -21,21 +22,21 @@ export default class SheetService {
      */
     saveSheet(sheet) {
         const q = Q.defer();
+        const participants = ParticipantStore.getParticipants(sheet.id);
+        const expenses = ExpenseStore.getExpenses(sheet.id);
+        let saveObject = Object.assign(sheet, { participants, expenses });
 
         if (sheet._isNew) {
             // omit _isNew parameter before post since
             // it will cause 400 error when tried to add
             // to the database
-            let newSheet = _.omit(sheet, '_isNew');
+            saveObject = _.omit(sheet, '_isNew');
 
-            axios.post('/api/sheet', { sheet: newSheet })
-                .then((response) => {
-                    ActionCreators.changeSheet(newSheet);
-                    q.resolve(response);
-                })
+            axios.post('/api/sheet', { sheet: saveObject })
+                .then((response) => q.resolve(response))
                 .catch((err) => q.reject(err));
         } else {
-            axios.put('api/sheet/' + sheet.id, { sheet: sheet })
+            axios.put('api/sheet/' + sheet.id, { sheet: saveObject })
                 .then((response) => q.resolve(response))
                 .catch((err) => q.reject(err));
         }

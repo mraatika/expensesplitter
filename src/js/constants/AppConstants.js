@@ -11,9 +11,9 @@ export default {
         ADD_PARTICIPANT: Symbol(),
         ADD_EXPENSE: Symbol(),
         ADD_SHEET: Symbol(),
+        SAVE_SHEET: Symbol(),
         UPDATE_SHEET: Symbol(),
-        REMOVE_SHEET: Symbol(),
-        SAVE_SHEET: Symbol()
+        REMOVE_SHEET: Symbol()
     },
 
     EventTypes: {
@@ -24,9 +24,11 @@ export default {
         REMOVE_EXPENSE_EVENT: Symbol(),
         REMOVE_PARTICIPANT_EVENT: Symbol(),
         REMOVE_SHEET_EVENT: Symbol(),
+        REMOVE_SHEET_SUCCESS: Symbol(),
         SET_ACTIVE_SHEET_EVENT: Symbol(),
         SETTINGS_CHANGED_EVENT: Symbol(),
-        LANGUAGE_CHANGED_EVENT: Symbol()
+        LANGUAGE_CHANGED_EVENT: Symbol(),
+        SAVE_SAVE_SUCCESS: Symbol()
     },
 
     ActionTypes: {

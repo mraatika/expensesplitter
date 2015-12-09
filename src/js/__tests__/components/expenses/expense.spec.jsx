@@ -11,6 +11,7 @@ const Utils = require('../../../util/utils');
 
 describe('Component:Expense', () => {
     var expenseTableRow;
+    var sheet = { id: '1' };
     var expenseModel = {
         name: 'Beer',
         price: 250,
@@ -27,7 +28,7 @@ describe('Component:Expense', () => {
         var Table = React.createClass({
             render: function() {
                 return (
-                    <table><tbody><Expense expense={expenseModel} participants={participants} isRemoveAllowed={true} /></tbody></table>
+                    <table><tbody><Expense expense={expenseModel} participants={participants} isRemoveAllowed={true} sheet={sheet}/></tbody></table>
                 );
             }
         });
@@ -52,6 +53,6 @@ describe('Component:Expense', () => {
         // Simulate a click and verify that the action creator is called
         let removeButton = TestUtilsAdditions.findRenderedComponentWithType(expenseTableRow, TrashButton);
         TestUtilsAdditions.Simulate.click(ReactDOM.findDOMNode(removeButton));
-        expect(ActionCreators.removeExpense).toHaveBeenCalledWith(expenseModel);
+        expect(ActionCreators.removeExpense).toHaveBeenCalledWith(expenseModel, sheet.id);
     });
 });

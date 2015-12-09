@@ -22,23 +22,15 @@ const zeroBalanceFilterer = balance => !NumberUtils.round(balance.balance, 3);
  * @description Service for calculating transactions
  */
 export default class TransactionsService {
-    /**
-     * @constructor
-     * @param  {object} sheet
-     * @return {TransactionsService}
-     */
-    constructor(sheet) {
-        this.expensesService = new ExpensesService(sheet);
-    }
 
     /**
      *  Calculate the transactions. Creates a model for each
      *  transaction and adds them to the transactions collection
      *  @return {array} Transactions
      */
-    calculateTransactions() {
+    calculateTransactions(expenses, participants) {
         const transactions = [];
-        let balances = _.filter(this.expensesService.calculateBalances(), balance => balance.balance != 0);
+        let balances = _.filter(new ExpensesService().calculateBalances(expenses, participants), balance => balance.balance != 0);
 
         // iterate until all accounts are even
         while (balances.length) {

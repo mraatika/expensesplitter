@@ -16,7 +16,7 @@ export default class ExpenseSummaryRow extends React.Component {
     }
 
     _onRemovalConfirmed() {
-        ActionCreator.removeAllExpenses();
+        ActionCreator.removeAllExpenses(this.props.sheet.id);
     }
 
     /**

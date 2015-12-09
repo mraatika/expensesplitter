@@ -33,6 +33,7 @@ export default class ExpenseList extends React.Component {
                     {
                         expenses.length ? expenses.map(expense =>
                             <Expense
+                                sheet={this.props.sheet}
                                 key={expense.id}
                                 isRemoveAllowed={this.props.isRemoveAllowed}
                                 expense={expense}
@@ -48,6 +49,7 @@ export default class ExpenseList extends React.Component {
                     this.props.hideFooter ? '' :
                     <tfoot>
                         <ExpenseSummaryRow
+                            sheet={this.props.sheet}
                             expenses={expenses}
                             isRemoveAllowed={this.props.isRemoveAllowed}
                             settings={this.props.settings}/>

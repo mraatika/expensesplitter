@@ -1,8 +1,17 @@
 import {cid} from '../util/utils';
 import {t} from '../dictionary/dictionary.js';
 
-var SheetFactory = {
+/**
+ * Factory for creating new sheets
+ * @type {Object}
+ */
+const SheetFactory = {
 
+    /**
+     * Create new sheet
+     * @param  {string} sheetName
+     * @return {Object}
+     */
     create: function(sheetName) {
         var sheet = {
             id: cid(),
@@ -13,8 +22,7 @@ var SheetFactory = {
                 currencySymbol: t('app.locales.currency_symbol')
             },
             participants: [],
-            expenses: [],
-            transactions: []
+            expenses: []
         };
 
         return sheet;

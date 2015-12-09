@@ -1,6 +1,4 @@
-jest.dontMock('../../../components/home/homepage.jsx');
-jest.dontMock('../../../dictionary/dictionary.js');
-jest.dontMock('../../../constants/pages.js');
+jest.autoMockOff();
 
 import React from 'react';
 import TestUtils from 'react-testutils-additions';

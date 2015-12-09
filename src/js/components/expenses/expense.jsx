@@ -15,7 +15,7 @@ export default class Expense extends React.Component {
      * Callback for the remove button
      */
     handleRemoveClick() {
-        ActionCreator.removeExpense(this.props.expense);
+        ActionCreator.removeExpense(this.props.expense, this.props.sheet.id);
     }
 
     /**

@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
-import ActionCreator from '../..//actions/dataactioncreators';
 import {Expense as ExpenseSchema} from '../../validation/schema/schema';
 import MessageContainer from '../common/messagecontainer.jsx';
 import ValidatedInput from '../common/validatedinput.jsx';
@@ -183,7 +182,7 @@ export default class ExpenseAddForm extends React.Component {
     _handleAddExpense(e) {
         var expense = this.state.expense;
         e.preventDefault();
-        ActionCreator.addExpense(expense);
+        this.props.onSubmit(expense);
         this._setIntitialExpense();
     }
 
@@ -293,3 +292,8 @@ export default class ExpenseAddForm extends React.Component {
         );
     }
 }
+
+ExpenseAddForm.defaultProps = {
+    participants: [],
+    onSubmit: () => {}
+};

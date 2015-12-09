@@ -57,13 +57,13 @@ export default class SheetSummaryPage extends React.Component {
      * @return {undefined}
      */
     _onChange(eventType) {
-        if (eventType === Constants.EventTypes.CHANGE_EVENT) {
-            this.setState({
-                sheet: SheetStore.getCurrentSheet(),
-                isSavingToServer: false,
-                isSavedToServer: true
-            });
-        }
+        const isSavedToServer = eventType != Constants.EventTypes.ERROR_EVENT;
+
+        this.setState({
+            sheet: SheetStore.getCurrentSheet(),
+            isSavingToServer: false,
+            isSavedToServer: isSavedToServer
+        });
     }
 
     /**
@@ -95,8 +95,9 @@ export default class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        var {participants, expenses, settings} = this.state.sheet;
-        var transactions = new TransactionsService(this.state.sheet).calculateTransactions();
+        const {settings} = this.state.sheet;
+        var {participants, expenses} = this.props;
+        var transactions = new TransactionsService().calculateTransactions(expenses, participants);
 
         return (
             <div id="summary-page">

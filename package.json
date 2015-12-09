@@ -78,6 +78,7 @@
     "kew": "^0.7.0",
     "keymirror": "^0.1.1",
     "lodash": "^3.10.1",
+    "makestore": "^1.0.0",
     "object-assign": "^4.0.1",
     "page": "^1.6.4",
     "react": "^0.14.0",

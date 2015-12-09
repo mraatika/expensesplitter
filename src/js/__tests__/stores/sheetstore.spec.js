@@ -1,4 +1,4 @@
-jest.dontMock('../../stores/datastore');
+/*jest.dontMock('../../stores/datastore');
 
 import sinon from 'sinon';
 
@@ -262,4 +262,4 @@ describe('DataStore', function() {
             });
         });
     });
-});
+});*/

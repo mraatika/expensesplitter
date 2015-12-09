@@ -1,5 +1,4 @@
 import React from 'react';
-import ActionCreator from '../../actions/dataactioncreators';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import MessageContainer from '../common/messagecontainer.jsx';
@@ -38,7 +37,7 @@ export default class ParticipantAddForm extends React.Component {
             this.setState({ errorText: error }, () => this._errorMessageContainer.open());
         } else {
             this.setState(this._getDefaultState(), () => this._errorMessageContainer.close());
-            ActionCreator.addParticipant({ name: name });
+            this.props.onFormSubmit({ name });
         }
     }
 
@@ -73,3 +72,8 @@ export default class ParticipantAddForm extends React.Component {
         );
     }
 }
+
+ParticipantAddForm.defaultProps = {
+    participants: [],
+    onFormSubmit: () => {}
+};

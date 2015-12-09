@@ -1,11 +1,10 @@
-jest.dontMock('../../../components/home/sheetform.jsx');
-jest.dontMock('../../../dictionary/dictionary.js');
+jest.autoMockOff();
 
-import React from 'react';
 import TestUtils from 'react-testutils-additions';
+import React from 'react';
 
-const SheetForm = require('../../../components/home/sheetform.jsx').default;
-const t = require('../../../dictionary/dictionary.js').t;
+const SheetForm = require.requireActual('../../../components/home/sheetform.jsx').default;
+const t = require.requireActual('../../../dictionary/dictionary.js').t;
 const ActionCreators = require('../../../actions/dataactioncreators.js').default;
 
 describe('SheetForm', function () {
