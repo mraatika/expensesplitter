@@ -39,6 +39,10 @@ const addExpense = (expense, sheetId) => {
     return false;
 };
 
+const addExpenses = (expenses, sheetId) => {
+    _.each(expenses, e => addExpense(e, sheetId));
+};
+
 const removeExpense = expense => {
     expenses = _.reject(expenses, e => e.id == expense.id);
     sheetExpenseIndex = _.omit(sheetExpenseIndex, expense.id);
@@ -97,6 +101,9 @@ const ExpenseStore = makeStore({
             removeAllExpenses(action.sheetId);
             shouldEmitChangeEvent = true;
             break;
+        case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+            addExpenses(action.sheet.expenses, action.sheet.id);
+            shouldEmitChangeEvent = true;
         }
 
         if (shouldEmitChangeEvent) {

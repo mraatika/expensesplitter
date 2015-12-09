@@ -55,6 +55,27 @@ export default {
         });
     },
 
+    loadSheet: function(sheetId) {
+        if (!StringUtils.isNonEmptyString(sheetId)) {
+            throw new InvalidArgumentsError('sheetId missing or invalid!');
+        }
+
+        new SheetService().getSheet(sheetId)
+            .then(response => {
+                AppDispatcher.handleServerAction({
+                    type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
+                    sheet: response.data.sheet
+                });
+            })
+            .fail(response => {
+                AppDispatcher.handleServerAction({
+                    type: Constants.ErrorEventTypes.LOAD_SHEET,
+                    sheet: response.sheet
+                });
+            });
+
+    },
+
     /**
      * Set active sheet
      * @param {string} sheetId

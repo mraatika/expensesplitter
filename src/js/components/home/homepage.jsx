@@ -21,23 +21,22 @@ export default class HomePage extends React.Component {
      */
     constructor() {
         super();
-        this.state = this._getDefaultState();
+
+        this.state = { currentSheet: null, sheets: []};
+
         this._onChange = this._onChange.bind(this);
-    }
-
-    componentWillMount() {
-        const {currentSheetPromise} = this.props;
-
-        if (currentSheetPromise) {
-            currentSheetPromise
-                .then((sheet) => {
-                    this.setState({ currentSheet: sheet });
-                });
-        }
     }
 
     componentDidMount() {
         SheetStore.addChangeListener(this._onChange);
+    }
+
+    componentWillMount() {
+        const {currentSheetId} = this.props;
+
+        if (currentSheetId) {
+            ActionCreators.loadSheet(currentSheetId);
+        }
     }
 
     componentWillUnmount() {

@@ -10,12 +10,8 @@ import {ValidationError} from '../util/errors.js';
 let currentSheetId;
 let sheets = {};
 
-function addSheet(sheetName) {
-    let errors;
-
-    const sheet = sheetFactory.create(sheetName);
-
-    errors = validation.validate(sheet, Schema.Sheet);
+function addSheet(sheet) {
+    const errors = validation.validate(sheet, Schema.Sheet);
 
     if (!_.isEmpty(errors)) {
         throw new ValidationError('Sheet adding failed', errors);
@@ -65,7 +61,8 @@ const sheetStore = makeStore({
     // ACTIONS
         case Constants.ActionTypes.CREATE_SHEET:
             try {
-                addSheet(action.sheetName);
+                const sheet = sheetFactory.create(action.sheetName);
+                addSheet(sheet);
                 sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             } catch(e) {
                 sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
@@ -93,6 +90,14 @@ const sheetStore = makeStore({
             break;
         case Constants.ErrorEventTypes.REMOVE_SHEET:
             // restoreSheet(action.sheet);
+            break;
+        case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+            try {
+                addSheet(action.sheet);
+                sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            } catch(e) {
+                sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
+            }
             break;
         }
         // save made changes to storage

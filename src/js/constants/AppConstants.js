@@ -11,6 +11,7 @@ export default {
         ADD_PARTICIPANT: Symbol(),
         ADD_EXPENSE: Symbol(),
         ADD_SHEET: Symbol(),
+        LOAD_SHEET: Symbol(),
         SAVE_SHEET: Symbol(),
         UPDATE_SHEET: Symbol(),
         REMOVE_SHEET: Symbol()
@@ -21,6 +22,7 @@ export default {
         ADD_PARTICIPANT_EVENT: Symbol(),
         ADD_SHEET_EVENT: Symbol(),
         CHANGE_EVENT: Symbol(),
+        LOAD_SHEET_SUCCESS: Symbol(),
         REMOVE_EXPENSE_EVENT: Symbol(),
         REMOVE_PARTICIPANT_EVENT: Symbol(),
         REMOVE_SHEET_EVENT: Symbol(),

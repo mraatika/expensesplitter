@@ -8,7 +8,6 @@ import ParticipantsPage from '../components/participants/participantspage.jsx';
 import ExpensesPage from '../components/expenses/expensespage.jsx';
 import TransactionsPage from '../components/transactions/transactionspage.jsx';
 import SummaryPage from '../components/summary/summarypage.jsx';
-import SheetService from '../service/sheetservice.js';
 
 /**
  *  Use factory to create component with data
@@ -34,7 +33,7 @@ var routes = {
 
     '/sheet/:id': function(ctx) {
         const homePage = getComponent(HomePage, {
-            currentSheetPromise: new SheetService().getSheet(ctx.params.id)
+            currentSheetId: ctx.params.id
         });
 
         renderer.renderContentView(homePage);

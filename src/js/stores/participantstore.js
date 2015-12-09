@@ -39,6 +39,10 @@ const addParticipant = (participant, sheetId) => {
     return false;
 };
 
+const addParticipants = (participants, sheetId) => {
+    _.each(participants, p => addParticipant(p, sheetId));
+};
+
 const removeParticipant = participant => {
     participants = _.reject(participants, p => p.id == participant.id);
     sheetParticipantIndex = _.omit(sheetParticipantIndex, participant.id);
@@ -90,6 +94,10 @@ const ParticipantStore = makeStore({
             removeParticipant(action.participant);
             shouldEmitChangeEvent = true;
             break;
+
+        case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+            addParticipants(action.sheet.participants, action.sheet.id);
+            shouldEmitChangeEvent = true;
         }
 
         if (shouldEmitChangeEvent) {

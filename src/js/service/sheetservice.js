@@ -16,6 +16,21 @@ import ExpenseStore from '../stores/expensestore.js';
 export default class SheetService {
 
     /**
+     * Get sheet from the server
+     * @param  {string} sheetId
+     * @return {Promise}
+     */
+    getSheet(sheetId) {
+        const q = Q.defer();
+
+        axios.get(`/api/sheet/${sheetId}`)
+            .then((response) => q.resolve(response))
+            .catch((err) => q.reject(err));
+
+        return q.promise;
+    }
+
+    /**
      * Save or update sheet
      * @param  {Object} sheet
      * @return {Promise}
