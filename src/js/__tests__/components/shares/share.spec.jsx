@@ -37,12 +37,12 @@ describe('Component:Share', function() {
 
     it('should display participant\'s share amount rounded to one decimal', function() {
         var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-share-amount');
-        expect(label.textContent).toEqual('' + (Utils.Number.round(shareModel.amount, 1)));
+        expect(label.textContent).toEqual('' + (Utils.NumberUtils.round(shareModel.amount, 1)));
     });
 
     it('should display participant\'s balance rounded to one decimal', function() {
         var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
-        expect(label.textContent).toEqual('' + (Utils.Number.round(shareModel.balance, 1)));
+        expect(label.textContent).toEqual('' + (Utils.NumberUtils.round(shareModel.balance, 1)));
     });
 
     it('should add class "negative" to balance label if participant\'s balance is negative', function() {
