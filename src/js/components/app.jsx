@@ -10,6 +10,8 @@ import LanguagesSection from './language/languagessection.jsx';
 import Constants from '../constants/AppConstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
 import {URLUtils} from '../util/utils.js';
+import {Modal} from 'react-bootstrap';
+import {t} from '../dictionary/dictionary.js';
 
 /**
  * @class App
@@ -26,6 +28,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
+        this.state = { isLoading: true };
         this._setInitialLanguage();
     }
 
@@ -34,6 +37,8 @@ export default class App extends React.Component {
 
         if (currentSheetId) {
             ActionCreators.loadSheet(currentSheetId);
+        } else {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -68,6 +73,8 @@ export default class App extends React.Component {
         if (eventType == Constants.ErrorEventTypes.LOAD_SHEET) {
             Router.navigateTo(pages.HOME.href);
         }
+
+        this.setState({ isLoading: false });
     }
 
     /**
@@ -96,6 +103,15 @@ export default class App extends React.Component {
                     <header role="banner">
                         <h1><a href="/">{ appName }</a></h1>
                     </header>
+
+                    <Modal show={this.state.isLoading}>
+                        <Modal.Body>
+                            <div className="text-center">
+                                <i className="fa fa-spinner fa-3x fa-spin" />&nbsp;
+                                <span className="italic">{t('lang.loading')}...</span>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
 
                     <main role="main" id="content"></main>
 
