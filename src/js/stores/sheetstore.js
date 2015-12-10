@@ -66,7 +66,7 @@ const sheetStore = makeStore({
                 addSheet(sheet);
                 sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             } catch(e) {
-                sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
+                sheetStore.emitChange(Constants.ErrorEventTypes.ADD_SHEET);
             }
             break;
         case Constants.ActionTypes.REMOVE_SHEET:
