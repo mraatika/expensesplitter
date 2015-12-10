@@ -128,7 +128,7 @@ export default {
             .then(response => {
                 AppDispatcher.handleServerAction({
                     type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
-                    sheet: response.data.sheet
+                    sheetId: response.data.sheetId
                 });
             })
             .fail(() => {

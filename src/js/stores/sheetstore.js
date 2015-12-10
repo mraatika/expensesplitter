@@ -83,7 +83,7 @@ const sheetStore = makeStore({
             break;
     // EVENTS:
         case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-            saveSheet(action.sheet);
+            saveSheet(_.omit(sheets[action.sheetId], '_isNew'));
             sheetStore.emitChange(Constants.EventTypes.SAVE_SHEET_SUCCESS);
             break;
         case Constants.EventTypes.LOAD_SHEET_SUCCESS:
