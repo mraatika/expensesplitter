@@ -81,5 +81,14 @@ export const URLUtils = {
      */
     formSheetUrl(sheetId) {
         return `${window.location.origin}/sheet/${sheetId}`;
+    },
+
+    /**
+     * Extract current sheet's id from the url path
+     * @return {string | null}
+     */
+    getCurrentSheetId() {
+        const match = window.location.href.match(/\/sheet\/(\w+)\/?/);
+        return match ? match[1] : null;
     }
 };

@@ -15,7 +15,7 @@ export default class ExpenseList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        var expenses = this.props.expenses;
+        var {expenses, participants, sheet} = this.props;
 
         return (
             <table className="u-full-width">
@@ -33,11 +33,11 @@ export default class ExpenseList extends React.Component {
                     {
                         expenses.length ? expenses.map(expense =>
                             <Expense
-                                sheet={this.props.sheet}
+                                sheet={sheet}
                                 key={expense.id}
                                 isRemoveAllowed={this.props.isRemoveAllowed}
                                 expense={expense}
-                                participants={this.props.participants} />
+                                participants={participants} />
                         ) : <tr>
                             <td colSpan="6">
                                 <i>{ t('expenses.no_expenses') }</i>
@@ -49,10 +49,10 @@ export default class ExpenseList extends React.Component {
                     this.props.hideFooter ? '' :
                     <tfoot>
                         <ExpenseSummaryRow
-                            sheet={this.props.sheet}
+                            sheet={sheet}
                             expenses={expenses}
                             isRemoveAllowed={this.props.isRemoveAllowed}
-                            settings={this.props.settings}/>
+                            currencySymbol={this.props.currencySymbol}/>
                     </tfoot>
                 }
             </table>

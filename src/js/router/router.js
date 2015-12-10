@@ -2,6 +2,7 @@ import _ from 'lodash';
 import page from 'page';
 import pages from '../constants/pages.js';
 import routes from './routes.jsx';
+import SheetStore from '../stores/sheetstore.js';
 
 var _currentRoute = null;
 
@@ -54,6 +55,17 @@ class Router {
      */
     navigateTo(path) {
         page(path);
+    }
+
+    /**
+     * Navigate to a path that's prepended with sheet and it's id
+     * @param  {string} path
+     * @return {undefined}
+     */
+    navigateToSheetURL(path) {
+        const sheet = SheetStore.getCurrentSheet();
+        const sheetURLPath = `/sheet${sheet ? ('/' + sheet.id) : ''}${path}`;
+        page(sheetURLPath);
     }
 
     /**

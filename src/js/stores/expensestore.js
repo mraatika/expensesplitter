@@ -2,6 +2,7 @@ import makeStore from 'makestore';
 import _ from 'lodash';
 import AppDispatcher from '../dispatchers/appdispatcher';
 import Constants from '../constants/AppConstants.js';
+import ParticipantStore from './participantstore.js';
 import ExpenseFactory from '../factory/expensefactory.js';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';
@@ -64,7 +65,7 @@ const ExpenseStore = makeStore({
      * @return {array}
      */
     getExpenses(sheetId) {
-        return sheetId ? getExpensesBySheetId(sheetId) : _.clone(expenses);
+        return sheetId ? getExpensesBySheetId(sheetId) : [];
     },
 
     /**
@@ -102,6 +103,7 @@ const ExpenseStore = makeStore({
             shouldEmitChangeEvent = true;
             break;
         case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+            AppDispatcher.waitFor([ ParticipantStore.dispatcherIndex ]);
             addExpenses(action.sheet.expenses, action.sheet.id);
             shouldEmitChangeEvent = true;
         }

@@ -60,7 +60,7 @@ const ParticipantStore = makeStore({
      * @return {array}
      */
     getParticipants(sheetId) {
-        return sheetId ? getParticipantsBySheetId(sheetId) : _.clone(participants);
+        return sheetId ? getParticipantsBySheetId(sheetId) : [];
     },
 
     /**

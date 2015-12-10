@@ -1,5 +1,6 @@
 import AppDispatcher from '../dispatchers/appdispatcher';
 import Constants from '../constants/AppConstants';
+import SheetStore from '../stores/sheetstore.js';
 import SheetService from '../service/sheetservice.js';
 import {StringUtils} from '../util/utils';
 import {InvalidArgumentsError} from '../util/errors.js';
@@ -60,6 +61,18 @@ export default {
             throw new InvalidArgumentsError('sheetId missing or invalid!');
         }
 
+        const sheet = SheetStore.getSheet(sheetId);
+
+        // return from sheet store if already loaded
+        if (sheet) {
+            AppDispatcher.handleServerAction({
+                type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
+                sheet: sheet
+            });
+            return;
+        }
+
+        // if not found in store then fetch it from the server
         new SheetService().getSheet(sheetId)
             .then(response => {
                 AppDispatcher.handleServerAction({
@@ -111,15 +124,11 @@ export default {
             throw new InvalidArgumentsError('sheet or sheet\'s id is missing or invalid!');
         }
 
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.SAVE_SHEET,
-            sheet
-        });
-
         new SheetService().saveSheet(sheet)
-            .then(() => {
+            .then(response => {
                 AppDispatcher.handleServerAction({
-                    type: Constants.EventTypes.SAVE_SHEET_SUCCESS
+                    type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
+                    sheet: response.data.sheet
                 });
             })
             .fail(() => {

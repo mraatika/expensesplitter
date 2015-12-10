@@ -3,6 +3,8 @@ import SheetStore from '../../stores/sheetstore.js';
 import ActionCreators from '../../actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
 import {t} from '../../dictionary/dictionary';
+import Router from '../../router/router.js';
+import pages from '../../constants/pages.js';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import MessageContainer from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
@@ -28,11 +30,9 @@ export default class HomePage extends React.Component {
     }
 
     componentDidMount() {
-        SheetStore.addChangeListener(this._onChange);
-    }
-
-    componentWillMount() {
         const {currentSheetId} = this.props;
+
+        SheetStore.addChangeListener(this._onChange);
 
         if (currentSheetId) {
             ActionCreators.loadSheet(currentSheetId);
@@ -65,12 +65,17 @@ export default class HomePage extends React.Component {
      * @return {undefined}
      */
     _onChange(eventType) {
+        const currentSheetId = (this.state.currentSheet || {}).id;
+        const newState = this._getDefaultState();
+
         this.refs.infoMessageContainer.close();
 
-        this.setState(this._getDefaultState());
+        this.setState(newState);
 
-        if (eventType === Constants.EventTypes.SET_ACTIVE_SHEET_EVENT) {
-            this.refs.loadSheetDialog.close();
+        if (eventType == Constants.EventTypes.REMOVE_SHEET_EVENT) {
+            Router.navigateTo(pages.HOME.href);
+        } else if (currentSheetId !== (newState.currentSheet || {}).id) {
+            Router.navigateToSheetURL(pages.HOME.href);
         }
     }
 

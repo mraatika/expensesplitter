@@ -3,6 +3,8 @@ import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import Constants from '../../constants/AppConstants.js';
 import SheetStore from '../../stores/sheetstore.js';
+import ExpenseStore from '../../stores/expensestore.js';
+import ParticipantStore from '../../stores/participantstore.js';
 import ExpenseList from '../expenses/expenselist.jsx';
 import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
@@ -29,16 +31,7 @@ export default class SheetSummaryPage extends React.Component {
      */
     constructor(props) {
         super(props);
-
-        const sheet = SheetStore.getCurrentSheet();
-
-        this.state = {
-            isSavedToServer: false,
-            isSavingToServer: false,
-            sheet: sheet,
-            shareURL: URLUtils.formSheetUrl(sheet.id)
-        };
-
+        this.state = this._formState();
         this._onChange = this._onChange.bind(this);
     }
 
@@ -50,6 +43,20 @@ export default class SheetSummaryPage extends React.Component {
         SheetStore.removeChangeListener(this._onChange);
     }
 
+    _formState() {
+        const currentSheet = SheetStore.getCurrentSheet() || {};
+
+        return {
+            currentSheet: currentSheet,
+            participants: ParticipantStore.getParticipants(currentSheet.id),
+            expenses: ExpenseStore.getExpenses(currentSheet.id),
+            settings: currentSheet.settings || {},
+            isSavedToServer: false,
+            isSavingToServer: false,
+            shareURL: currentSheet ? URLUtils.formSheetUrl(currentSheet.id) : null
+        };
+    }
+
     /**
      * Callback for SheetStore's change events
      * @private
@@ -57,13 +64,17 @@ export default class SheetSummaryPage extends React.Component {
      * @return {undefined}
      */
     _onChange(eventType) {
-        const isSavedToServer = eventType != Constants.EventTypes.ERROR_EVENT;
+        if (eventType == Constants.EventTypes.SAVE_SHEET_SUCCESS) {
+            const isSavedToServer = eventType != Constants.EventTypes.ERROR_EVENT;
 
-        this.setState({
-            sheet: SheetStore.getCurrentSheet(),
-            isSavingToServer: false,
-            isSavedToServer: isSavedToServer
-        });
+            this.setState({
+                currentSheet: SheetStore.getCurrentSheet(),
+                isSavingToServer: false,
+                isSavedToServer: isSavedToServer
+            });
+        } else {
+            this.setState(this._formState());
+        }
     }
 
     /**
@@ -73,7 +84,7 @@ export default class SheetSummaryPage extends React.Component {
      */
     _saveSheet() {
         this.setState({ isSavingToServer: true });
-        ActionCreators.saveSheet(this.state.sheet);
+        ActionCreators.saveSheet(this.state.currentSheet);
     }
 
     /**
@@ -82,7 +93,7 @@ export default class SheetSummaryPage extends React.Component {
      * @return  {undefined}
      */
     _removeSheet() {
-        ActionCreators.removeSheet(this.state.sheet);
+        ActionCreators.removeSheet(this.state.currentSheet);
         // optimistic
         Router.navigateTo(pages.HOME.href);
     }
@@ -95,13 +106,12 @@ export default class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {settings} = this.state.sheet;
-        var {participants, expenses} = this.props;
-        var transactions = new TransactionsService().calculateTransactions(expenses, participants);
+        const {participants, expenses, settings} = this.state;
+        const transactions = new TransactionsService().calculateTransactions(expenses, participants);
 
         return (
             <div id="summary-page">
-                <h1>{this.state.sheet.name}</h1>
+                <h1>{this.state.currentSheet.name}</h1>
 
                 <h2>{t('lang.transaction_plural')}:</h2>
                 <TransactionsList
@@ -114,7 +124,7 @@ export default class SheetSummaryPage extends React.Component {
                     expenses={expenses}
                     participants={participants}
                     isRemoveAllowed={false}
-                    settings={settings}/>
+                    currencySymbol={settings.currencySymbol}/>
 
                 <h2>{t('lang.share_plural')}:</h2>
 
@@ -128,16 +138,16 @@ export default class SheetSummaryPage extends React.Component {
 
                 <div id="server-actions">
                     <div className="row">
-                        <div className={ 'twelve columns' + (!this.state.sheet._isNew ? ' hidden' : '')}>
+                        <div className={ 'twelve columns' + (!this.state.currentSheet._isNew ? ' hidden' : '')}>
                             <MessageContainer
                                 ref={(c) => this._messageContainer = c}
                                 type="info"
-                                openOnMount={this.state.sheet._isNew}>
+                                openOnMount={this.state.currentSheet._isNew}>
                                 {t('transactions.save_sheet_to_share')}
                             </MessageContainer>
                         </div>
 
-                        <div className={'twelve columns' + (this.state.sheet._isNew ? ' hidden' : '')}>
+                        <div className={'twelve columns' + (this.state.currentSheet._isNew ? ' hidden' : '')}>
                             <label htmlFor="sheet-share-url">{t('transactions.share_url')}:</label>
                             <InputButtonSplit>
                                 <input
@@ -145,7 +155,7 @@ export default class SheetSummaryPage extends React.Component {
                                     ref={c => this._shareUrlField = c}
                                     type="text"
                                     readOnly
-                                    defaultValue={this.state.shareURL}
+                                    value={this.state.shareURL}
                                     onClick={() => this._shareUrlField.select() } />
                                 <button
                                     type="button"

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import makeStore from 'makestore';
 import AppDispatcher from '../dispatchers/appdispatcher';
+import ExpenseStore from './expensestore.js';
 import Constants from '../constants/AppConstants';
 import sheetFactory from '../factory/sheetfactory';
 import validation from '../validation/validation';
@@ -70,7 +71,7 @@ const sheetStore = makeStore({
             break;
         case Constants.ActionTypes.REMOVE_SHEET:
             removeSheet(action.sheet);
-            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            sheetStore.emitChange(Constants.EventTypes.REMOVE_SHEET_EVENT);
             break;
         case Constants.ActionTypes.SET_ACTIVE_SHEET:
             setActiveSheet(action.sheetId);
@@ -82,22 +83,27 @@ const sheetStore = makeStore({
             break;
     // EVENTS:
         case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-            delete sheetStore.getCurrentSheet()._isNew;
-            sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            saveSheet(action.sheet);
+            sheetStore.emitChange(Constants.EventTypes.SAVE_SHEET_SUCCESS);
             break;
+        case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+            try {
+                addSheet(action.sheet);
+                AppDispatcher.waitFor([ ExpenseStore.dispatcherIndex ]);
+                sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            } catch(e) {
+                sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
+            }
+            break;
+    // ERRORS
         case Constants.ErrorEventTypes.SAVE_SHEET:
             sheetStore.emitChange(Constants.EventTypes.ERROR_EVENT);
             break;
         case Constants.ErrorEventTypes.REMOVE_SHEET:
             // restoreSheet(action.sheet);
             break;
-        case Constants.EventTypes.LOAD_SHEET_SUCCESS:
-            try {
-                addSheet(action.sheet);
-                sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
-            } catch(e) {
-                sheetStore.emitError(Constants.ErrorEventTypes.ADD_SHEET);
-            }
+        case Constants.ErrorEventTypes.LOAD_SHEET:
+            sheetStore.emitChange(Constants.ErrorEventTypes.LOAD_SHEET);
             break;
         }
         // save made changes to storage

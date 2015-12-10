@@ -51,7 +51,7 @@ export default class SheetService {
                 .then((response) => q.resolve(response))
                 .catch((err) => q.reject(err));
         } else {
-            axios.put('api/sheet/' + sheet.id, { sheet: saveObject })
+            axios.put('/api/sheet/' + sheet.id, { sheet: saveObject })
                 .then((response) => q.resolve(response))
                 .catch((err) => q.reject(err));
         }

@@ -23,7 +23,7 @@ export default class ExpenseAddForm extends React.Component {
         super(props);
         this._onExpensePropertyChange = this._onExpensePropertyChange.bind(this);
         this._onValidationError = this._onValidationError.bind(this);
-        this.state = this._getDefaultState();
+        this.state = this._formState();
     }
 
     componentDidMount() {
@@ -34,40 +34,43 @@ export default class ExpenseAddForm extends React.Component {
         this._isMounted = false;
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState(this._formState(nextProps));
+    }
+
     /**
      * Returns the default (initial) state
      * @private
-     * @return {object} state
+     * @param {Object} properties If omitted this.props will be used
+     * @return {Object} state
      */
-    _getDefaultState() {
-        var errors = {};
+    _formState(properties) {
+        const errors = {};
+        const props = properties || this.props;
+        let participants = [];
+        let payer;
 
-        if (!(this.props.participants || []).length) {
+        if (!props.participants.length) {
             errors.noParticipants = t('expenseaddform.error.participants');
+        } else {
+            payer = props.participants[0].id;
+        }
+
+        // if previous state is available then keep payer and participant values
+        if (this.state) {
+            payer = this.state.expense.payer;
+            participants = this.state.expense.participants;
         }
 
         return {
             expense: {
                 name: '',
                 price: null,
-                participants: [],
-                payer: (this.props.participants[0] || {}).id
+                participants,
+                payer
             },
             errors: errors
         };
-    }
-
-    /**
-     * Reset the form's state. Keeps the current payer and participant
-     * as selected values
-     * @private
-     * @return {undefined}
-     */
-    _setIntitialExpense() {
-        var initialExpense = this._getDefaultState().expense;
-        initialExpense.payer = this.state.expense.payer;
-        initialExpense.participants = this.state.expense.participants;
-        this.setState({ expense:  initialExpense });
     }
 
     /**
@@ -183,7 +186,6 @@ export default class ExpenseAddForm extends React.Component {
         var expense = this.state.expense;
         e.preventDefault();
         this.props.onSubmit(expense);
-        this._setIntitialExpense();
     }
 
     render() {
@@ -198,7 +200,7 @@ export default class ExpenseAddForm extends React.Component {
                 <MessageContainer
                     ref="errorMessageContainer"
                     type="danger"
-                    openOnMount={errorTexts.length}>
+                    isOpen={errorTexts.length}>
                     {errorTexts.map(function (error) {
                         return ([
                             <span className="message-text">{error}</span>,

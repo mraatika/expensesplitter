@@ -19,7 +19,7 @@ export default class NavigationSelect extends React.Component {
     _onChange() {
         const link = this._select.options[this._select.selectedIndex].value;
         // defer to allow the pending update to be completed
-        _.defer(() => Router.navigateTo(link));
+        _.defer(() => Router.navigateToSheetURL(link));
     }
 
     /**

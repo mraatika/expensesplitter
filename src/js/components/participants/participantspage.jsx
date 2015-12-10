@@ -1,5 +1,7 @@
 import React from 'react';
+import SheetStore from '../../stores/sheetstore.js';
 import ParticipantStore from '../../stores/participantstore.js';
+import ExpenseStore from '../../stores/expensestore.js';
 import pages from '../../constants/pages';
 import ParticipantList from './participantlist.jsx';
 import ParticipantAddForm from './participantaddform.jsx';
@@ -22,16 +24,29 @@ export default class ParticipantsPage extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { participants: ParticipantStore.getParticipants(this.props.currentSheet.id) };
+
+        this.state = this._formState();
+
         this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
         ParticipantStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
         ParticipantStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
+    }
+
+    _formState() {
+        const currentSheet = SheetStore.getCurrentSheet() || {};
+
+        return {
+            currentSheet,
+            participants: ParticipantStore.getParticipants(currentSheet.id)
+        };
     }
 
     /**
@@ -40,7 +55,7 @@ export default class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _onChange() {
-        this.setState({ participants: ParticipantStore.getParticipants(this.props.currentSheet.id) });
+        this.setState(this._formState());
     }
 
     /**
@@ -50,7 +65,7 @@ export default class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const expensesService = new ExpensesService(this.props.currentSheet);
+        const expensesService = new ExpensesService({ expenses: ExpenseStore.getExpenses(this.state.currentSheet.id) });
         const expensesParticipatedIn = expensesService.findExpensesByParticipant(participant.id);
         const expensesPaidBy = expensesService.findExpensesPaidByParticipant(participant.id);
 
@@ -73,7 +88,7 @@ export default class ParticipantsPage extends React.Component {
     }
 
     _addParticipant(participantProperties) {
-        ActionCreator.addParticipant(participantProperties, this.props.currentSheet.id);
+        ActionCreator.addParticipant(participantProperties, this.state.currentSheet.id);
     }
 
     /**

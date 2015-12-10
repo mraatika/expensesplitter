@@ -39,39 +39,24 @@ var routes = {
         renderer.renderContentView(homePage);
     },
 
-    '/participants': function() {
-        var currentSheet = SheetStore.getCurrentSheet();
-        var participantsPage = getComponent(ParticipantsPage, { currentSheet: currentSheet });
+    '/sheet/:id/participants': function() {
+        const participantsPage = getComponent(ParticipantsPage);
         renderer.renderContentView(participantsPage);
     },
 
-    '/expenses': function() {
-        const currentSheet = SheetStore.getCurrentSheet();
-        const participants = ParticipantStore.getParticipants(currentSheet.id);
-        var expensesPage = getComponent(ExpensesPage, { currentSheet, participants });
+    '/sheet/:id/expenses': function() {
+        const expensesPage = getComponent(ExpensesPage);
         renderer.renderContentView(expensesPage);
     },
 
-    '/transactions': function() {
-        const currentSheet = SheetStore.getCurrentSheet();
-        const participants = ParticipantStore.getParticipants(currentSheet.id);
-        const expenses = ExpenseStore.getExpenses(currentSheet.id);
-        const transactionsPage = getComponent(TransactionsPage, {
-            sheet: currentSheet,
-            participants,
-            expenses
-        });
+    '/sheet/:id/transactions': function() {
+        const transactionsPage = getComponent(TransactionsPage);
         renderer.renderContentView(transactionsPage);
     },
 
-    '/summary': function() {
-        const currentSheet = SheetStore.getCurrentSheet();
-        const participants = ParticipantStore.getParticipants(currentSheet.id);
-        const expenses = ExpenseStore.getExpenses(currentSheet.id);
-        const sheetSummary = getComponent(SummaryPage, {
-            participants, expenses
-        });
-        renderer.renderContentView(sheetSummary);
+    '/sheet/:id/summary': function() {
+        const summaryPage = getComponent(SummaryPage);
+        renderer.renderContentView(summaryPage);
     }
 };
 

@@ -51,7 +51,7 @@ export default class ParticipantSummaryListItem extends React.Component {
                     expenses={this.props.expenses}
                     participants={this.props.participants}
                     isRemoveAllowed={false}
-                    settings={this.props.settings}/>
+                    currencySymbol={this.props.currencySymbol}/>
             </Panel>
         );
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
+import Router from '../../router/router.js';
 import pages from '../../constants/pages.js';
 import NavigationSelect from './navigationselect.jsx';
 
@@ -18,17 +19,19 @@ export default class Navigation extends React.Component {
         let nextLink = '';
 
         if (prevPage) {
-            prevLink = <a href={prevPage.href} className="button u-full-width">
-                <i className="fa fa-angle-double-left"></i>&nbsp;
-                {t (prevPage.label) }
-            </a>;
+            prevLink =
+                <button onClick={() => Router.navigateToSheetURL(prevPage.href)} className="u-full-width">
+                    <i className="fa fa-angle-double-left"></i>&nbsp;
+                    {t (prevPage.label) }
+                </button>;
         }
 
         if (nextPage) {
-            nextLink = <a href={nextPage.href} className="button u-full-width">
-                { t(nextPage.label) }&nbsp;
-                <i className="fa fa-angle-double-right"></i>
-            </a>;
+            nextLink =
+                <button onClick={() => Router.navigateToSheetURL(nextPage.href)} className="u-full-width">
+                    { t(nextPage.label) }&nbsp;
+                    <i className="fa fa-angle-double-right"></i>
+                </button>;
         }
 
         return (

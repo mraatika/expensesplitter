@@ -30,7 +30,7 @@ export default {
         SET_ACTIVE_SHEET_EVENT: Symbol(),
         SETTINGS_CHANGED_EVENT: Symbol(),
         LANGUAGE_CHANGED_EVENT: Symbol(),
-        SAVE_SAVE_SUCCESS: Symbol()
+        SAVE_SHEET_SUCCESS: Symbol()
     },
 
     ActionTypes: {

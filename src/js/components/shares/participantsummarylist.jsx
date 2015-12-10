@@ -25,7 +25,7 @@ export default class ParticipantSummaryList extends React.Component {
                             participantName={shareAndBalance.participantName}
                             expenses={expenses}
                             participants={this.props.participants}
-                            settings={this.props.settings}/>;
+                            currencySymbol={this.props.currencySymbol}/>;
                     })
                 }
             </div>

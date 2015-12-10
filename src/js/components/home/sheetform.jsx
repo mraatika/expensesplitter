@@ -55,7 +55,7 @@ export default class SheetForm extends React.Component {
      */
     _continueWithCurrentSheet() {
         // move to participants section
-        if (this.props.currentSheet) Router.navigateTo(pages.PARTICIPANTS.href);
+        if (this.props.currentSheet) Router.navigateToSheetURL(pages.PARTICIPANTS.href);
     }
 
     /**

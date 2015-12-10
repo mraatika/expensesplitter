@@ -1,5 +1,7 @@
 import React from 'react';
 import ExpenseStore from '../../stores/expensestore.js';
+import SheetStore from '../../stores/sheetstore.js';
+import ParticipantStore from '../../stores/participantstore.js';
 import pages from '../../constants/pages';
 import ActionCreators from '../..//actions/dataactioncreators';
 import {t} from '../../dictionary/dictionary';
@@ -21,7 +23,7 @@ export default class ExpensesPage extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { expenses: this._fetchExpenses() };
+        this.state = this._formState();
         this._onChange = this._onChange.bind(this);
     }
 
@@ -33,13 +35,15 @@ export default class ExpensesPage extends React.Component {
         ExpenseStore.removeChangeListener(this._onChange);
     }
 
-    /**
-     * Fetch all sheet's expenses from expense store
-     * @private
-     * @return  {array}
-     */
-    _fetchExpenses() {
-        return ExpenseStore.getExpenses(this.props.currentSheet.id);
+    _formState() {
+        const currentSheet = SheetStore.getCurrentSheet() || {};
+
+        return {
+            currentSheet: currentSheet,
+            participants: ParticipantStore.getParticipants(currentSheet.id),
+            expenses: ExpenseStore.getExpenses(currentSheet.id),
+            settings: currentSheet.settings || {}
+        };
     }
 
     /**
@@ -48,7 +52,7 @@ export default class ExpensesPage extends React.Component {
      * @return {undefined}
      */
     _onChange() {
-        this.setState({ expenses: this._fetchExpenses() });
+        this.setState(this._formState());
     }
 
     /**
@@ -58,15 +62,14 @@ export default class ExpensesPage extends React.Component {
      * @return {undefined}
      */
     _addExpense(expense) {
-        ActionCreators.addExpense(expense, this.props.currentSheet.id);
+        ActionCreators.addExpense(expense, this.state.currentSheet.id);
     }
 
     /**
      * @return {ReactComponent}
      */
     render() {
-        const sheet = this.props.currentSheet;
-        const {participants} = this.props;
+        const {currentSheet, participants, expenses, settings} = this.state;
 
         return (
             <section id="expenses-page">
@@ -74,15 +77,15 @@ export default class ExpensesPage extends React.Component {
                     <div className="expenses-list eight columns">
                         <h2>{ t('lang.expense_plural') }</h2>
                         <ExpenseList
-                            sheet={sheet}
-                            expenses={this.state.expenses}
+                            sheet={currentSheet}
+                            expenses={expenses}
                             participants={participants}
                             isRemoveAllowed={true}
-                            settings={sheet.settings}/>
+                            currencySymbol={settings.currencySymbol}/>
                     </div>
                     <div className="four columns">
                         <aside role="complementary" className="shares-section-container">
-                            <SharesSection expenses={this.state.expenses} participants={participants} />
+                            <SharesSection expenses={expenses} participants={participants} />
                         </aside>
                     </div>
                 </section>
@@ -90,9 +93,8 @@ export default class ExpensesPage extends React.Component {
                 <section className="clear-float">
                     <ExpenseAddForm
                         participants={participants}
-                        expenses={this.state.expenses}
                         onSubmit={this._addExpense.bind(this)}
-                        currencySymbol={sheet.settings.currencySymbol}/>
+                        currencySymbol={settings.currencySymbol}/>
                 </section>
 
                 <Navigation currentPage={pages.EXPENSES} />
