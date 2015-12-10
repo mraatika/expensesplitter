@@ -100,26 +100,7 @@ export default class ExpenseAddForm extends React.Component {
 
         let errors = this.state.errors;
         errors[property] = error || null;
-        this.setState({ 'errors': errors }, this._toggleErrorText.bind(this));
-
-    }
-
-    /**
-     * Show/hide validation errors in the error text section
-     * @private
-     * @param  {string} property
-     * @param  {*} value
-     * @param  {string} error
-     * @return {undefined}
-     */
-    _toggleErrorText() {
-        let hasErrors = _.compact(_.values(this.state.errors)).length;
-
-        if (hasErrors) {
-            this.refs.errorMessageContainer.open();
-        } else {
-            this.refs.errorMessageContainer.close();
-        }
+        this.setState({ 'errors': errors });
     }
 
     /**
@@ -198,9 +179,8 @@ export default class ExpenseAddForm extends React.Component {
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>
                 <MessageContainer
-                    ref="errorMessageContainer"
                     type="danger"
-                    isOpen={errorTexts.length}>
+                    show={errorTexts.length}>
                     {errorTexts.map(function (error) {
                         return ([
                             <span className="message-text">{error}</span>,

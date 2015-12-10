@@ -140,9 +140,7 @@ export default class SheetSummaryPage extends React.Component {
                     <div className="row">
                         <div className={ 'twelve columns' + (!this.state.currentSheet._isNew ? ' hidden' : '')}>
                             <MessageContainer
-                                ref={(c) => this._messageContainer = c}
-                                type="info"
-                                openOnMount={this.state.currentSheet._isNew}>
+                                show={this.state.currentSheet._isNew}>
                                 {t('transactions.save_sheet_to_share')}
                             </MessageContainer>
                         </div>

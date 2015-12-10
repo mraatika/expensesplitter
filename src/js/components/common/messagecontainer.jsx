@@ -15,17 +15,34 @@ export default class MessageContainer extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { isOpen: this.props.openOnMount };
+        this.state = { isOpen: this.props.show };
     }
 
-    open() {
-        this.setState({ isOpen: true });
+    /**
+     * Set isOpen state when props change
+     * @param  {Object} newProps
+     * @return {undefined}
+     */
+    componentWillReceiveProps(newProps) {
+        this.setState({ isOpen: newProps.show });
     }
 
-    close() {
+    /**
+     * Close the container
+     * @private
+     * @return  {undefined}
+     */
+    _close() {
+        this.props.onClose();
         this.setState({ isOpen: false });
     }
 
+    /**
+     * Get color class name by type
+     * @private
+     * @param   {string} type
+     * @return  {string}
+     */
     _getColorClass(type) {
         switch(type) {
         case 'info':
@@ -41,6 +58,9 @@ export default class MessageContainer extends React.Component {
         }
     }
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         const className = 'message-container ' + this.props.type;
         const colorClass = 'text-' + this._getColorClass(this.props.type);
@@ -51,7 +71,7 @@ export default class MessageContainer extends React.Component {
                 className={className}>
 
                 <i
-                    onClick={this.close.bind(this)}
+                    onClick={this._close.bind(this)}
                     aria-role="button"
                     className={'close-button fa fa-times u-pull-right ' + colorClass}
                     title={t('lang.close')} />
@@ -66,3 +86,27 @@ export default class MessageContainer extends React.Component {
         );
     }
 }
+
+MessageContainer.defaultProps = {
+    show: false,
+    type: 'info',
+    onClose: () => {}
+};
+
+MessageContainer.propTypes = {
+    /**
+     * Truthy/falsy flag to indicate whether container is displayed or not.
+     * @type {*}
+     */
+    //show: React.PropTypes.bool,
+    /**
+     * Type of the container (visual style)
+     * @type {info|danger|warning|success}
+     */
+    type: React.PropTypes.oneOf(['info', 'danger', 'warning', 'success']),
+    /**
+     * Close callback
+     * @type {function}
+     */
+    onClose: React.PropTypes.func
+};

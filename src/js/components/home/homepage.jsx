@@ -23,7 +23,12 @@ export default class HomePage extends React.Component {
      */
     constructor() {
         super();
-        this.state = { currentSheet: null, sheets: []};
+        this.state = {
+            currentSheet: null,
+            sheets: [],
+            newSheetCreated: false,
+            errors: {}
+        };
         this._onChange = this._onChange.bind(this);
     }
 
@@ -46,7 +51,9 @@ export default class HomePage extends React.Component {
 
         return {
             currentSheet: currentSheet,
-            sheets: allSheets
+            sheets: allSheets,
+            errors: {},
+            newSheetCreated: false
         };
     }
 
@@ -60,14 +67,14 @@ export default class HomePage extends React.Component {
         const currentSheetId = (this.state.currentSheet || {}).id;
         const newState = this._getDefaultState();
 
-        this.refs.infoMessageContainer.close();
-
         this.setState(newState);
 
         if (eventType == Constants.EventTypes.REMOVE_SHEET_EVENT) {
             Router.navigateTo(pages.HOME.href);
         } else if (currentSheetId !== (newState.currentSheet || {}).id) {
             Router.navigateToSheetURL(pages.HOME.href);
+        } else if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
+            this.setState({ errors: { sheetNotFound: true } });
         }
     }
 
@@ -89,8 +96,7 @@ export default class HomePage extends React.Component {
 
     _handleAddSheetClick() {
         if (this.state.currentSheet) {
-            this.setState({ currentSheet: null }, () => {
-                this.refs.infoMessageContainer.open();
+            this.setState({ currentSheet: null, newSheetCreated: true }, () => {
                 this._sheetForm.sheetNameInput.focus();
             });
         }
@@ -107,9 +113,16 @@ export default class HomePage extends React.Component {
                     { t('app.description') }
                 </p>
 
-                <MessageContainer ref="infoMessageContainer" type="info">
+                <MessageContainer
+                    show={this.state.newSheetCreated}
+                    onClose={() => this.setState({ newSheetCreated: false })}
+                    type="info">
                     { t('home.prev_sheet_saved') + ' ' }
                     <a href="/" onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</a>.
+                </MessageContainer>
+
+                <MessageContainer show={this.state.errors.sheetNotFound} type="danger">
+                    { t('home.sheet_not_found') }
                 </MessageContainer>
 
                 <SheetForm ref={c => this._sheetForm = c } currentSheet={currentSheet} />

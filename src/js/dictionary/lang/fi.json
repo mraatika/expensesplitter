@@ -23,6 +23,7 @@
     "home.load_sheet_action" : "laskelman lataus toimintoa",
     "home.sheet_name_placeholder": "Syötä laskelman nimi",
     "home.sheet_name" : "Laskelman nimi",
+    "home.sheet_not_found" : "Haettua laskelmaa ei löytynyt. Laskelma on mahdollisesti poistettu julkaisijan toimesta.",
 
     "lang.balance": "Balanssi",
     "lang.cancel": "Peruuta",

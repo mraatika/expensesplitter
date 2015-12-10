@@ -34,9 +34,9 @@ export default class ParticipantAddForm extends React.Component {
         const error = this._validate(name);
 
         if (error) {
-            this.setState({ errorText: error }, () => this._errorMessageContainer.open());
+            this.setState({ errorText: error });
         } else {
-            this.setState(this._getDefaultState(), () => this._errorMessageContainer.close());
+            this.setState(this._getDefaultState());
             this.props.onFormSubmit({ name });
         }
     }
@@ -45,7 +45,10 @@ export default class ParticipantAddForm extends React.Component {
         return (
             <form onSubmit={this._handleFormSubmit.bind(this)}>
 
-                <MessageContainer ref={c => this._errorMessageContainer = c} type="danger">
+                <MessageContainer
+                    show={this.state.errorText}
+                    onClose={() => this.setState({ errorText: null })}
+                    type="danger">
                     {this.state.errorText}
                 </MessageContainer>
 

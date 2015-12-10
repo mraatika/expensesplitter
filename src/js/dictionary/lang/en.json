@@ -23,6 +23,7 @@
     "home.load_sheet_action" : "load sheet action",
     "home.sheet_name_placeholder": "Enter sheet name here",
     "home.sheet_name" : "Sheet name",
+    "home.sheet_not_found" : "Requested sheet was not found. It may have been deleted by the author.",
 
     "lang.balance": "Balance",
     "lang.cancel": "Cancel",
