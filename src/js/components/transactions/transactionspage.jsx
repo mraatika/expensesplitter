@@ -24,11 +24,11 @@ export default class TransactionsPage extends React.Component {
     }
 
     componentDidMount() {
-        ExpenseStore.addChangeListener(this._onChange);
+        SheetStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
-        ExpenseStore.removeChangeListener(this._onChange);
+        SheetStore.removeChangeListener(this._onChange);
     }
 
     _formState() {

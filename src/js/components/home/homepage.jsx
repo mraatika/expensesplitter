@@ -23,20 +23,12 @@ export default class HomePage extends React.Component {
      */
     constructor() {
         super();
-
         this.state = { currentSheet: null, sheets: []};
-
         this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        const {currentSheetId} = this.props;
-
         SheetStore.addChangeListener(this._onChange);
-
-        if (currentSheetId) {
-            ActionCreators.loadSheet(currentSheetId);
-        }
     }
 
     componentWillUnmount() {
