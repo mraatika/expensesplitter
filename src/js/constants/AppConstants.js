@@ -13,7 +13,6 @@ export default {
         ADD_SHEET: Symbol(),
         LOAD_SHEET: Symbol(),
         SAVE_SHEET: Symbol(),
-        UPDATE_SHEET: Symbol(),
         REMOVE_SHEET: Symbol()
     },
 
@@ -44,7 +43,6 @@ export default {
         SET_ACTIVE_SHEET: Symbol(),
         SET_SHEET_SETTINGS: Symbol(),
         SET_LANGUAGE: Symbol(),
-        UPDATE_SHEET: Symbol(),
         SAVE_SHEET: Symbol()
     },
 

@@ -42,10 +42,10 @@ export default {
                         type: Constants.EventTypes.REMOVE_SHEET_SUCCESS
                     });
                 })
-                .fail(() => {
+                .fail(error => {
                     AppDispatcher.handleServerAction({
                         type: Constants.ErrorEventTypes.REMOVE_SHEET,
-                        sheet
+                        error, sheet
                     });
                 });
         }
@@ -56,6 +56,11 @@ export default {
         });
     },
 
+    /**
+     * Load sheet from the server or the local store if present
+     * @param  {string} sheetId
+     * @return {undefined}
+     */
     loadSheet: function(sheetId) {
         if (!StringUtils.isNonEmptyString(sheetId)) {
             throw new InvalidArgumentsError('sheetId missing or invalid!');
@@ -80,10 +85,10 @@ export default {
                     sheet: response.data.sheet
                 });
             })
-            .fail(response => {
+            .fail(error => {
                 AppDispatcher.handleServerAction({
                     type: Constants.ErrorEventTypes.LOAD_SHEET,
-                    sheet: response.sheet
+                    error
                 });
             });
 
@@ -104,17 +109,6 @@ export default {
         });
     },
 
-    updateSheet: function(sheet) {
-        if (!sheet) {
-            throw new InvalidArgumentsError('sheet is missing or invalid!');
-        }
-
-        AppDispatcher.handleServerAction({
-            type: Constants.ActionTypes.UPDATE_SHEET,
-            sheet
-        });
-    },
-
     /**
      * Save sheet to the server
      * @param  {Object} sheet
@@ -128,12 +122,13 @@ export default {
             .then(response => {
                 AppDispatcher.handleServerAction({
                     type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
-                    sheetId: response.data.sheetId
+                    sheet: response.data.sheet
                 });
             })
-            .fail(() => {
+            .fail(error => {
                 AppDispatcher.handleServerAction({
-                    type: Constants.ErrorEventTypes.SAVE_SHEET
+                    type: Constants.ErrorEventTypes.SAVE_SHEET,
+                    error
                 });
             });
     },

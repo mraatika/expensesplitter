@@ -48,6 +48,10 @@ function setSettings(settings) {
     return sheet;
 }
 
+function restoreSheet(sheet) {
+    addSheet(sheet);
+}
+
 /**
  * @class SheetStore
  * @description Store for sheet objects
@@ -100,7 +104,8 @@ const sheetStore = makeStore({
             sheetStore.emitChange(Constants.EventTypes.ERROR_EVENT);
             break;
         case Constants.ErrorEventTypes.REMOVE_SHEET:
-            // restoreSheet(action.sheet);
+            restoreSheet(action.sheet);
+            sheetStore.emitChange(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT);
             break;
         case Constants.ErrorEventTypes.LOAD_SHEET:
             sheetStore.emitChange(Constants.ErrorEventTypes.LOAD_SHEET);

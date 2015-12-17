@@ -1,6 +1,8 @@
 import React from 'react';
 import Swipeable from 'react-swipeable';
+import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
+import NotificationStore from '../stores/notificationstore.js';
 import ActionCreators from '../actions/dataactioncreators.js';
 import Router from '../router/router';
 import pages from '../constants/pages.js';
@@ -28,6 +30,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
+        this._onNotficationAdded = this._onNotficationAdded.bind(this);
         this.state = { isLoading: true };
         this._setInitialLanguage();
     }
@@ -47,11 +50,13 @@ export default class App extends React.Component {
 
         SettingsStore.addChangeListener(this._onChange);
         SheetStore.addChangeListener(this._onChange);
+        NotificationStore.addChangeListener(this._onNotficationAdded);
     }
 
     componentWillUnmount() {
         SettingsStore.removeChangeListener(this._onChange);
         SheetStore.removeChangeListener(this._onChange);
+        NotificationStore.removeChangeListener(this._onNotficationAdded);
     }
 
     /**
@@ -75,6 +80,11 @@ export default class App extends React.Component {
         }
 
         this.setState({ isLoading: false });
+    }
+
+    _onNotficationAdded() {
+        const notification = NotificationStore.getLastNotification();
+        this._notificationSystem.addNotification(notification);
     }
 
     /**
@@ -112,6 +122,8 @@ export default class App extends React.Component {
                             </div>
                         </Modal.Body>
                     </Modal>
+
+                    <NotificationSystem ref={ c => this._notificationSystem = c} />
 
                     <main role="main" id="content"></main>
 
