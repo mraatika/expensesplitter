@@ -1,5 +1,5 @@
-import {cid} from '../util/utils';
 import {t} from '../dictionary/dictionary.js';
+import shortid from 'shortid';
 
 /**
  * Factory for creating new sheets
@@ -14,7 +14,7 @@ const SheetFactory = {
      */
     create: function(sheetName) {
         var sheet = {
-            id: cid(),
+            id: shortid.generate(),
             _isNew: true,
             createdOn: new Date(),
             name: (sheetName || '').trim(),
