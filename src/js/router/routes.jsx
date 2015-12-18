@@ -39,23 +39,31 @@ var routes = {
         renderer.renderContentView(homePage);
     },
 
-    '/sheet/:id/participants': function() {
-        const participantsPage = getComponent(ParticipantsPage);
+    '/sheet/:id/participants': function(ctx) {
+        const participantsPage = getComponent(ParticipantsPage, {
+            currentSheetId: ctx.params.id
+        });
         renderer.renderContentView(participantsPage);
     },
 
-    '/sheet/:id/expenses': function() {
-        const expensesPage = getComponent(ExpensesPage);
+    '/sheet/:id/expenses': function(ctx) {
+        const expensesPage = getComponent(ExpensesPage, {
+            currentSheetId: ctx.params.id
+        });
         renderer.renderContentView(expensesPage);
     },
 
-    '/sheet/:id/transactions': function() {
-        const transactionsPage = getComponent(TransactionsPage);
+    '/sheet/:id/transactions': function(ctx) {
+        const transactionsPage = getComponent(TransactionsPage, {
+            currentSheetId: ctx.params.id
+        });
         renderer.renderContentView(transactionsPage);
     },
 
-    '/sheet/:id/summary': function() {
-        const summaryPage = getComponent(SummaryPage);
+    '/sheet/:id/summary': function(ctx) {
+        const summaryPage = getComponent(SummaryPage, {
+            currentSheetId: ctx.params.id
+        });
         renderer.renderContentView(summaryPage);
     }
 };

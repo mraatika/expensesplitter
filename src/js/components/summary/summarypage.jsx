@@ -31,7 +31,7 @@ export default class SheetSummaryPage extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = this._formState();
+        this.state = this._formState(props);
         this._onChange = this._onChange.bind(this);
     }
 
@@ -43,8 +43,8 @@ export default class SheetSummaryPage extends React.Component {
         SheetStore.removeChangeListener(this._onChange);
     }
 
-    _formState() {
-        const currentSheet = SheetStore.getCurrentSheet() || {};
+    _formState(props) {
+        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
 
         return {
             currentSheet: currentSheet,
@@ -73,7 +73,7 @@ export default class SheetSummaryPage extends React.Component {
                 isSavedToServer: isSavedToServer
             });
         } else {
-            this.setState(this._formState());
+            this.setState(this._formState(this.props));
         }
     }
 

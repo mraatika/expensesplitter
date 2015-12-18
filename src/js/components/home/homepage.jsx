@@ -21,10 +21,13 @@ export default class HomePage extends React.Component {
      * @constructor
      * @return {HomePage}
      */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        const currentSheet = SheetStore.getSheet(props.currentSheetId);
+
         this.state = {
-            currentSheet: null,
+            currentSheet: currentSheet || null,
             sheets: [],
             newSheetCreated: false,
             errors: {}
