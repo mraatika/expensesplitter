@@ -88,7 +88,7 @@ export const URLUtils = {
      * @return {string | null}
      */
     getCurrentSheetId() {
-        const match = window.location.href.match(/\/sheet\/(\w+)\/?/);
+        const match = window.location.href.match(/\/sheet\/([\w_-]+)\/?/);
         return match ? match[1] : null;
     }
 };

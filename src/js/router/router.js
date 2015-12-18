@@ -3,6 +3,7 @@ import page from 'page';
 import pages from '../constants/pages.js';
 import routes from './routes.jsx';
 import SheetStore from '../stores/sheetstore.js';
+import {URLUtils} from '../util/utils.js';
 
 var _currentRoute = null;
 
@@ -63,8 +64,13 @@ class Router {
      * @return {undefined}
      */
     navigateToSheetURL(path) {
-        const sheet = SheetStore.getCurrentSheet();
-        const sheetURLPath = `/sheet${sheet ? ('/' + sheet.id) : ''}${path}`;
+        // extract sheet id from location
+        const sheetId = URLUtils.getCurrentSheetId();
+
+        // if no sheetId is found then navigate to path without sheet id
+        if (!sheetId) return this.navigateTo(path);
+
+        const sheetURLPath = `/sheet${sheetId ? ('/' + sheetId) : ''}${path}`;
         page(sheetURLPath);
     }
 
@@ -91,7 +97,8 @@ class Router {
      * @return {undefined}
      */
     _onRouteChange(callback, route, ctx, next) {
-        _currentRoute = _.find(pages, page => page.href === route);
+        const routePagePart = route.substring(route.lastIndexOf('/'));
+        _currentRoute = _.find(pages, page => page.href === routePagePart);
         callback(ctx, next);
     }
 

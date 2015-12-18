@@ -68,7 +68,7 @@ export default class App extends React.Component {
         if (eventType == Constants.EventTypes.LANGUAGE_CHANGED_EVENT) {
             setLanguage(SettingsStore.getSettings().language);
             // reload route to completely rerender the page
-            Router.navigateTo(Router.getCurrentRoute().href);
+            Router.navigateTo(window.location.pathname);
         }
 
         if (eventType == Constants.EventTypes.LOAD_SHEET_SUCCESS) {
@@ -100,6 +100,11 @@ export default class App extends React.Component {
         }
     }
 
+    _onHomeLinkClick(e) {
+        e.preventDefault();
+        Router.navigateToSheetURL(pages.HOME.href);
+    }
+
     /**
      * @return {ReactComponent}
      */
@@ -111,7 +116,7 @@ export default class App extends React.Component {
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><a href="/">{ appName }</a></h1>
+                        <h1><a href="/" onClick={this._onHomeLinkClick}>{ appName }</a></h1>
                     </header>
 
                     <Modal show={this.state.isLoading}>

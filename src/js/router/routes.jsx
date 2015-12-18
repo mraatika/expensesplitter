@@ -31,7 +31,7 @@ var routes = {
         renderer.renderContentView(homePage);
     },
 
-    '/sheet/:id': function(ctx) {
+    '/sheet/:id/': function(ctx) {
         const homePage = getComponent(HomePage, {
             currentSheetId: ctx.params.id
         });
