@@ -137,7 +137,7 @@ export default class HomePage extends React.Component {
                             className="u-full-width"
                             disabled={!currentSheet}
                             onClick={this._handleAddSheetClick.bind(this)}>
-                            <i className="fa fa-file-o fa-fw fa-lg" />
+                            <i className="fa fa-plus fa-fw fa-lg" />
                             { t('home.button.new') }
                         </button>
                     </div>

@@ -160,6 +160,10 @@ export default class SheetForm extends React.Component {
                     type="submit"
                     className="button-primary u-full-width"
                     required={true}>
+                    <i
+                        style={currentSheet ? { display: 'none' } : {}}
+                        className="fa fa-file-o fa-fw" />
+                    &nbsp;
                     { t(currentSheet ? 'home.button.edit' : 'home.button.add') }
                     &nbsp;
                     <i
