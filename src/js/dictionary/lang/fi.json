@@ -15,7 +15,7 @@
     "expenses.remove_all_expenses": "Poista kaikki kulut",
 
     "home.button.new" : "Uusi laskelma",
-    "home.button.add" : "Lisää laskelma",
+    "home.button.add" : "Luo laskelma",
     "home.button.edit" : "Muokkaa valittua laskelmaa",
     "home.button.load" : "Lataa tallennettu laskelma",
     "home.button.remove" : "Poista nykyinen laskelma",

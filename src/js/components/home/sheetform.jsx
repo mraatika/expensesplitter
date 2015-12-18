@@ -5,6 +5,7 @@ import ActionCreators from '../../actions/dataactioncreators';
 import pages from '../../constants/pages';
 import Settings from './settings.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
+import SheetStore from '../../stores/sheetstore.js';
 
 /**
  * @class SheetForm
@@ -54,8 +55,14 @@ export default class SheetForm extends React.Component {
      * @return {undefined}
      */
     _continueWithCurrentSheet() {
-        // move to participants section
-        if (this.props.currentSheet) Router.navigateToSheetURL(pages.PARTICIPANTS.href);
+        const settings = this._settings.getSettings();
+
+        if (this.props.currentSheet) {
+            // save settings
+            ActionCreators.setSettings(settings);
+            // move to participants section
+            Router.navigateToSheetURL(pages.PARTICIPANTS.href);
+        }
     }
 
     /**
@@ -64,8 +71,14 @@ export default class SheetForm extends React.Component {
      * @return {undefined}
      */
     _addSheet() {
-        var sheetName = this.state.currentSheetName;
-        if (sheetName) ActionCreators.addSheet(sheetName);
+        const sheetName = this.state.currentSheetName;
+
+        if (sheetName) {
+            ActionCreators.createSheet({ name: sheetName, settings: this._settings.getSettings() });
+            const currentSheet = SheetStore.getCurrentSheet();
+            ActionCreators.saveSheet(currentSheet);
+            Router.navigateToSheetURL(pages.PARTICIPANTS.href, currentSheet.id);
+        }
     }
 
     /**
@@ -133,7 +146,6 @@ export default class SheetForm extends React.Component {
                             <button
                                 className={'settings-button' + (this.state.isSettingsActive ? ' active' : '')}
                                 type="button"
-                                disabled={!currentSheet}
                                 aria-label={ t('settings.toggle_settings') }
                                 onClick={this._handleSettingsClick.bind(this)}>
                                 <i className="fa fa-gear fa-fw fa-2x"/>
@@ -141,15 +153,9 @@ export default class SheetForm extends React.Component {
                         </InputButtonSplit>
                     </div>
                 </div>
-                {
-                    (() => {
-                        if (currentSheet) {
-                            return <Settings
-                                ref={c => this._settings = c}
-                                sheet={currentSheet}/>;
-                        }
-                    })()
-                }
+
+                <Settings ref={c => this._settings = c} sheet={currentSheet} show={this.isSettingsActive}/>
+
                 <button
                     type="submit"
                     className="button-primary u-full-width"

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import page from 'page';
 import pages from '../constants/pages.js';
 import routes from './routes.jsx';
-import SheetStore from '../stores/sheetstore.js';
 import {URLUtils} from '../util/utils.js';
 
 var _currentRoute = null;
@@ -61,11 +60,12 @@ class Router {
     /**
      * Navigate to a path that's prepended with sheet and it's id
      * @param  {string} path
+     * @param  {string} [sheetId]
      * @return {undefined}
      */
-    navigateToSheetURL(path) {
+    navigateToSheetURL(path, sheetId) {
         // extract sheet id from location
-        const sheetId = URLUtils.getCurrentSheetId();
+        sheetId = sheetId || URLUtils.getCurrentSheetId();
 
         // if no sheetId is found then navigate to path without sheet id
         if (!sheetId) return this.navigateTo(path);

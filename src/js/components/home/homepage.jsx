@@ -100,7 +100,7 @@ export default class HomePage extends React.Component {
     _handleAddSheetClick() {
         if (this.state.currentSheet) {
             this.setState({ currentSheet: null, newSheetCreated: true }, () => {
-                this._sheetForm.sheetNameInput.focus();
+                Router.navigateTo(pages.HOME.href);
             });
         }
     }

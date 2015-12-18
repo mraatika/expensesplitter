@@ -66,7 +66,7 @@ const sheetStore = makeStore({
     // ACTIONS
         case Constants.ActionTypes.CREATE_SHEET:
             try {
-                const sheet = sheetFactory.create(action.sheetName);
+                const sheet = sheetFactory.create(action.sheet);
                 addSheet(sheet);
                 sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
             } catch(e) {

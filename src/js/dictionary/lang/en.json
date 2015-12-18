@@ -15,7 +15,7 @@
     "expenses.remove_all_expenses": "Remove all expenses",
 
     "home.button.new" : "New sheet",
-    "home.button.add" : "Add sheet",
+    "home.button.add" : "Create sheet",
     "home.button.edit" : "Edit current sheet",
     "home.button.load" : "Load sheet",
     "home.button.remove" : "Remove current sheet",

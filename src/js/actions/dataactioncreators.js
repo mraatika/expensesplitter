@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import AppDispatcher from '../dispatchers/appdispatcher';
 import Constants from '../constants/AppConstants';
 import SheetStore from '../stores/sheetstore.js';
@@ -11,16 +12,16 @@ export default {
 
     /**
      * Create and add sheet locally to the store
-     * @param {string} sheetName Name of the sheet
+     * @param {Object} sheet Initial members
      */
-    addSheet: function(sheetName) {
-        if (!StringUtils.isNonEmptyString(sheetName)) {
-            throw new InvalidArgumentsError('sheetName missing or invalid!');
+    createSheet: function(sheet) {
+        if (!sheet || !_.isObject(sheet)) {
+            throw new InvalidArgumentsError('sheet missing or invalid!');
         }
 
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.CREATE_SHEET,
-            sheetName
+            sheet
         });
     },
 

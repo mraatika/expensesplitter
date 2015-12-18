@@ -4,7 +4,6 @@ import {Panel} from 'react-bootstrap';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
 import ActionCreators from '../../actions/dataactioncreators';
-import SaveButton from '../common/savebutton.jsx';
 
 /**
  * @class Settings
@@ -28,7 +27,7 @@ export default class Settings extends React.Component {
      * @return {undefined}
      */
     toggle(state) {
-        this.setState({ show: _.isUndefined(state) ? !this.state.show : state });
+        this.setState({ isOpen: _.isUndefined(state) ? !this.state.isOpen : state });
     }
 
     /**
@@ -43,18 +42,27 @@ export default class Settings extends React.Component {
     }
 
     /**
+     * Return settings from the current state
+     * @return {Object}
+     */
+    getSettings() {
+        return this.state.settings;
+    }
+
+    /**
      * Returns default state
      * @private
      * @param  {object} props
      * @return {object}
      */
     _getDefaultState(props) {
-        const settings = props.sheet.settings;
+        const settings = (props.sheet || {}).settings;
 
         return {
-            isSaved: false,
-            newSettings: _.clone(settings),
-            show: (this.state || {}).show || false
+            isOpen: this.props.show,
+            settings: settings ? _.clone(settings) : {
+                currencySymbol: t('app.locales.currency_symbol')
+            }
         };
     }
 
@@ -66,23 +74,9 @@ export default class Settings extends React.Component {
      * @return {undefined}
      */
     _onSettingChange(name, value) {
-        const {newSettings} = this.state;
-        newSettings[name] = value;
-        this.setState({
-            isSaved: false,
-            newSettings: newSettings
-        });
-    }
-
-    /**
-     * Callback for save button's click event
-     * @private
-     * @return {undefined}
-     */
-    _onSaveClick() {
-        const {newSettings} =  this.state;
-        ActionCreators.setSettings(newSettings);
-        this.setState({ isSaved: true });
+        const {settings} = this.state;
+        settings[name] = value;
+        this.setState({ settings: settings });
     }
 
     /**
@@ -91,8 +85,12 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getHeader() {
+        const text = this.props.sheet ?
+            `${t('settings.settings_for_sheet')} ${this.props.sheet.name}` :
+            t('lang.settings');
+
         return <CollapsiblePanelHeader
-            headerText={ `${t('settings.settings_for_sheet')} ${this.props.sheet.name}` }/>;
+            headerText={text}/>;
     }
 
     /**
@@ -101,7 +99,7 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getSettingsSection() {
-        const {newSettings, isSaved} = this.state;
+        const {settings} = this.state;
 
         return <section id="sheet-settings">
             <label htmlFor="settings-currency">
@@ -113,17 +111,9 @@ export default class Settings extends React.Component {
                 maxLength="3"
                 minLength="1"
                 size="3"
-                value={newSettings.currencySymbol}
+                value={settings.currencySymbol}
                 onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
                 id="settings-currency"/>
-
-            <SaveButton
-                type="button"
-                className="u-full-width"
-                isSaved={isSaved}
-                beforeSaveText={t('settings.save')}
-                afterSaveText={t('lang.saved')}
-                onClick={this._onSaveClick.bind(this)} />
         </section>;
     }
 
@@ -134,8 +124,8 @@ export default class Settings extends React.Component {
         return (
             <Panel
                 collapsible
-                expanded={this.state.show}
-                style={{'display': this.state.show ? 'block' : 'none'}}
+                expanded={this.state.isOpen}
+                style={{'display': this.state.isOpen ? 'block' : 'none'}}
                 header={this._getHeader()}>
                 {this._getSettingsSection()}
             </Panel>

@@ -9,18 +9,16 @@ const SheetFactory = {
 
     /**
      * Create new sheet
-     * @param  {string} sheetName
+     * @param  {Object} initialProps
      * @return {Object}
      */
-    create: function(sheetName) {
+    create: function(initialProps) {
         var sheet = {
             id: shortid.generate(),
             _isNew: true,
             createdOn: new Date(),
-            name: (sheetName || '').trim(),
-            settings: {
-                currencySymbol: t('app.locales.currency_symbol')
-            },
+            name: (initialProps.name || '').trim(),
+            settings: Object.assign({ currencySymbol: t('app.locales.currency_symbol') }, initialProps.settings),
             participants: [],
             expenses: []
         };
