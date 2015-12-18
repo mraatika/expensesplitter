@@ -53,6 +53,12 @@ const removeAllExpenses = sheetId => {
     expenses = _.reject(expenses, e => sheetExpenseIndex[e.id] == sheetId);
 };
 
+const removeExpensesByParticipant = participant => {
+    expenses = _.reject(expenses, e => {
+        return e.payer === participant.id || e.participants.indexOf(participant.id) > -1;
+    });
+};
+
 /**
  * @class ExpenseStore
  * @description Store for expense models
@@ -106,6 +112,11 @@ const ExpenseStore = makeStore({
             AppDispatcher.waitFor([ ParticipantStore.dispatcherIndex ]);
             addExpenses(action.sheet.expenses, action.sheet.id);
             shouldEmitChangeEvent = true;
+            break;
+        case Constants.ActionTypes.REMOVE_PARTICIPANT:
+            removeExpensesByParticipant(action.participant);
+            shouldEmitChangeEvent = true;
+            break;
         }
 
         if (shouldEmitChangeEvent) {
