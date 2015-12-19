@@ -138,14 +138,7 @@ export default class SheetSummaryPage extends React.Component {
 
                 <div id="server-actions">
                     <div className="row">
-                        <div className={ 'twelve columns' + (!this.state.currentSheet._isNew ? ' hidden' : '')}>
-                            <MessageContainer
-                                show={this.state.currentSheet._isNew}>
-                                {t('transactions.save_sheet_to_share')}
-                            </MessageContainer>
-                        </div>
-
-                        <div className={'twelve columns' + (this.state.currentSheet._isNew ? ' hidden' : '')}>
+                        <div className="twelve columns">
                             <label htmlFor="sheet-share-url">{t('transactions.share_url')}:</label>
                             <InputButtonSplit>
                                 <input
