@@ -1,15 +1,15 @@
 {
     "globals": {
-        "require"    : true,
-        "jasmine"    : true,
-        "jest"       : true,
         "describe"   : true,
-        "xdescribe"  : true,
         "expect"     : true,
         "it"         : true,
         "beforeEach" : true,
+        "before"     : true,
         "afterEach"  : true,
-        "spyOn"      : true
+        "after"      : true
     },
-    "extends": "../../../.eslintrc"
+    "env": {
+        node: true
+    },
+    "extends": "../.eslintrc"
 }
