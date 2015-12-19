@@ -1,265 +1,316 @@
-/*jest.dontMock('../../stores/datastore');
-
 import sinon from 'sinon';
+import {expect} from 'chai';
+import Constants from '../../src/js/constants/AppConstants';
+import AppDispatcher from '../../src/js/dispatchers/appdispatcher.js';
+import SheetFactory from '../../src/js/factory/sheetfactory.js';
+import validation from '../../src/js/validation/validation.js';
 
-const DataStore = require('../../stores/sheetstore').default;
-const ActionCreators = require('../../actions/dataactioncreators').default;
-const Constants = require('../../constants/AppConstants').default;
+describe('SheetStore', function() {
+    var SheetStore;
 
-describe('DataStore', function() {
-
-    const storageMock = {
-        get: jest.genMockFunction(),
-        set: jest.genMockFunction(),
-        remove: jest.genMockFunction()
-    };
-
-    const initDataStore = (sheets, currentSheet) => {
-        var stub = sinon.stub(storageMock, 'get');
-
-        stub.withArgs('currentSheetId').returns((currentSheet || {}).id);
-        stub.returns(currentSheet);
-
-        DataStore.init(storageMock);
-    };
-
-    afterEach(function() {
-        DataStore.removeAllListeners();
-        storageMock.get.restore();
+    before(function() {
+        sinon.stub(AppDispatcher, 'register');
+        SheetStore = require('../../src/js/stores/sheetstore.js').default;
     });
 
-    describe('Sheet', function () {
+    beforeEach(() => {
+        sinon.stub(SheetFactory, 'create');
+        sinon.stub(validation, 'validate').returns({});
+    });
 
-        describe('Creating a sheet', function () {
-            beforeEach(() => initDataStore([]));
+    afterEach(() => {
+        SheetFactory.create.restore();
+        validation.validate.restore();
+    });
 
-            it('should fire change event after sheet is succesfully added', function () {
-                var spy = jasmine.createSpy();
+    const getDispatchIndex = () => {
+        return AppDispatcher.register.getCall(AppDispatcher.register.callCount -1).args[0];
+    };
 
-                DataStore.addChangeListener(spy);
+    const createPayload = (sheet) => {
+        return {
+            action: {
+                type: Constants.ActionTypes.CREATE_SHEET,
+                sheet: sheet
+            }
+        };
+    };
 
-                ActionCreators.addSheet('roadtrip');
+    it('should be defined', function () {
+        expect(SheetStore).not.to.be.undefined;
+    });
 
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.ADD_SHEET_EVENT);
+    it('should register a callback with the dispatcher', function () {
+        expect(AppDispatcher.register.called).to.be.ok;
+    });
+
+    describe('ACTIONS', function () {
+
+        describe('Create sheet', function () {
+            var sheetName = 'Sheet1';
+
+            var sheet = {
+                id: '1',
+                name: sheetName
+            };
+
+            beforeEach(() => {
+                SheetFactory.create.returns(sheet);
             });
 
-            it('should throw an error when trying to add sheet without name', function () {
-                var expectedError = 'IllegalArgumentsException: sheetName missing or invalid!';
+            it('should create a new sheet with given name', function () {
+                getDispatchIndex()(createPayload({ name: sheetName }));
+                var sheets = SheetStore.getSheets();
+                expect(sheets.length).not.to.equal(0);
+                expect(sheets[0]).to.equal(sheet);
+            });
 
-                expect(function() {
-                    ActionCreators.addSheet();
-                }).toThrow(expectedError);
+            it('should emit a change event when adding succeeds', function () {
+                var spy = sinon.spy();
 
-                expect(function() {
-                    ActionCreators.addSheet(' ');
-                }).toThrow(expectedError);
+                SheetStore.addChangeListener(spy);
+
+                getDispatchIndex()(createPayload({ name: sheetName }));
+
+                expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
+
+                SheetStore.removeChangeListener(spy);
+            });
+
+            it('should set current sheet id when adding succeeds', function () {
+                getDispatchIndex()(createPayload());
+                expect(SheetStore.getCurrentSheet().id).to.equal('1');
+            });
+
+            it('should emit an error when adding fails', function () {
+                validation.validate.returns({ name: true });
+                var spy = sinon.spy();
+
+                SheetStore.addChangeListener(spy);
+                getDispatchIndex()(createPayload({ name: null }));
+
+                expect(spy.calledWith(Constants.ErrorEventTypes.ADD_SHEET)).to.be.ok;
+
+                SheetStore.removeChangeListener(spy);
+            });
+
+            it('should not set current sheet id when adding fails', function () {
+                SheetFactory.create.returns({ id: '3' });
+                validation.validate.returns({ name: true });
+                getDispatchIndex()(createPayload());
+                expect(SheetStore.getCurrentSheet().id).not.to.equal('3');
             });
         });
 
-        describe('Removing a sheet', function () {
+        describe('Remove sheet', function () {
+            const removePayload = (sheet) => {
+                return {
+                    action: {
+                        type: Constants.ActionTypes.REMOVE_SHEET,
+                        sheet: sheet
+                    }
+                };
+            };
+
             const sheets = [{ id: '1'},{ id: '2'},{ id: '3'}];
 
-            beforeEach(() => initDataStore(sheets, sheets[1]));
+            beforeEach(() => {
+                sheets.forEach((sheet) => {
+                    SheetFactory.create.returns(sheet);
+                    getDispatchIndex()(createPayload());
+                });
+            });
 
-            it('should fire change event after a sheet is succesfully removed', function () {
-                var sheetId = sheets[0].id;
-                var spy = jasmine.createSpy();
-                spyOn(storageMock, 'remove');
+            it('should remove sheet with given id', function () {
+                expect(SheetStore.getSheets().length).to.equal(3);
+                getDispatchIndex()(removePayload(sheets[0]));
+                expect(SheetStore.getSheets().length).to.equal(2);
+                expect(SheetStore.getSheet(sheets[0].id)).to.equal.undefined;
+            });
 
-                DataStore.addChangeListener(spy);
+            it('should emit a remove event when removal succeeds', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
 
-                ActionCreators.removeSheet(sheetId);
+                getDispatchIndex()(removePayload(sheets[0]));
 
-                expect(storageMock.remove).toHaveBeenCalledWith(sheets[0].id);
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_SHEET_EVENT);
+                expect(spy.calledWith(Constants.EventTypes.REMOVE_SHEET_EVENT)).to.be.ok;
 
-                storageMock.remove.reset();
+                SheetStore.removeChangeListener(spy);
+            });
+
+            it('should not emit a remove event if sheet is not found', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
+
+                getDispatchIndex()(removePayload(sheets[0]));
+                getDispatchIndex()(removePayload(sheets[0]));
+
+                expect(spy.callCount).to.equal(1);
+
+                SheetStore.removeChangeListener(spy);
             });
 
             it('should clear current sheet if removing the current sheet', function () {
-                spyOn(storageMock, 'remove');
+                const currentSheet = SheetStore.getCurrentSheet();
+                getDispatchIndex()(removePayload(currentSheet));
+                expect(SheetStore.getCurrentSheet()).to.be.undefined;
+            });
+        });
 
-                ActionCreators.removeSheet(sheets[1].id);
+        describe('Change active sheet', function () {
+            const sheets = [{ id: '1', name: 'Sheet1'}, { id: '2', name: 'Sheet2' }];
+            const setActiveSheetPayload = (sheet) => {
+                return {
+                    action: {
+                        type: Constants.ActionTypes.SET_ACTIVE_SHEET,
+                        sheetId: sheet.id
+                    }
+                };
+            };
 
-                expect(storageMock.remove).toHaveBeenCalledWith('currentSheetId');
-
-                storageMock.remove.reset();
+            beforeEach(() => {
+                sheets.forEach((sheet) => {
+                    SheetFactory.create.returns(sheet);
+                    getDispatchIndex()(createPayload());
+                });
+                getDispatchIndex()(createPayload());
             });
 
-            it('should throw an error when trying to remove sheet without sheet id', function () {
-                var expectedError = 'IllegalArgumentsException: sheetId is missing or invalid!';
+            it('should set the current sheet', function () {
+                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+                expect(SheetStore.getCurrentSheet().name).to.equal(sheets[0].name);
+            });
 
-                spyOn(storageMock, 'remove');
+            it('should emit a set active sheet event when succesfully changed the active sheet', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
 
-                expect(function() {
-                    ActionCreators.removeSheet();
-                }).toThrow(expectedError);
+                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
 
-                expect(function() {
-                    ActionCreators.removeSheet(' ');
-                }).toThrow(expectedError);
+                expect(spy.calledWith(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT)).to.be.ok;
 
-                expect(storageMock.remove).not.toHaveBeenCalled();
+                SheetStore.removeChangeListener(spy);
+            });
 
-                storageMock.remove.reset();
+            it('should not emit the change event when the sheet is already active', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
+
+                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+
+                expect(spy.callCount).to.equal(1);
+
+                SheetStore.removeChangeListener(spy);
             });
         });
     });
 
-    describe('Participant', function () {
+    describe('EVENTS', function () {
 
-        describe('Creating a participant', function () {
-            const sheets = [{ id: '2', participants: []}];
+        describe('Save sheet success event', function () {
+            const sheet = { id: '1', _isNew: true };
+            const saveSheetSuccessPayload = () => {
+                return {
+                    action: {
+                        type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
+                        sheetId: sheet.id
+                    }
+                };
+            };
 
-            beforeEach(() => initDataStore(sheets, sheets[0]));
-
-            it('should fire a change event after participant is succesfully added', function () {
-                var spy = jasmine.createSpy();
-
-                DataStore.addChangeListener(spy);
-
-                ActionCreators.addParticipant({ name: 'Jorkki' });
-
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.ADD_PARTICIPANT_EVENT);
-                expect(spy.callCount).toEqual(1);
+            beforeEach(() => {
+                SheetFactory.create.returns(sheet);
+                getDispatchIndex()(createPayload(sheet));
             });
 
-            it('should fire an error event when trying to add participant with invalid name', function () {
-                var errorSpy = jasmine.createSpy();
-                var changeSpy = jasmine.createSpy();
-
-                DataStore.addErrorListener(errorSpy);
-                DataStore.addChangeListener(changeSpy);
-
-                ActionCreators.addParticipant({ name: '' });
-
-                expect(errorSpy.callCount).toEqual(1);
-                expect(errorSpy.mostRecentCall.args[0]).toEqual(Constants.ErrorEventTypes.ADD_PARTICIPANT);
-                expect(errorSpy.mostRecentCall.args[1].name).toBeDefined();
-                expect(changeSpy).not.toHaveBeenCalled();
+            it('should remove _isNew property from the saved sheet', function () {
+                expect(SheetStore.getSheet('1')._isNew).to.be.ok;
+                getDispatchIndex()(saveSheetSuccessPayload(sheet));
+                expect(SheetStore.getSheet('1')._isNew).not.to.be.ok;
             });
 
-            it('should throw when trying to add participant without properties', function () {
-                expect(function() {
-                    ActionCreators.addParticipant();
-                }).toThrow('IllegalArgumentsException: participantProperties missing!');
+            it('should emit a save sheet success event', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
+
+                getDispatchIndex()(saveSheetSuccessPayload(sheet));
+
+                expect(spy.calledWith(Constants.EventTypes.SAVE_SHEET_SUCCESS)).to.be.ok;
+
+                SheetStore.removeChangeListener(spy);
             });
         });
 
-        describe('Removing a participant', function () {
+        describe('Load sheet success event', function () {
+            const sheet = { id: '132' };
+            const loadSheetSuccessPayload = () => {
+                return {
+                    action: {
+                        type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
+                        sheet: sheet
+                    }
+                };
+            };
 
-            it('should throw when trying to remove non existing participant', function () {
-                const sheet = { id: '2', participants: [], expenses: []};
-                initDataStore([sheet], sheet);
-
-                expect(function() {
-                    ActionCreators.removeParticipant({ id: '1' });
-                }).toThrow('Unable to remove entity: Entity with id 1 not found!');
+            beforeEach(() => {
+                SheetFactory.create.returns(sheet);
+                sinon.stub(AppDispatcher, 'waitFor').returns(true);
             });
 
-            it('should remove a participant with id', function () {
-                const sheet = { id: '2', participants: [{ id: '2', name: 'Seppo'}], expenses: []};
-                initDataStore([sheet], sheet);
-
-                const spy = jasmine.createSpy();
-                DataStore.addChangeListener(spy);
-
-                ActionCreators.removeParticipant({ id: '2' });
-
-                expect(spy.callCount).toEqual(1);
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_PARTICIPANT_EVENT);
-                expect(sheet.participants.length).toEqual(0);
+            afterEach(() => {
+                AppDispatcher.waitFor.restore();
             });
 
-            it('should remove all the expenses of the to-be-removed participant', function () {
-                const expenses = [
-                    { id: '1', name: 'beer', price: 1, participants: ['1', '2'], payer: '1' },
-                    { id: '2', name: 'sausage', price: 1, participants: ['2'], payer: '1' },
-                    { id: '3', name: 'pizza', price: 1, participants: ['1'], payer: '2' },
-                    { id: '4', name: 'coke', price: 1, participants: ['3'], payer: '1' }
-                ];
-                const sheet = { id: '2', participants: [{ id: '2', name: 'Seppo'}], expenses: expenses};
-                initDataStore([sheet], sheet);
-
-                const spy = jasmine.createSpy();
-
-                DataStore.addChangeListener(spy);
-
-                ActionCreators.removeParticipant({ id: '2' });
-                expect(spy.callCount).toEqual(1);
-                expect(sheet.participants.length).toEqual(0);
-                expect(sheet.expenses.length).toEqual(1);
-                expect(sheet.expenses[0].id).toEqual('4');
-            });
-        });
-    });
-
-    describe('Expense', function () {
-        describe('Creating an expense', function () {
-            const sheets = [{ id: '2', expenses: []}];
-
-            beforeEach(() => initDataStore(sheets, sheets[0]));
-
-            it('should fire a change event after expense is succesfully created', function () {
-                var spy = jasmine.createSpy();
-
-                DataStore.addChangeListener(spy);
-
-                ActionCreators.addExpense({ name: 'beer', price: 1, participants: [1], payer: 1 });
-
-                expect(spy.callCount).toEqual(1);
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.ADD_EXPENSE_EVENT);
+            it('should add the sheet to the store', function () {
+                expect(SheetStore.getSheet(sheet.id)).to.be.undefined;
+                getDispatchIndex()(loadSheetSuccessPayload(sheet));
+                expect(SheetStore.getSheet(sheet.id)).to.equal(sheet);
             });
 
-            it('should fire an error event when trying to add expense with invalid props', function () {
-                var errorSpy = jasmine.createSpy();
-                var changeSpy = jasmine.createSpy();
+            it('should emit a change event', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
 
-                DataStore.addErrorListener(errorSpy);
-                DataStore.addChangeListener(changeSpy);
+                getDispatchIndex()(loadSheetSuccessPayload(sheet));
 
-                ActionCreators.addExpense({ name: 'gas', price: -5, participants: [] });
+                expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
 
-                var errors = errorSpy.mostRecentCall.args[1];
-                expect(errorSpy.callCount).toEqual(1);
-                expect(errorSpy.mostRecentCall.args[0]).toEqual(Constants.ErrorEventTypes.ADD_EXPENSE);
-                expect(errors.name).not.toBeDefined();
-                expect(errors.price).toBeDefined();
-                expect(errors.participants).toBeDefined();
-                expect(errors.payer).toBeDefined();
-
-                expect(changeSpy).not.toHaveBeenCalled();
+                SheetStore.removeChangeListener(spy);
             });
 
-            it('should throw when trying to add participant without properties', function () {
-                expect(function() {
-                    ActionCreators.addExpense();
-                }).toThrow('IllegalArgumentsException: expenseProperties are missing!');
-            });
-        });
+            it('should emit an add error event when adding fails', function () {
+                const spy = sinon.spy();
+                SheetStore.addChangeListener(spy);
 
-        describe('Removing an expense', function () {
-            const expense = { id:'2', name: 'food', price: 20, participants: [1,2], payer: 2 };
-            const sheet = { id: '2', expenses: [expense]};
+                validation.validate.returns({ name: true });
 
-            beforeEach(() => initDataStore([sheet], sheet));
+                getDispatchIndex()(loadSheetSuccessPayload(sheet));
 
-            it('should throw when trying to remove non existing expense', function () {
-                expect(function() {
-                    ActionCreators.removeExpense({ id: '1' });
-                }).toThrow('Unable to remove entity: Entity with id 1 not found!');
-            });
+                expect(spy.calledWith(Constants.ErrorEventTypes.ADD_SHEET)).to.be.ok;
 
-            it('should remove a participant with id', function () {
-                var spy = jasmine.createSpy();
-                DataStore.addChangeListener(spy);
-
-                ActionCreators.removeExpense(expense);
-
-                expect(spy.callCount).toEqual(1);
-                expect(spy).toHaveBeenCalledWith(Constants.EventTypes.REMOVE_EXPENSE_EVENT);
-                expect(sheet.expenses.length).toEqual(0);
+                SheetStore.removeChangeListener(spy);
             });
         });
     });
-});*/
+
+    describe('ERRORS', function () {
+        describe('Remove sheet error', function () {
+            const sheet = { id: '142' };
+            const removeSheetErrorPayload = () => {
+                return {
+                    action: {
+                        type: Constants.ErrorEventTypes.REMOVE_SHEET,
+                        sheet: sheet
+                    }
+                };
+            };
+            it('should restore the removed sheet when remove fails (in the server)', function () {
+                expect(SheetStore.getSheet(sheet.id)).to.be.undefined;
+                getDispatchIndex()(removeSheetErrorPayload());
+                expect(SheetStore.getSheet(sheet.id)).not.to.be.undefined;
+            });
+        });
+    });
+});
