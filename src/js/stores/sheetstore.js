@@ -55,7 +55,6 @@ function restoreSheet(sheet) {
 /**
  * @class SheetStore
  * @description Store for sheet objects
- * @extends {DataStore}
  */
 const sheetStore = makeStore({
 

@@ -12,7 +12,6 @@ function setLanguage(langCode) {
 /**
  * @class SettingsStore
  * @description Store for app wide settings
- * @extends {DataStore}
  */
 const settingsStore = makeStore({
 
