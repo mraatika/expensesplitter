@@ -24,14 +24,11 @@ export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
 
-        const currentSheet = SheetStore.getSheet(props.currentSheetId);
-
         this.state = {
-            currentSheet: currentSheet || null,
-            sheets: [],
             newSheetCreated: false,
             errors: {}
         };
+
         this._onChange = this._onChange.bind(this);
     }
 
@@ -49,12 +46,7 @@ export default class HomePage extends React.Component {
      * @return {object}
      */
     _getDefaultState() {
-        const currentSheet = SheetStore.getCurrentSheet();
-        const allSheets = SheetStore.getSheets();
-
         return {
-            currentSheet: currentSheet,
-            sheets: allSheets,
             errors: {},
             newSheetCreated: false
         };
@@ -67,17 +59,16 @@ export default class HomePage extends React.Component {
      * @return {undefined}
      */
     _onChange(eventType) {
-        const currentSheetId = (this.state.currentSheet || {}).id;
         const newState = this._getDefaultState();
 
         this.setState(newState);
 
         if (eventType == Constants.EventTypes.REMOVE_SHEET_EVENT) {
             Router.navigateTo(pages.HOME.href);
-        } else if (currentSheetId !== (newState.currentSheet || {}).id) {
-            Router.navigateToSheetURL(pages.HOME.href);
         } else if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
             this.setState({ errors: { sheetNotFound: true } });
+        } else if (this.props.currentSheetId !== (newState.currentSheet || {}).id) {
+            Router.navigateToSheetURL(pages.HOME.href);
         }
     }
 
@@ -91,22 +82,21 @@ export default class HomePage extends React.Component {
     }
 
     _onSheetRemovalConfirmed() {
-        if (this.state.currentSheet) {
+        if (this.props.currentSheetId) {
             this.refs.removeSheetConfirmationDialog.close();
             ActionCreators.removeSheet(this.state.currentSheet);
         }
     }
 
     _handleAddSheetClick() {
-        if (this.state.currentSheet) {
-            this.setState({ currentSheet: null, newSheetCreated: true }, () => {
-                Router.navigateTo(pages.HOME.href);
-            });
+        if (this.props.currentSheetId) {
+            Router.navigateTo(pages.HOME.href);
         }
     }
 
     render() {
-        const {currentSheet} = this.state;
+        const currentSheet = SheetStore.getSheet(this.props.currentSheetId);
+        const allSheets = SheetStore.getSheets();
 
         return (
             <section id="home-page">
@@ -174,7 +164,7 @@ export default class HomePage extends React.Component {
 
                 <LoadSheetDialog
                     ref="loadSheetDialog"
-                    sheets={this.state.sheets}
+                    sheets={allSheets}
                     currentSheet={currentSheet} />
 
             </section>
