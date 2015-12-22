@@ -8,9 +8,13 @@ import validation from '../../src/js/validation/validation.js';
 describe('SheetStore', function() {
     var SheetStore;
 
-    before(function() {
+    before(() => {
         sinon.stub(AppDispatcher, 'register');
         SheetStore = require('../../src/js/stores/sheetstore.js').default;
+    });
+
+    after(() => {
+        AppDispatcher.register.restore();
     });
 
     beforeEach(() => {
