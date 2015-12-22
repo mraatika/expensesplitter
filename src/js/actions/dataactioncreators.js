@@ -136,18 +136,6 @@ export default {
 
 // participants
 
-    createParticipant: function(participant, sheetId) {
-        if (!participant || !sheetId) {
-            throw new InvalidArgumentsError('participant or sheetId is missing or invalid!');
-        }
-
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.CREATE_PARTICIPANT,
-            participant,
-            sheetId
-        });
-    },
-
     addParticipant: function(participant, sheetId) {
         if (!participant || !sheetId) {
             throw new InvalidArgumentsError('participant or sheetId is missing or invalid!');
