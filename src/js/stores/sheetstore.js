@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import makeStore from 'makestore';
 import AppDispatcher from '../dispatchers/appdispatcher';
-import ExpenseStore from './expensestore.js';
+import ExpenseStore from './expensestore';
 import Constants from '../constants/AppConstants';
 import sheetFactory from '../factory/sheetfactory';
 import validation from '../validation/validation';
@@ -24,7 +24,6 @@ function addSheet(sheet) {
 
 function removeSheet(sheet) {
     const sheetId = sheet.id;
-
 
     if (!sheets[sheetId]) return;
 

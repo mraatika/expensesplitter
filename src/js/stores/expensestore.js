@@ -1,6 +1,6 @@
 import makeStore from 'makestore';
 import _ from 'lodash';
-import AppDispatcher from '../dispatchers/appdispatcher';
+import AppDispatcher from '../dispatchers/appdispatcher.js';
 import Constants from '../constants/AppConstants.js';
 import ParticipantStore from './participantstore.js';
 import ExpenseFactory from '../factory/expensefactory.js';
@@ -90,7 +90,6 @@ const ExpenseStore = makeStore({
      */
     dispatcherIndex: AppDispatcher.register(payload => {
         const action = payload.action;
-
 
         switch(action.type) {
         // ACTIONS:

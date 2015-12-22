@@ -1,37 +1,30 @@
 import sinon from 'sinon';
 import {expect} from 'chai';
+import getStubs from '../support/stubs.js';
 import Constants from '../../src/js/constants/AppConstants';
-import AppDispatcher from '../../src/js/dispatchers/appdispatcher.js';
-import ExpenseFactory from '../../src/js/factory/expensefactory.js';
-import validation from '../../src/js/validation/validation.js';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('ExpenseStore', function () {
 
-    var ExpenseStore;
+    let ExpenseStore;
+    let dispatch;
+    const stubs = getStubs();
 
     before(() => {
-        sinon.stub(AppDispatcher, 'register');
-        ExpenseStore = require('../../src/js/stores/expensestore.js').default;
-    });
+        ExpenseStore = proxyquire('../../src/js/stores/expensestore.js', {
+            './participantstore.js': {},
+            '../dispatchers/appdispatcher.js': stubs.dispatcher,
+            '../validation/validation': stubs.validation,
+            '../factory/expensefactory.js': stubs.factory
+        }).default;
 
-    after(() => {
-        AppDispatcher.register.restore();
-    });
-
-    beforeEach(() => {
-        sinon.stub(ExpenseFactory, 'create');
-        sinon.stub(validation, 'validate').returns({});
+        dispatch = stubs.dispatcher.register.getCall(0).args[0];
     });
 
     afterEach(() => {
-        ExpenseFactory.create.restore();
-        validation.validate.restore();
         ExpenseStore.removeAllListeners();
     });
-
-    const getDispatchIndex = () => {
-        return AppDispatcher.register.getCall(AppDispatcher.register.callCount -1).args[0];
-    };
 
     const createPayload = (expense, sheetId) => {
         return {
@@ -62,7 +55,7 @@ describe('ExpenseStore', function () {
     };
 
     it('should register a callback with the dispatcher', function () {
-        expect(AppDispatcher.register.called).to.be.ok;
+        expect(stubs.dispatcher.register.called).to.be.ok;
     });
 
     it('should return an empty array when getSheet is called without sheetId', function () {
@@ -75,23 +68,23 @@ describe('ExpenseStore', function () {
             const sheetId = '1';
 
             afterEach(() => {
-                getDispatchIndex()(removeAllPayload(sheetId));
+                dispatch(removeAllPayload(sheetId));
             });
 
             it('should add a valid expense to the store', function () {
                 const expense = { id: '1', amount: 100 };
-                ExpenseFactory.create.returns(expense);
+                stubs.factory.create.returns(expense);
                 expect(ExpenseStore.getExpenses(sheetId).length).to.equal(0);
-                getDispatchIndex()(createPayload(expense, sheetId));
+                dispatch(createPayload(expense, sheetId));
                 expect(ExpenseStore.getExpenses(sheetId).length).to.equal(1);
             });
 
             it('should not add same expense twice', function () {
                 const expense = { id: '1' };
-                ExpenseFactory.create.returns(expense);
+                stubs.factory.create.returns(expense);
                 expect(ExpenseStore.getExpenses(sheetId).length).to.equal(0);
-                getDispatchIndex()(createPayload(expense, sheetId));
-                getDispatchIndex()(createPayload(expense, sheetId));
+                dispatch(createPayload(expense, sheetId));
+                dispatch(createPayload(expense, sheetId));
                 expect(ExpenseStore.getExpenses(sheetId).length).to.equal(1);
             });
 
@@ -99,11 +92,11 @@ describe('ExpenseStore', function () {
                 const expense = { id: '2', amount: 102 };
                 const spy = sinon.spy();
 
-                ExpenseFactory.create.returns(expense);
+                stubs.factory.create.returns(expense);
 
                 ExpenseStore.addChangeListener(spy);
 
-                getDispatchIndex()(createPayload(expense, sheetId));
+                dispatch(createPayload(expense, sheetId));
 
                 expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
             });
@@ -112,20 +105,22 @@ describe('ExpenseStore', function () {
                 const spy = sinon.spy();
                 const expense = { id: '3', amount: 103 };
 
-                ExpenseFactory.create.returns(expense);
-                validation.validate.returns({ amount: true });
+                stubs.factory.create.returns(expense);
+                stubs.validation.validate.returns({ amount: true });
 
                 ExpenseStore.addChangeListener(spy);
 
-                getDispatchIndex()(createPayload(expense, sheetId));
+                dispatch(createPayload(expense, sheetId));
 
                 expect(spy.calledWith(Constants.ErrorEventTypes.ADD_EXPENSE)).to.be.ok;
+                // reset return value
+                stubs.validation.validate.returns({});
             });
 
             it('should also connect expense with given id', function () {
                 const expense = { id: '4', amount: 100 };
-                ExpenseFactory.create.returns(expense);
-                getDispatchIndex()(createPayload(expense, sheetId));
+                stubs.factory.create.returns(expense);
+                dispatch(createPayload(expense, sheetId));
                 expect(ExpenseStore.getExpenses(sheetId).length).to.equal(1);
             });
         });
@@ -140,30 +135,30 @@ describe('ExpenseStore', function () {
 
             beforeEach(() => {
                 expenses.forEach(expense => {
-                    ExpenseFactory.create.returns(expense);
-                    getDispatchIndex()(createPayload(expense, sheetId));
+                    stubs.factory.create.returns(expense);
+                    dispatch(createPayload(expense, sheetId));
                 });
             });
 
             afterEach(() => {
-                getDispatchIndex()(removeAllPayload(sheetId));
+                dispatch(removeAllPayload(sheetId));
             });
 
             describe('Removing a single expense', function () {
                 it('should remove a participant with id', function () {
-                    getDispatchIndex()(removePayload(expenses[0]));
+                    dispatch(removePayload(expenses[0]));
                     expect(ExpenseStore.getExpense(expenses[0].id)).to.be.undefined;
                 });
 
                 it('should also remove expense from the sheet expense connection array', function () {
-                    getDispatchIndex()(removePayload(expenses[0]));
+                    dispatch(removePayload(expenses[0]));
                     expect(ExpenseStore.getExpenses(sheetId).length).to.equal(2);
                 });
 
                 it('should emit a change event after an expense is removed', function () {
                     const spy = sinon.spy();
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removePayload(expenses[0]));
+                    dispatch(removePayload(expenses[0]));
                     expect(spy.callCount).to.equal(1);
                     expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
                 });
@@ -172,7 +167,7 @@ describe('ExpenseStore', function () {
                     const spy = sinon.spy();
                     const expense = { 'id': '444' };
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removePayload(expense));
+                    dispatch(removePayload(expense));
                     expect(spy.called).not.to.be.ok;
                 });
             });
@@ -180,22 +175,22 @@ describe('ExpenseStore', function () {
             describe('Removing all expenses of a sheet', function () {
                 it('should remove all the expenses of a sheet from the store', function () {
                     expect(ExpenseStore.getExpenses(sheetId).length).to.equal(3);
-                    getDispatchIndex()(removeAllPayload(sheetId));
+                    dispatch(removeAllPayload(sheetId));
                     expect(ExpenseStore.getExpenses(sheetId).length).to.equal(0);
                 });
 
                 it('should emit a change event after removal', function () {
                     const spy = sinon.spy();
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removeAllPayload(sheetId));
+                    dispatch(removeAllPayload(sheetId));
                     expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
                 });
 
                 it('should not emit a change event if all removals fail', function () {
                     const spy = sinon.spy();
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removeAllPayload(sheetId));
-                    getDispatchIndex()(removeAllPayload(sheetId));
+                    dispatch(removeAllPayload(sheetId));
+                    dispatch(removeAllPayload(sheetId));
                     expect(spy.callCount).to.equal(1);
                 });
             });
@@ -211,14 +206,14 @@ describe('ExpenseStore', function () {
                 };
                 it('should remove expenses in whitch the participant is participated in', function () {
                     expect(ExpenseStore.getExpenses(sheetId).length).to.equal(3);
-                    getDispatchIndex()(removeExpensesOfParticipantPayload());
+                    dispatch(removeExpensesOfParticipantPayload());
                     expect(ExpenseStore.getExpense(expenses[0].id)).to.be.undefined;
                     expect(ExpenseStore.getExpense(expenses[2].id)).not.to.be.undefined;
                 });
 
                 it('should remove expenses the participant has paid', function () {
                     expect(ExpenseStore.getExpenses(sheetId).length).to.equal(3);
-                    getDispatchIndex()(removeExpensesOfParticipantPayload());
+                    dispatch(removeExpensesOfParticipantPayload());
                     expect(ExpenseStore.getExpense(expenses[1].id)).to.be.undefined;
                     expect(ExpenseStore.getExpense(expenses[2].id)).not.to.be.undefined;
                 });
@@ -226,15 +221,15 @@ describe('ExpenseStore', function () {
                 it('should emit a change event after removal', function () {
                     const spy = sinon.spy();
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removeExpensesOfParticipantPayload(sheetId));
+                    dispatch(removeExpensesOfParticipantPayload(sheetId));
                     expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
                 });
 
                 it('should not emit a change event if all removals fail', function () {
                     const spy = sinon.spy();
                     ExpenseStore.addChangeListener(spy);
-                    getDispatchIndex()(removeExpensesOfParticipantPayload(sheetId));
-                    getDispatchIndex()(removeExpensesOfParticipantPayload(sheetId));
+                    dispatch(removeExpensesOfParticipantPayload(sheetId));
+                    dispatch(removeExpensesOfParticipantPayload(sheetId));
                     expect(spy.callCount).to.equal(1);
                 });
             });
@@ -256,34 +251,28 @@ describe('ExpenseStore', function () {
             };
         };
 
-        beforeEach(() => {
-            sinon.stub(AppDispatcher, 'waitFor').returns(true);
-        });
-
-        afterEach(() => {
-            AppDispatcher.waitFor.restore();
-        });
-
         describe('Load sheet success event', function () {
             it('should add all expenses of a sheet to the store', function () {
                 expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(0);
-                getDispatchIndex()(loadSheetSuccessPayload());
+                dispatch(loadSheetSuccessPayload());
                 expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(2);
             });
 
             it('should emit a change event after', function () {
                 const spy = sinon.spy();
                 ExpenseStore.addChangeListener(spy);
-                getDispatchIndex()(loadSheetSuccessPayload());
+                dispatch(loadSheetSuccessPayload());
                 expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
             });
 
             it('should emit an error event if at least one of the adds fails', function () {
                 const spy = sinon.spy();
-                validation.validate.withArgs(sheet.expenses[1]).returns({ amount: true });
+                stubs.validation.validate.withArgs(sheet.expenses[1]).returns({ amount: true });
                 ExpenseStore.addChangeListener(spy);
-                getDispatchIndex()(loadSheetSuccessPayload());
+                dispatch(loadSheetSuccessPayload());
                 expect(spy.calledWith(Constants.ErrorEventTypes.ADD_EXPENSE)).to.be.ok;
+                // reset return value
+                stubs.validation.validate.returns({});
             });
         });
     });

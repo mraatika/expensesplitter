@@ -5,7 +5,6 @@ import Constants from '../constants/AppConstants.js';
 import ParticipantFactory from '../factory/participantfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';
-import {ValidationError} from '../util/errors.js';
 
 // participant storage
 let participants = [];
@@ -21,31 +20,25 @@ const getParticipantsBySheetId = sheetId => {
 };
 
 const addParticipant = (participant, sheetId) => {
-    let errors;
+    const errors = validation.validate(participant, Schema.Participant);
 
-    if (!getParticipant(participant.id)) {
+    if (!_.isEmpty(errors)) return false;
 
-        errors = validation.validate(participant, Schema.Participant);
-
-        if (!_.isEmpty(errors)) {
-            throw new ValidationError('Participant validation failed', errors);
-        }
-
-        participants.push(participant);
-        sheetParticipantIndex[participant.id] = sheetId;
-        return true;
-    }
-
-    return false;
+    participants.push(participant);
+    sheetParticipantIndex[participant.id] = sheetId;
+    return true;
 };
 
 const addParticipants = (participants, sheetId) => {
-    _.each(participants, p => addParticipant(p, sheetId));
+    // return true if all adds succeeded
+    return _.all(participants, p => addParticipant(p, sheetId));
 };
 
 const removeParticipant = participant => {
+    if (!getParticipant(participant.id)) return false;
     participants = _.reject(participants, p => p.id == participant.id);
     sheetParticipantIndex = _.omit(sheetParticipantIndex, participant.id);
+    return true;
 };
 
 /**
@@ -72,36 +65,41 @@ const ParticipantStore = makeStore({
         return getParticipant(participantId);
     },
 
+    _emitChangeEvent() {
+        ParticipantStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+    },
+
     /**
      * Dispatcher event listener. The only way to the store.
      * @param  {Object} payload
      */
     dispatcherIndex: AppDispatcher.register(payload => {
         const action = payload.action;
-        let shouldEmitChangeEvent = false;
 
         switch(action.type) {
         case Constants.ActionTypes.ADD_PARTICIPANT:
-            try {
+            if (!getParticipant(action.participant.id)) {
                 const participant = ParticipantFactory.create(action.participant);
-                shouldEmitChangeEvent = addParticipant(participant, action.sheetId);
-            } catch(err) {
-                console.error(err);
-                ParticipantStore.emitChange(Constants.ErrorEventTypes.ADD_PARTICIPANT);
+
+                if (addParticipant(participant, action.sheetId)) {
+                    ParticipantStore._emitChangeEvent();
+                } else {
+                    ParticipantStore.emitChange(Constants.ErrorEventTypes.ADD_PARTICIPANT);
+                }
             }
             break;
         case Constants.ActionTypes.REMOVE_PARTICIPANT:
-            removeParticipant(action.participant);
-            shouldEmitChangeEvent = true;
+            if (removeParticipant(action.participant)) {
+                ParticipantStore._emitChangeEvent();
+            }
             break;
 
         case Constants.EventTypes.LOAD_SHEET_SUCCESS:
-            addParticipants(action.sheet.participants, action.sheet.id);
-            shouldEmitChangeEvent = true;
-        }
-
-        if (shouldEmitChangeEvent) {
-            ParticipantStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+            if (addParticipants(action.sheet.participants, action.sheet.id)) {
+                ParticipantStore._emitChangeEvent();
+            } else {
+                ParticipantStore.emitChange(Constants.ErrorEventTypes.ADD_PARTICIPANT);
+            }
         }
     })
 });

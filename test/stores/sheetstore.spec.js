@@ -1,35 +1,29 @@
 import sinon from 'sinon';
 import {expect} from 'chai';
+import getStubs from '../support/stubs.js';
 import Constants from '../../src/js/constants/AppConstants';
-import AppDispatcher from '../../src/js/dispatchers/appdispatcher.js';
-import SheetFactory from '../../src/js/factory/sheetfactory.js';
-import validation from '../../src/js/validation/validation.js';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('SheetStore', function() {
-    var SheetStore;
+    let SheetStore;
+    let dispatch;
+    const stubs = getStubs();
 
     before(() => {
-        sinon.stub(AppDispatcher, 'register');
-        SheetStore = require('../../src/js/stores/sheetstore.js').default;
-    });
+        SheetStore = proxyquire('../../src/js/stores/sheetstore.js', {
+            './expensestore': {},
+            '../dispatchers/appdispatcher': stubs.dispatcher,
+            '../validation/validation': stubs.validation,
+            '../factory/sheetfactory': stubs.factory
+        }).default;
 
-    after(() => {
-        AppDispatcher.register.restore();
-    });
-
-    beforeEach(() => {
-        sinon.stub(SheetFactory, 'create');
-        sinon.stub(validation, 'validate').returns({});
+        dispatch = stubs.dispatcher.register.getCall(0).args[0];
     });
 
     afterEach(() => {
-        SheetFactory.create.restore();
-        validation.validate.restore();
+        SheetStore.removeAllListeners();
     });
-
-    const getDispatchIndex = () => {
-        return AppDispatcher.register.getCall(AppDispatcher.register.callCount -1).args[0];
-    };
 
     const createPayload = (sheet) => {
         return {
@@ -45,7 +39,7 @@ describe('SheetStore', function() {
     });
 
     it('should register a callback with the dispatcher', function () {
-        expect(AppDispatcher.register.called).to.be.ok;
+        expect(stubs.dispatcher.register.called).to.be.ok;
     });
 
     describe('ACTIONS', function () {
@@ -59,11 +53,11 @@ describe('SheetStore', function() {
             };
 
             beforeEach(() => {
-                SheetFactory.create.returns(sheet);
+                stubs.factory.create.returns(sheet);
             });
 
             it('should create a new sheet with given name', function () {
-                getDispatchIndex()(createPayload({ name: sheetName }));
+                dispatch(createPayload({ name: sheetName }));
                 var sheets = SheetStore.getSheets();
                 expect(sheets.length).not.to.equal(0);
                 expect(sheets[0]).to.equal(sheet);
@@ -74,35 +68,34 @@ describe('SheetStore', function() {
 
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(createPayload({ name: sheetName }));
+                dispatch(createPayload({ name: sheetName }));
 
                 expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
-
-                SheetStore.removeChangeListener(spy);
             });
 
             it('should set current sheet id when adding succeeds', function () {
-                getDispatchIndex()(createPayload());
+                dispatch(createPayload());
                 expect(SheetStore.getCurrentSheet().id).to.equal('1');
             });
 
             it('should emit an error when adding fails', function () {
-                validation.validate.returns({ name: true });
+                stubs.validation.validate.returns({ name: true });
                 var spy = sinon.spy();
 
                 SheetStore.addChangeListener(spy);
-                getDispatchIndex()(createPayload({ name: null }));
+                dispatch(createPayload({ name: null }));
 
                 expect(spy.calledWith(Constants.ErrorEventTypes.ADD_SHEET)).to.be.ok;
 
-                SheetStore.removeChangeListener(spy);
+                stubs.validation.validate.returns({});
             });
 
             it('should not set current sheet id when adding fails', function () {
-                SheetFactory.create.returns({ id: '3' });
-                validation.validate.returns({ name: true });
-                getDispatchIndex()(createPayload());
+                stubs.factory.create.returns({ id: '3' });
+                stubs.validation.validate.returns({ name: true });
+                dispatch(createPayload());
                 expect(SheetStore.getCurrentSheet().id).not.to.equal('3');
+                stubs.validation.validate.returns({});
             });
         });
 
@@ -120,14 +113,14 @@ describe('SheetStore', function() {
 
             beforeEach(() => {
                 sheets.forEach((sheet) => {
-                    SheetFactory.create.returns(sheet);
-                    getDispatchIndex()(createPayload());
+                    stubs.factory.create.returns(sheet);
+                    dispatch(createPayload());
                 });
             });
 
             it('should remove sheet with given id', function () {
                 expect(SheetStore.getSheets().length).to.equal(3);
-                getDispatchIndex()(removePayload(sheets[0]));
+                dispatch(removePayload(sheets[0]));
                 expect(SheetStore.getSheets().length).to.equal(2);
                 expect(SheetStore.getSheet(sheets[0].id)).to.equal.undefined;
             });
@@ -136,28 +129,24 @@ describe('SheetStore', function() {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(removePayload(sheets[0]));
+                dispatch(removePayload(sheets[0]));
 
                 expect(spy.calledWith(Constants.EventTypes.REMOVE_SHEET_EVENT)).to.be.ok;
-
-                SheetStore.removeChangeListener(spy);
             });
 
             it('should not emit a remove event if sheet is not found', function () {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(removePayload(sheets[0]));
-                getDispatchIndex()(removePayload(sheets[0]));
+                dispatch(removePayload(sheets[0]));
+                dispatch(removePayload(sheets[0]));
 
                 expect(spy.callCount).to.equal(1);
-
-                SheetStore.removeChangeListener(spy);
             });
 
             it('should clear current sheet if removing the current sheet', function () {
                 const currentSheet = SheetStore.getCurrentSheet();
-                getDispatchIndex()(removePayload(currentSheet));
+                dispatch(removePayload(currentSheet));
                 expect(SheetStore.getCurrentSheet()).to.be.undefined;
             });
         });
@@ -175,14 +164,14 @@ describe('SheetStore', function() {
 
             beforeEach(() => {
                 sheets.forEach((sheet) => {
-                    SheetFactory.create.returns(sheet);
-                    getDispatchIndex()(createPayload());
+                    stubs.factory.create.returns(sheet);
+                    dispatch(createPayload());
                 });
-                getDispatchIndex()(createPayload());
+                dispatch(createPayload());
             });
 
             it('should set the current sheet', function () {
-                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+                dispatch(setActiveSheetPayload(sheets[0]));
                 expect(SheetStore.getCurrentSheet().name).to.equal(sheets[0].name);
             });
 
@@ -190,23 +179,19 @@ describe('SheetStore', function() {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+                dispatch(setActiveSheetPayload(sheets[0]));
 
                 expect(spy.calledWith(Constants.EventTypes.SET_ACTIVE_SHEET_EVENT)).to.be.ok;
-
-                SheetStore.removeChangeListener(spy);
             });
 
             it('should not emit the change event when the sheet is already active', function () {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
-                getDispatchIndex()(setActiveSheetPayload(sheets[0]));
+                dispatch(setActiveSheetPayload(sheets[0]));
+                dispatch(setActiveSheetPayload(sheets[0]));
 
                 expect(spy.callCount).to.equal(1);
-
-                SheetStore.removeChangeListener(spy);
             });
         });
     });
@@ -225,13 +210,13 @@ describe('SheetStore', function() {
             };
 
             beforeEach(() => {
-                SheetFactory.create.returns(sheet);
-                getDispatchIndex()(createPayload(sheet));
+                stubs.factory.create.returns(sheet);
+                dispatch(createPayload(sheet));
             });
 
             it('should remove _isNew property from the saved sheet', function () {
                 expect(SheetStore.getSheet('1')._isNew).to.be.ok;
-                getDispatchIndex()(saveSheetSuccessPayload(sheet));
+                dispatch(saveSheetSuccessPayload(sheet));
                 expect(SheetStore.getSheet('1')._isNew).not.to.be.ok;
             });
 
@@ -239,11 +224,9 @@ describe('SheetStore', function() {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(saveSheetSuccessPayload(sheet));
+                dispatch(saveSheetSuccessPayload(sheet));
 
                 expect(spy.calledWith(Constants.EventTypes.SAVE_SHEET_SUCCESS)).to.be.ok;
-
-                SheetStore.removeChangeListener(spy);
             });
         });
 
@@ -259,17 +242,12 @@ describe('SheetStore', function() {
             };
 
             beforeEach(() => {
-                SheetFactory.create.returns(sheet);
-                sinon.stub(AppDispatcher, 'waitFor').returns(true);
-            });
-
-            afterEach(() => {
-                AppDispatcher.waitFor.restore();
+                stubs.factory.create.returns(sheet);
             });
 
             it('should add the sheet to the store', function () {
                 expect(SheetStore.getSheet(sheet.id)).to.be.undefined;
-                getDispatchIndex()(loadSheetSuccessPayload(sheet));
+                dispatch(loadSheetSuccessPayload(sheet));
                 expect(SheetStore.getSheet(sheet.id)).to.equal(sheet);
             });
 
@@ -277,24 +255,22 @@ describe('SheetStore', function() {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                getDispatchIndex()(loadSheetSuccessPayload(sheet));
+                dispatch(loadSheetSuccessPayload(sheet));
 
                 expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
-
-                SheetStore.removeChangeListener(spy);
             });
 
             it('should emit an add error event when adding fails', function () {
                 const spy = sinon.spy();
                 SheetStore.addChangeListener(spy);
 
-                validation.validate.returns({ name: true });
+                stubs.validation.validate.returns({ name: true });
 
-                getDispatchIndex()(loadSheetSuccessPayload(sheet));
+                dispatch(loadSheetSuccessPayload(sheet));
 
                 expect(spy.calledWith(Constants.ErrorEventTypes.ADD_SHEET)).to.be.ok;
 
-                SheetStore.removeChangeListener(spy);
+                stubs.validation.validate.returns({});
             });
         });
     });
@@ -312,7 +288,7 @@ describe('SheetStore', function() {
             };
             it('should restore the removed sheet when remove fails (in the server)', function () {
                 expect(SheetStore.getSheet(sheet.id)).to.be.undefined;
-                getDispatchIndex()(removeSheetErrorPayload());
+                dispatch(removeSheetErrorPayload());
                 expect(SheetStore.getSheet(sheet.id)).not.to.be.undefined;
             });
         });
