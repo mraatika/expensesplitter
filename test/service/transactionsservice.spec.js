@@ -1,118 +1,86 @@
-jest.autoMockOff();
+import {expect} from 'chai';
+import sinon from 'sinon';
 
-const TransactionsService = require('../../service/transactionsservice').default;
+const proxyquire = require('proxyquire').noCallThru();
+
+/**
+ * @TODO: needs more tests
+ */
 
 describe('Service: TransactionsService', function () {
+    let transactionsService;
+    const calculateBalancesStub = sinon.stub();
 
-    const participants = [ { id:'1', name:'Seppo' }, { id:'2', name:'Markku' }, { 'id': '3', name:'Pera' } ];
-    const initService = sheet => new TransactionsService(sheet);
+    before(function () {
+        const TransactionsService = proxyquire('../../src/js/service/transactionsservice', {
+            './expensesservice': function() {
+                return { calculateBalances: calculateBalancesStub };
+            }
+        }).default;
 
-    it('should calculate transactions', function() {
-        const sheet = {
-            participants: participants,
-            expenses: [
-                {
-                    name: 'expense1',
-                    price: 240,
-                    participants: participants.map(p => p.id),
-                    payer: participants[1].id
-                },
-                {
-                    name: 'expense2',
-                    price: 75,
-                    participants: participants.map(p => p.id),
-                    payer: participants[2].id
-                }
-            ]
-        };
-        const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
-
-        expect(transactions.length).toEqual(2);
-
-        expect(transactions[0].from).toEqual(participants[0].id);
-        expect(transactions[0].to).toEqual(participants[1].id);
-        expect(transactions[0].amount).toEqual(105);
-
-        expect(transactions[1].from).toEqual(participants[2].id);
-        expect(transactions[1].to).toEqual(participants[1].id);
-        expect(transactions[1].amount).toEqual(30);
+        transactionsService = new TransactionsService();
     });
 
-    it('should calculate transactions correctly when the some participants are not participating in some expenses', function () {
-        const sheet = {
-            participants: participants,
-            expenses: [
-                {
-                    name: 'Beer',
-                    price: '66',
-                    participants: ['1','2'],
-                    payer: '1'
-                },
-                {
-                    name: 'Food1',
-                    price: '60',
-                    participants: ['1','2','3'],
-                    payer: '1'
-                },
-                {
-                    name: 'Food2',
-                    price: '80',
-                    participants: ['2','3'],
-                    payer: '2'
-                },
-                {
-                    name: 'Gas',
-                    price: '60',
-                    participants: ['1','2','3'],
-                    payer: '1'
-                },
-                {
-                    name: 'Rockets',
-                    price: '20',
-                    participants: ['1','3'],
-                    payer: '3'
-                }
-            ]
-        };
-        const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
+    it('should calculate transactions', function() {
+        calculateBalancesStub.returns([
+            { participant: '2', balance: -135 },
+            { participant: '3', balance: 30 },
+            { participant: '1', balance: 105 }
+        ]);
 
-        expect(transactions.length).toEqual(2);
+        const transactions = transactionsService.calculateTransactions();
 
-        expect(transactions[0].from).toEqual(participants[2].id);
-        expect(transactions[0].to).toEqual(participants[0].id);
-        expect(transactions[0].amount).toEqual(70);
+        expect(transactions.length).to.equal(2);
 
-        expect(transactions[1].from).toEqual(participants[1].id);
-        expect(transactions[1].to).toEqual(participants[0].id);
-        expect(transactions[1].amount).toEqual(33);
+        expect(transactions[0].from).to.equal('1');
+        expect(transactions[0].to).to.equal('2');
+        expect(transactions[0].amount).to.equal(105);
+
+        expect(transactions[1].from).to.equal('3');
+        expect(transactions[1].to).to.equal('2');
+        expect(transactions[1].amount).to.equal(30);
+    });
+
+    it('should calculate transactions correctly when the a participant has zero balance', function () {
+        calculateBalancesStub.returns([
+            { participant: '1', balance: -50 },
+            { participant: '2', balance: 0 },
+            { participant: '3', balance: 50 }
+        ]);
+
+        const transactions = transactionsService.calculateTransactions();
+
+        expect(transactions.length).to.equal(1);
+
+        expect(transactions[0].from).to.equal('3');
+        expect(transactions[0].to).to.equal('1');
+        expect(transactions[0].amount).to.equal(50);
     });
 
     it('should not calculate any transactions if all balances are zero', function () {
-        const sheet = {
-            participants: [participants[0], participants[1]],
-            expenses: [
-                {
-                    name: 'expense1',
-                    price: 20,
-                    participants: ['1','2'],
-                    payer: '1'
-                },
-                {
-                    name: 'expense2',
-                    price: 20,
-                    participants: ['1','2'],
-                    payer: '2'
-                }
-            ]
-        };
+        calculateBalancesStub.returns([
+            { participant: '1', balance: 0 },
+            { participant: '2', balance: 0 },
+            { participant: '3', balance: 0 }
+        ]);
 
-        const transactionsService = initService(sheet);
-        const transactions = transactionsService.calculateTransactions(sheet.expenses, participants);
+        const transactions = transactionsService.calculateTransactions();
 
-        console.log(transactions);
+        expect(transactions.length).to.equal(0);
+    });
 
-        expect(transactions.length).toEqual(0);
+    it('should break the loop if min and max participants are the same (float issue)', function () {
+        calculateBalancesStub.returns([
+            { participant: '1', balance: -50.00000000000001 },
+            { participant: '3', balance: 50 }
+        ]);
+
+        const transactions = transactionsService.calculateTransactions();
+
+        expect(transactions.length).to.equal(1);
+
+        expect(transactions[0].from).to.equal('3');
+        expect(transactions[0].to).to.equal('1');
+        expect(transactions[0].amount).to.equal(50);
     });
 });
