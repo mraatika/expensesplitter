@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 
-describe.only('Component:Participant', function() {
+describe('Component:Participant', function() {
     const jsdom = require('mocha-jsdom');
 
     let React;
