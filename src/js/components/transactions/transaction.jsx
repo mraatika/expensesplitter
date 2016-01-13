@@ -30,5 +30,6 @@ export default class Transaction extends React.Component {
 
 Transaction.propTypes = {
     transaction: React.PropTypes.object.isRequired,
-    participants: React.PropTypes.array.isRequired
+    participants: React.PropTypes.array.isRequired,
+    currencySymbol: React.PropTypes.string
 };

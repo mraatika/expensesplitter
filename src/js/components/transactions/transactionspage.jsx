@@ -35,7 +35,6 @@ export default class TransactionsPage extends React.Component {
         const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
 
         return {
-            currentSheet: currentSheet,
             participants: ParticipantStore.getParticipants(currentSheet.id),
             expenses: ExpenseStore.getExpenses(currentSheet.id),
             settings: currentSheet.settings || {}

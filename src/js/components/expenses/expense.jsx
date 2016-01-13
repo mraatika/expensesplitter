@@ -27,6 +27,9 @@ export default class Expense extends React.Component {
         return _.find(this.props.participants, (participant => participant.id === participantId));
     }
 
+    /**
+     * @return {Component}
+     */
     render() {
         var expense = this.props.expense;
 
@@ -47,3 +50,7 @@ export default class Expense extends React.Component {
         );
     }
 }
+
+Expense.PropTypes = {
+    participant: React.PropTypes.array.isRequired
+};

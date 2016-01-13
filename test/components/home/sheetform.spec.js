@@ -1,104 +1,114 @@
-jest.autoMockOff();
+import {expect} from 'chai';
+import sinon from 'sinon';
+import {t} from '../../../src/js/dictionary/dictionary.js';
+import proxyquire from 'proxyquire';
 
-import TestUtils from 'react-testutils-additions';
-import React from 'react';
+describe('SheetForm', () => {
+    const jsdom = require('mocha-jsdom');
 
-const SheetForm = require.requireActual('../../../components/home/sheetform.jsx').default;
-const t = require.requireActual('../../../dictionary/dictionary.js').t;
-const ActionCreators = require('../../../actions/dataactioncreators.js').default;
-
-describe('SheetForm', function () {
+    let React;
+    let TestUtils;
+    let SheetForm;
+    let ActionCreators;
     let sheetForm;
 
     const renderComponent = (sheet) => {
         sheetForm = TestUtils.renderIntoDocument(<SheetForm currentSheet={sheet}/>);
     };
 
-    describe('State when there isn\'t current sheet', function() {
+    proxyquire.noCallThru();
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        SheetForm = proxyquire('../../../src/js/components/home/sheetform.jsx', {
+            '../../router/router.js': { navigateToSheetURL: sinon.spy() }
+        }).default;
+
+        ActionCreators = require('../../../src/js/actions/dataactioncreators.js').default;
+    });
+
+    describe('State when there isn\'t current sheet', () => {
 
         beforeEach(() => renderComponent());
 
-        it('should display label for sheet input (text refers to adding a new sheet)', function () {
+        it('should display label for sheet input (text refers to adding a new sheet)', () => {
             const label = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'for', 'sheet-name');
-            expect(label.textContent.indexOf(t('home.name_your_sheet'))).not.toEqual(-1);
+            expect(label.textContent.indexOf(t('home.name_your_sheet'))).not.to.equal(-1);
         });
 
-        it('should display empty sheet name input', function() {
+        it('should display empty sheet name input', () => {
             const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.value).toBeFalsy();
-            expect(sheetForm.state.currentSheetName).toBeFalsy();
+            expect(input.value).not.to.be.ok;
+            expect(sheetForm.state.currentSheetName).not.to.be.ok;
         });
 
-        it('should display an enabled sheet name input', function() {
+        it('should display an enabled sheet name input', () => {
             const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.disabled).toEqual(false);
+            expect(input.disabled).to.equal(false);
         });
 
-        it('should find an add button and it should be enabled', function () {
+        it('should find an add button and it should be enabled', () => {
             const button = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'type', 'submit');
-            expect(button.textContent.indexOf(t('home.button.add'))).not.toEqual(-1);
-            expect(button.disabled).toEqual(false);
+            expect(button.textContent.indexOf(t('home.button.add'))).not.to.equal(-1);
+            expect(button.disabled).to.equal(false);
         });
 
-        it('should find a settings button and it should be disabled', function () {
+        it('should find a settings button and it should be enabled', () => {
             const button = TestUtils.findRenderedDOMComponentWithClass(sheetForm, 'settings-button');
-            expect(button.disabled).toEqual(true);
+            expect(button.disabled).not.to.be.ok;
         });
 
-        it('should not find a settings section', function () {
-            expect(() => {
-                TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-settings');
-            }).toThrow();
-        });
-
-        it('should call addSheet method when continue button is pressed', function () {
+        it('should call createSheet method when continue button is pressed', () => {
             const sheetName = 'Trip to Cancun';
             const form = TestUtils.findRenderedDOMComponentWithTag(sheetForm, 'form');
 
-            spyOn(ActionCreators, 'addSheet');
+            sinon.spy(ActionCreators, 'createSheet');
 
             const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
             input.value = sheetName;
+
             TestUtils.Simulate.change(input);
 
             TestUtils.Simulate.submit(form);
 
-            expect(ActionCreators.addSheet).toHaveBeenCalledWith(sheetName);
+            expect(ActionCreators.createSheet.called).to.be.ok;
         });
     });
 
-    describe('State when current sheet is defined', function () {
+    describe('State when current sheet is defined', () => {
         const sheet = { name: 'Camping Trip', settings: {} };
 
-        beforeEach(function() {
+        beforeEach(() => {
             renderComponent(sheet);
         });
 
-        it('should display label for sheet input (text refers to editing current sheet)', function () {
+        it('should display label for sheet input (text refers to editing current sheet)', () => {
             const label = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'for', 'sheet-name');
-            expect(label.textContent.indexOf(t('lang.current_sheet'))).not.toEqual(-1);
+            expect(label.textContent.indexOf(t('lang.current_sheet'))).not.to.equal(-1);
         });
 
-        it('should display disabled sheet name input with current sheet\'s name', function() {
+        it('should display disabled sheet name input with current sheet\'s name', () => {
             const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.value).toEqual(sheet.name);
-            expect(input.disabled).toEqual(true);
+            expect(input.value).to.equal(sheet.name);
+            expect(input.disabled).to.equal(true);
         });
 
-        it('should display edit and continue button enabled', function () {
+        it('should display edit and continue button enabled', () => {
             const button = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'type', 'submit');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
 
-        it('should find a settings button and it should be enabled', function () {
+        it('should find a settings button and it should be enabled', () => {
             const button = TestUtils.findRenderedDOMComponentWithClass(sheetForm, 'settings-button');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
 
-        it('should find a settings section', function () {
+        it('should find a settings section', () => {
             expect(() => {
                 TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-settings');
-            }).not.toThrow();
+            }).not.to.throw();
         });
     });
 });

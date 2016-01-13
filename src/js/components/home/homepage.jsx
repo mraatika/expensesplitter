@@ -82,9 +82,11 @@ export default class HomePage extends React.Component {
     }
 
     _onSheetRemovalConfirmed() {
+        const currentSheet = SheetStore.getSheet(this.props.currentSheetId);
+
         if (this.props.currentSheetId) {
             this.refs.removeSheetConfirmationDialog.close();
-            ActionCreators.removeSheet(this.state.currentSheet);
+            ActionCreators.removeSheet(currentSheet);
         }
     }
 

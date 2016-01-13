@@ -1,20 +1,28 @@
-jest.autoMockOff();
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-testutils-additions';
+import {expect} from 'chai';
 import sinon from 'sinon';
 
-const Participant = require('../../../components/participants/participant.jsx').default;
+describe.only('Component:Participant', function() {
+    const jsdom = require('mocha-jsdom');
 
-describe('Component:Participant', function() {
-    var participantListItem;
-    var participantModel = {
+    let React;
+    let TestUtils;
+
+    let Participant;
+    let participantListItem;
+    let participantModel = {
         id: 'id1',
         name: 'Seppo'
     };
 
-    var page = {};
+    let page = {};
+
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        Participant = require('../../../src/js/components/participants/participant.jsx').default;
+    });
 
     const renderListItem = (sheet, props) => {
         var ListWrapper = React.createClass({
@@ -29,15 +37,13 @@ describe('Component:Participant', function() {
         page.removeButton = TestUtils.findRenderedDOMComponentWithClass(participantListItem, 'icon-button');
     };
 
-    describe('Rendering a participant list row', function () {
-        beforeEach(function () {
-            renderListItem({});
-        });
 
+    describe('Rendering a participant list row', function () {
         it('Renders participants name', function() {
+            renderListItem({});
             // verify name label value
             var label = TestUtils.findRenderedDOMComponentWithClass(participantListItem, 'participant-list-participant');
-            expect(label.textContent).toEqual(participantModel.name);
+            expect(label.textContent).to.equal(participantModel.name);
         });
     });
 
@@ -51,8 +57,8 @@ describe('Component:Participant', function() {
             renderListItem(sheet, { onRemoveClick: spy });
             // Simulate a click and verify that the action creator is called
             TestUtils.Simulate.click(page.removeButton);
-            expect(spy.callCount).toEqual(1);
-            expect(spy.calledWithExactly(participantModel)).toEqual(true);
+            expect(spy.callCount).to.equal(1);
+            expect(spy.calledWithExactly(participantModel)).to.be.ok;
         });
     });
 });

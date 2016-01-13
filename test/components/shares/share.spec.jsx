@@ -1,18 +1,20 @@
-jest.autoMockOff();
-
-import React from 'react';
-import TestUtils from 'react-testutils-additions';
-
-const Share = require('../../../components/shares/share.jsx').default;
-const Utils = require('../../../util/utils');
+import {expect} from 'chai';
+import {NumberUtils} from '../../../src/js/util/utils.js';
 
 describe('Component:Share', function() {
-    var shareListItem;
-    var shareModel = {
+    const jsdom = require('mocha-jsdom');
+    const shareModel = {
         participantName: 'Seppo',
         amount: 200.32123,
         balance: -500.23958
     };
+
+    let Share;
+    let React;
+    let TestUtils;
+    let shareListItem;
+
+    jsdom();
 
     var renderItem = function(_shareModel) {
         var Table = React.createClass({
@@ -22,32 +24,38 @@ describe('Component:Share', function() {
                 );
             }
         });
-        var table = TestUtils.renderIntoDocument(<Table/>);
+        const table = TestUtils.renderIntoDocument(<Table/>);
         shareListItem = TestUtils.findRenderedComponentWithType(table, Share);
     };
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        Share = require('../../../src/js/components/shares/share.jsx').default;
+    });
 
     beforeEach(function () {
         renderItem(shareModel);
     });
 
     it('should display participant\'s name', function() {
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-participant');
-        expect(label.textContent).toEqual(shareModel.participantName);
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-participant');
+        expect(label.textContent).to.equal(shareModel.participantName);
     });
 
     it('should display participant\'s share amount rounded to one decimal', function() {
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-share-amount');
-        expect(label.textContent).toEqual('' + (Utils.NumberUtils.round(shareModel.amount, 1)));
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-share-amount');
+        expect(label.textContent).to.equal('' + (NumberUtils.round(shareModel.amount, 1)));
     });
 
     it('should display participant\'s balance rounded to one decimal', function() {
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
-        expect(label.textContent).toEqual('' + (Utils.NumberUtils.round(shareModel.balance, 1)));
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
+        expect(label.textContent).to.equal('' + (NumberUtils.round(shareModel.balance, 1)));
     });
 
     it('should add class "negative" to balance label if participant\'s balance is negative', function() {
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
-        expect(label.className.indexOf('negative')).not.toEqual(-1);
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
+        expect(label.className.indexOf('negative')).not.to.equal(-1);
     });
 
     it('should add class "positive" to balance label if participant\'s balance is positive', function() {
@@ -55,8 +63,8 @@ describe('Component:Share', function() {
         shareModel.balance = 50;
         renderItem(shareModel);
 
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
-        expect(label.className.indexOf('positive')).not.toEqual(-1);
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
+        expect(label.className.indexOf('positive')).not.to.equal(-1);
     });
 
     it('should not add classes to balance label if participant\'s balance is 0', function() {
@@ -64,8 +72,8 @@ describe('Component:Share', function() {
         shareModel.balance = 0;
         renderItem(shareModel);
 
-        var label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
-        expect(label.className.indexOf('negative')).toEqual(-1);
-        expect(label.className.indexOf('positive')).toEqual(-1);
+        const label = TestUtils.findRenderedDOMComponentWithClass(shareListItem, 'share-balance');
+        expect(label.className.indexOf('negative')).to.equal(-1);
+        expect(label.className.indexOf('positive')).to.equal(-1);
     });
 });

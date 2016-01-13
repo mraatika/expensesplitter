@@ -37,12 +37,17 @@ TransactionsList.defaultProps = {
 TransactionsList.propTypes = {
     /**
      * List of transactions
-     * @type {Array}
+     * @type {array}
      */
     transactions: React.PropTypes.array,
     /**
      * List of participants
-     * @type {Array}
+     * @type {array}
      */
-    participants: React.PropTypes.array
+    participants: React.PropTypes.array,
+    /**
+     * Currency symbol
+     * @type {string}
+     */
+    currencySymbol: React.PropTypes.string
 };

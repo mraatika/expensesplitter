@@ -1,14 +1,24 @@
-jest.autoMockOff();
-
-import React from 'react';
-import TestUtils from 'react-testutils-additions';
-
-const ParticipantAddForm = require('../../../components/participants/participantaddform.jsx').default;
-const dictionary = require('../../../dictionary/dictionary');
+import {expect} from 'chai';
+import sinon from 'sinon';
+import {t} from '../../../src/js/dictionary/dictionary';
 
 describe('Component:ParticipantAddForm', function() {
-    var participantAddForm;
-    var participants;
+    const jsdom = require('mocha-jsdom');
+    const page = {};
+
+    let React;
+    let TestUtils;
+    let ParticipantAddForm;
+    let participants;
+    let participantAddForm;
+
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        ParticipantAddForm = require('../../../src/js/components/participants/participantaddform.jsx').default;
+    });
 
     beforeEach(function () {
         participants = [
@@ -18,63 +28,90 @@ describe('Component:ParticipantAddForm', function() {
         ];
 
         participantAddForm = TestUtils.renderIntoDocument(
-            <ParticipantAddForm participants={participants} onFormSubmit={jasmine.createSpy()}/>
+            <ParticipantAddForm participants={participants} onFormSubmit={sinon.spy()}/>
         );
+
+        page.errorTextSpan = TestUtils.findRenderedDOMComponentWithClass(participantAddForm, 'danger');
+        page.nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
+        page.form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
     });
 
-    it('should not display error span by default', function() {
-        // verify name label value
-        var errorTextSpan = TestUtils.findRenderedDOMComponentWithClass(participantAddForm, 'danger');
-        expect(errorTextSpan.style.display).toEqual('none');
+    describe('Initial state', function () {
+        it('should not display error span by default', function() {
+            // verify name label value
+            expect(page.errorTextSpan.style.display).to.equal('none');
+        });
+
+        it('should not display name input with error class', function () {
+            expect(page.nameField.className.indexOf('error')).to.equal(-1);
+        });
+
+        it('text input field should have placeholder containing a default value', function () {
+            var expectation = 'Participant ' + (participants.length + 1);
+            var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
+            expect(nameField.getAttribute('placeholder')).to.equal(expectation);
+        });
     });
 
-    it('text input field should have placeholder containing a default value', function () {
-        var expectation = 'Participant ' + (participants.length + 1);
-        var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        expect(nameField.getAttribute('placeholder')).toEqual(expectation);
+    describe('Creating participants', function () {
+        it('should call props.onFormSubmit when add button is clicked', function () {
+            var participant = { name: 'Seppo' };
+
+            page.nameField.value = participant.name;
+            TestUtils.Simulate.change(page.nameField);
+
+            TestUtils.Simulate.submit(page.form);
+
+            expect(participantAddForm.props.onFormSubmit.calledWith(participant)).to.be.ok;
+        });
+
+        it('should use placeholder as name when the field is left empty', function () {
+            var placeHolder = page.nameField.getAttribute('placeholder');
+            var expected = { name: placeHolder };
+
+            TestUtils.Simulate.submit(page.form);
+
+            expect(participantAddForm.props.onFormSubmit.calledWith(expected)).to.be.ok;
+        });
+
+        it('should set initial state after successfull create', function () {
+            var participant = { name: 'Jake' };
+
+            page.nameField.value = participant.name;
+            TestUtils.Simulate.change(page.nameField);
+
+            TestUtils.Simulate.submit(page.form);
+
+            expect(page.nameField.getAttribute('placeholder')).to.equal('Participant ' + (participantAddForm.props.participants.length + 1));
+            expect(page.errorTextSpan.style.display).to.equal('none');
+            expect(page.nameField.className.indexOf('error')).to.equal(-1);
+        });
     });
 
-    it('should call props.onFormSubmit when add button is clicked', function () {
-        var participant = { name: 'Seppo' };
+    describe('Errors', function () {
+        it('should display an error text when trying to add participant with same name twice', function () {
+            var name = participants[0].name;
 
-        var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        nameField.value = participant.name;
-        TestUtils.Simulate.change(nameField);
+            page.nameField.value = name;
+            TestUtils.Simulate.change(page.nameField);
 
-        // Simulate a click and verify that the action creator is called
-        var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
-        TestUtils.Simulate.submit(form);
+            TestUtils.Simulate.submit(page.form);
 
-        expect(participantAddForm.props.onFormSubmit).toHaveBeenCalledWith(participant);
-    });
+            var expectedErrorText = t('error.participant.name.duplicate');
 
-    it('should use placeholder as name when the field is left empty', function () {
-        var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        var placeHolder = nameField.getAttribute('placeholder');
-        var expected = { name: placeHolder };
+            expect(page.errorTextSpan.className.indexOf('hidden')).to.equal(-1);
+            expect(page.errorTextSpan.textContent).to.equal(expectedErrorText + ' ' + name);
+        });
 
-        // Simulate a click and verify that the action creator is called
-        var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
-        TestUtils.Simulate.submit(form);
+        it('should add an error class to the name input', function () {
+            var name = participants[0].name;
 
-        expect(participantAddForm.props.onFormSubmit).toHaveBeenCalledWith(expected);
-    });
+            page.nameField.value = name;
+            TestUtils.Simulate.change(page.nameField);
 
+            TestUtils.Simulate.submit(page.form);
 
-    it('should display an error text when trying to add participant with same name twice', function () {
-        var name = participants[0].name;
-        var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        nameField.value = name;
-        TestUtils.Simulate.change(nameField);
-
-        // Simulate a click and verify that the action creator is called
-        var form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
-        TestUtils.Simulate.submit(form);
-
-        var errorTextSpan = TestUtils.findRenderedDOMComponentWithClass(participantAddForm, 'danger');
-        var expectedErrorText = dictionary.t('error.participant.name.duplicate');
-
-        expect(errorTextSpan.className.indexOf('hidden')).toEqual(-1);
-        expect(errorTextSpan.textContent).toEqual(expectedErrorText + ' ' + name);
+            expect(page.nameField.className.indexOf('error')).not.to.equal(-1);
+        });
     });
 });

@@ -1,10 +1,10 @@
 import React from 'react';
-import {NumberUtils} from '../../util/utils';
+import {NumberUtils} from '../../util/utils.js';
 
 /**
- * @class Share
- * @description A table row element displaying participant's share of expenses
- * @extends React.Component
+ * @class Transaction
+ * @description A list element representing a transaction
+ * @extends {ReactComponent}
  */
 export default class Share extends React.Component {
 
@@ -19,6 +19,9 @@ export default class Share extends React.Component {
         return '';
     }
 
+    /**
+     * @return {ReactComponent}
+     */
     render() {
         const {share} = this.props;
 
@@ -37,11 +40,3 @@ export default class Share extends React.Component {
         );
     }
 }
-
-Share.propTypes = {
-    /**
-     * A Share object
-     * @type {object}
-     */
-    share: React.PropTypes.object
-};

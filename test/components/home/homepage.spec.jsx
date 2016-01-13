@@ -1,28 +1,44 @@
-jest.autoMockOff();
-
-import React from 'react';
-import TestUtils from 'react-testutils-additions';
+import {expect} from 'chai';
 import sinon from 'sinon';
-
-const HomePage = require('../../../components/home/homepage.jsx').default;
-const DataStore = require('../../../stores/sheetstore.js').default;
-const ActionCreators = require('../../../actions/dataactioncreators.js').default;
-const dictionary = require('../../../dictionary/dictionary.js');
-const LoadSheetDialog = require('../../../components/home/loadsheetdialog.jsx').default;
+import proxyquire from 'proxyquire';
+import {t} from '../../../src/js/dictionary/dictionary.js';
 
 describe('Component:HomePage', function() {
+    const jsdom = require('mocha-jsdom');
+    const SheetStoreMock = {
+        addChangeListener: sinon.spy(),
+        removeChangeListener: sinon.spy(),
+        getSheets: sinon.stub(),
+        getSheet: sinon.stub()
+    };
+    const DataActionCreatorsMock = {
+        removeSheet: sinon.spy()
+    };
+
+    let React;
+    let TestUtils;
+    let HomePage;
+    let LoadSheetDialog;
     let homePage;
 
     const renderComponent = (sheet) => {
-        sinon.stub(DataStore, 'getCurrentSheet').returns(sheet);
-        sinon.stub(DataStore, 'getSheets').returns(sheet ? [sheet] : []);
-        homePage = TestUtils.renderIntoDocument(<HomePage/>);
+        SheetStoreMock.getSheet.returns(sheet);
+        SheetStoreMock.getSheets.returns(sheet ? [sheet] : []);
+        homePage = TestUtils.renderIntoDocument(<HomePage currentSheetId={(sheet || {}).id}/>);
     };
 
-    afterEach(() => {
-        DataStore.getCurrentSheet.restore();
-        DataStore.getSheets.restore();
-        DataStore.removeAllListeners();
+    proxyquire.noCallThru();
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        HomePage = proxyquire('../../../src/js/components/home/homepage.jsx', {
+            '../../stores/sheetstore.js': SheetStoreMock,
+            '../../actions/dataactioncreators': DataActionCreatorsMock,
+            '../../router/router.js': { navigateToSheetURL: sinon.spy(), navigateTo: sinon.spy() }
+        }).default;
+        LoadSheetDialog = require('../../../src/js/components/home/loadsheetdialog.jsx').default;
     });
 
     describe('State when current sheet is not defined', function () {
@@ -31,19 +47,19 @@ describe('Component:HomePage', function() {
         it('should display add button disabled', function () {
             // this is a test itself b/c it throws if the element isn't found
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-add-sheet');
-            expect(button.disabled).toEqual(true);
+            expect(button.disabled).to.equal(true);
         });
 
         it('should display remove button disabled', function () {
             // this is a test itself b/c it throws if the element isn't found
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-remove-sheet');
-            expect(button.disabled).toEqual(true);
+            expect(button.disabled).to.equal(true);
         });
 
         it('should display load button enabled', function () {
             // this is a test itself b/c it throws if the element isn't found
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-load-sheet');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
     });
 
@@ -54,17 +70,17 @@ describe('Component:HomePage', function() {
 
         it('should display add button enabled', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-add-sheet');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
 
         it('should display remove button enabled', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-remove-sheet');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
 
         it('should load button enabled', function () {
             var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-load-sheet');
-            expect(button.disabled).toEqual(false);
+            expect(button.disabled).to.equal(false);
         });
     });
 
@@ -78,60 +94,13 @@ describe('Component:HomePage', function() {
             var dialog = homePage.refs.removeSheetConfirmationDialog;
             var modal = dialog._modal;
 
-            spyOn(ActionCreators, 'removeSheet');
-
-            expect(modal.state.showModal).toEqual(false);
+            expect(modal.state.showModal).to.equal(false);
 
             TestUtils.Simulate.click(button);
 
-            expect(modal.state.showModal).toEqual(true);
+            expect(modal.state.showModal).to.equal(true);
 
-            expect(ActionCreators.removeSheet).not.toHaveBeenCalledWith(sheet.id);
-        });
-
-        it('should clear current sheet when remove button is pressed', function () {
-            var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-remove-sheet');
-            var dialog = homePage.refs.removeSheetConfirmationDialog;
-            var modal = dialog._modal;
-
-            spyOn(ActionCreators, 'removeSheet');
-            TestUtils.Simulate.click(button);
-
-            modal.props.buttons[0].click();
-
-            expect(modal.state.showModal).toEqual(false);
-
-            expect(ActionCreators.removeSheet).toHaveBeenCalledWith(sheet);
-        });
-    });
-
-    describe('Adding new sheet when current sheet is present', function () {
-        var sheet = { id: '2', name: 'Camping Trip', settings: {}};
-
-        beforeEach(() => renderComponent(sheet));
-
-        it('should clear current sheet name from input', function () {
-            var input = TestUtils.findRenderedDOMComponentWithId(homePage, 'sheet-name');
-            var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-add-sheet');
-
-            TestUtils.Simulate.click(button);
-
-            expect(input.value).toBeFalsy();
-            expect(homePage.state.currentSheet).toBeFalsy();
-            expect(homePage.state.currentSheetName).toBeFalsy();
-            expect(input.disabled).toEqual(false);
-        });
-
-        it('should display an info text about previous sheet', function () {
-            var button = TestUtils.findRenderedDOMComponentWithId(homePage, 'button-add-sheet');
-            var infoText = TestUtils.findRenderedDOMComponentWithClass(homePage, 'message-container');
-
-            expect(infoText.style.display).toEqual('none');
-
-            TestUtils.Simulate.click(button);
-
-            expect(infoText.style.display).toEqual('block');
-            expect(infoText.textContent).toEqual(dictionary.t('home.prev_sheet_saved') + ' ' + dictionary.t('home.load_sheet_action') + '.');
+            expect(DataActionCreatorsMock.removeSheet.called).not.to.be.ok;
         });
     });
 
@@ -143,11 +112,11 @@ describe('Component:HomePage', function() {
             var dialog = TestUtils.findRenderedComponentWithType(homePage, LoadSheetDialog);
             var modal = dialog._dialog;
 
-            expect(modal.state.showModal).toEqual(false);
+            expect(modal.state.showModal).to.equal(false);
 
             TestUtils.Simulate.click(button);
 
-            expect(modal.state.showModal).toEqual(true);
+            expect(modal.state.showModal).to.equal(true);
         });
     });
 });

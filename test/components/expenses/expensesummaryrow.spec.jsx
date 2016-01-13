@@ -1,16 +1,12 @@
-jest.autoMockOff();
-
-import React from 'react';
-import TestUtils from 'react-testutils-additions';
+import {expect} from 'chai';
 import _ from 'lodash';
-
-const ExpenseSummaryRow = require('../../../components/expenses/expensesummaryrow.jsx').default;
-const ActionCreators = require('../../../actions/dataactioncreators').default;
-const RemovalConfirmationDialog = require('../../../components/common/removalconfirmationdialog.jsx').default;
+import sinon from 'sinon';
 
 describe('Component:ExpenseSummaryRow', function() {
-    let expenseTableRow;
+    const proxyquire = require('proxyquire').noCallThru();
+    const jsdom = require('mocha-jsdom');
     const page = {};
+    const sheet = { id: '1' };
     const expenses = [
         {
             name: 'Beer',
@@ -31,41 +27,104 @@ describe('Component:ExpenseSummaryRow', function() {
             payer: 2
         }
     ];
+    const defaultProps = {
+        expenses,
+        isRemoveAllowed: true,
+        sheet,
+        currencySymbol: '$'
+    };
 
-    beforeEach(function () {
-        var Table = React.createClass({
-            render: function() {
+    let expenseTableRow;
+    let React;
+    let TestUtils;
+    let ExpenseSummaryRow;
+    let ActionCreators;
+    let RemovalConfirmationDialogStub;
+
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        TestUtils = require('react-testutils-additions');
+        ActionCreators = require('../../../src/js/actions/dataactioncreators').default;
+
+        RemovalConfirmationDialogStub = React.createClass({
+            render: () => null,
+            open: () => {},
+            close: () => {}
+        });
+
+        ExpenseSummaryRow = proxyquire('../../../src/js/components/expenses/expensesummaryrow.jsx', {
+            '../common/removalconfirmationdialog.jsx': RemovalConfirmationDialogStub
+        }).default;
+    });
+
+    const renderSummaryRow = (props = {}) => {
+        props = Object.assign({}, defaultProps, props);
+
+        const Table = React.createClass({
+            render: () => {
                 return (
-                    <table><tbody><ExpenseSummaryRow expenses={expenses} isRemoveAllowed={true} sheet={{id:'1'}}settings={{}}/></tbody></table>
+                    <table><tbody><ExpenseSummaryRow {...props} /></tbody></table>
                 );
             }
         });
-        var table = TestUtils.renderIntoDocument(<Table/>);
-        expenseTableRow = TestUtils.findRenderedComponentWithType(table, ExpenseSummaryRow);
-        page.removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
+
+        const tableNode = TestUtils.renderIntoDocument(<Table/>);
+        expenseTableRow = TestUtils.findRenderedComponentWithType(tableNode, ExpenseSummaryRow);
+        page.cells = TestUtils.scryRenderedDOMComponentsWithTag(expenseTableRow, 'td');
+    };
+
+
+    describe('Initial state', () => {
+        it('should display the total amount of expenses with currencySymbol', () => {
+            renderSummaryRow();
+            const totalSum = _.reduce(expenses, ((memo, e) => memo + e.price), 0);
+            expect(page.cells[1].textContent).to.equal(`${totalSum} ${defaultProps.currencySymbol}`);
+        });
+
+        it('should display the remove all button enabled when expenses list is not empty', function () {
+            const removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
+            expect(removeButton.disabled).not.to.be.ok;
+        });
+
+        it('should display the remove button when removing is allowed', function () {
+            renderSummaryRow();
+            expect(() => TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button')).not.to.throw();
+        });
+
+        it('should not display the remove button when removing is disallowed', function () {
+            renderSummaryRow({ isRemoveAllowed: false });
+            expect(() => TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button')).to.throw();
+        });
+
+        it('should display the remove all button disabled when the expenses list is empty ', function () {
+            renderSummaryRow({ expenses: [] });
+            const removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
+            expect(removeButton.disabled).to.be.ok;
+        });
     });
 
-    it('should display the total amount of expenses', function() {
-        // verify name label value
-        var cells = TestUtils.scryRenderedDOMComponentsWithTag(expenseTableRow, 'td');
-        var totalSum = _.reduce(expenses, ((memo, e) => memo + e.price), 0);
-        expect(+cells[1].textContent).toEqual(totalSum);
-    });
+    describe('Removing all the expenses', () => {
+        beforeEach(() => renderSummaryRow());
 
-    it('should display a confirmation dialog when clicking the remove all button', function () {
-        TestUtils.Simulate.click(page.removeButton);
-        const dialog = TestUtils.findRenderedComponentWithType(expenseTableRow, RemovalConfirmationDialog);
-        expect(dialog._modal.state.showModal).toEqual(true);
-    });
+        it('should display a confirmation dialog when clicking the remove all button', () => {
+            const removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
+            sinon.spy(expenseTableRow._removalConfirmationDialog, 'open');
+            TestUtils.Simulate.click(removeButton);
+            expect(expenseTableRow._removalConfirmationDialog.open.called).to.be.ok;
+        });
 
-    it('should call ActionCreators.removeAllExpenses when remove all button is clicked', function () {
-        // set up spy
-        spyOn(ActionCreators, 'removeAllExpenses');
-        // Simulate a click and verify that the action creator is called
-        TestUtils.Simulate.click(page.removeButton);
-        const modal = TestUtils.findRenderedComponentWithType(expenseTableRow, RemovalConfirmationDialog)._modal;
-        // "click" the confirm button
-        modal.props.buttons[0].click();
-        expect(ActionCreators.removeAllExpenses).toHaveBeenCalled();
+        it('should call ActionCreators.removeAllExpenses when remove all button is clicked', () => {
+            const removeButton = TestUtils.findRenderedDOMComponentWithTag(expenseTableRow, 'button');
+            // set up spy
+            sinon.spy(ActionCreators, 'removeAllExpenses');
+            // Simulate a click and verify that the action creator is called
+            TestUtils.Simulate.click(removeButton);
+            // "click" the confirm button
+            expenseTableRow._removalConfirmationDialog.props.onRemoveConfirmed();
+            expect(ActionCreators.removeAllExpenses.calledWith(sheet.id)).to.be.ok;
+            ActionCreators.removeAllExpenses.restore();
+        });
     });
 });

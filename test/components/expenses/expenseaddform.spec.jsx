@@ -1,52 +1,70 @@
-jest.autoMockOff();
-
-import React from 'react';
-import TestUtils from 'react-testutils-additions';
+import {expect} from 'chai';
 import _ from 'lodash';
-
-const ExpenseAddForm = require('../../../components/expenses/expenseaddform.jsx').default;
-const dictionary = require('../../../dictionary/dictionary');
-
-var expenseAddForm;
-var page = {};
-
-var renderComponent = function(participants) {
-    expenseAddForm = TestUtils.renderIntoDocument(
-        <ExpenseAddForm participants={participants} expenses={[]} onSubmit={jasmine.createSpy()} />
-    );
-
-    page.nameField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-name');
-    page.priceField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-price');
-    page.participantsSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-participants');
-    page.payerSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-payer');
-    page.errorText = TestUtils.findRenderedDOMComponentWithClass(expenseAddForm, 'danger');
-    page.submitButton = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'button');
-    page.expenseForm = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'form');
-};
+import sinon from 'sinon';
+import {t} from '../../../src/js/dictionary/dictionary';
+import requireUncached from 'require-uncached';
 
 describe('Component:ExpenseAddForm', function() {
+    const jsdom = requireUncached('mocha-jsdom');
+
+    let React;
+    let ReactDOM;
+    let TestUtils;
+    let ExpenseAddForm;
+
+    var expenseAddForm;
+    var page = {};
     var participants = [
         {id: 1, name: 'Seppo'},
         {id: 2, name: 'Kake'},
         {id: 3, name: 'Jorma'}
     ];
 
+    var renderComponent = function(props) {
+        props = Object.assign({
+            participants,
+            expenses: [],
+            onSubmit: sinon.spy()
+        }, props);
+
+        expenseAddForm = TestUtils.renderIntoDocument(
+            <ExpenseAddForm {...props} />
+        );
+
+        page.nameField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-name');
+        page.priceField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-price');
+        page.participantsSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-participants');
+        page.payerSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-payer');
+        page.errorText = TestUtils.findRenderedDOMComponentWithClass(expenseAddForm, 'danger');
+        page.submitButton = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'button');
+        page.expenseForm = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'form');
+    };
+
+    jsdom();
+
+    before(() => {
+        React = require('react');
+        ReactDOM = require('react-dom');
+        TestUtils = require('react-testutils-additions');
+        ExpenseAddForm = require('../../../src/js/components/expenses/expenseaddform.jsx').default;
+    });
+
     beforeEach(function () {
-        renderComponent(participants);
+        renderComponent();
     });
 
     describe('Rendering', function () {
         it('should have default values set', function () {
-            expect(page.nameField.getAttribute('value')).toBeFalsy();
-            expect(page.priceField.getAttribute('value')).toBeFalsy();
-            expect(page.participantsSelect.getAttribute('value')).toBeFalsy();
-            expect(page.payerSelect.getAttribute('value')).toBeFalsy();
+            expect(page.nameField.value).to.equal('');
+            expect(page.priceField.value).to.equal('');
+            expect(page.participantsSelect.value).to.equal('' + participants[0].id);
+            expect(page.payerSelect.value).to.equal('' + participants[0].id);
         });
 
         it('should display an error when current sheet doesn\'t contain any participants', function () {
-            renderComponent([]);
-            expect(page.errorText.textContent).toEqual(dictionary.t('expenseaddform.error.participants'));
-            expect(page.submitButton.disabled).toBeTruthy();
+            renderComponent({ participants: [] });
+            expect(page.errorText.textContent).to.equal(t('expenseaddform.error.participants'));
+            expect(page.submitButton.disabled).to.be.ok;
         });
     });
 
@@ -59,8 +77,8 @@ describe('Component:ExpenseAddForm', function() {
                 TestUtils.Simulate.change(page.nameField);
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.required'));
-                    expect(page.nameField.className.indexOf('error')).not.toEqual(-1);
+                    expect(page.errorText.textContent).to.equal(t('error.expense.name.required'));
+                    expect(page.nameField.className.indexOf('error')).not.to.equal(-1);
                     done();
                 }, 105);
             });
@@ -71,7 +89,7 @@ describe('Component:ExpenseAddForm', function() {
                 TestUtils.Simulate.change(page.nameField);
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.name.maxLength'));
+                    expect(page.errorText.textContent).to.equal(t('error.expense.name.maxLength'));
                     done();
                 }, 105);
             });
@@ -83,8 +101,8 @@ describe('Component:ExpenseAddForm', function() {
                 TestUtils.Simulate.change(page.priceField);
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.required'));
-                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                    expect(page.errorText.textContent).to.equal(t('error.expense.price.required'));
+                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
                     done();
                 }, 105);
             });
@@ -94,8 +112,8 @@ describe('Component:ExpenseAddForm', function() {
                 TestUtils.Simulate.change(page.priceField, { target: { value: 0 }});
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.min'));
-                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                    expect(page.errorText.textContent).to.equal(t('error.expense.price.min'));
+                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
                     done();
                 }, 105);
             });
@@ -105,8 +123,8 @@ describe('Component:ExpenseAddForm', function() {
                 TestUtils.Simulate.change(page.priceField);
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).toEqual(dictionary.t('error.expense.price.max'));
-                    expect(page.priceField.className.indexOf('error')).not.toEqual(-1);
+                    expect(page.errorText.textContent).to.equal(t('error.expense.price.max'));
+                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
                     done();
                 }, 105);
             });
@@ -129,10 +147,10 @@ describe('Component:ExpenseAddForm', function() {
             expenseAddForm.setState({ expense: expenseModel });
 
             TestUtils.Simulate.submit(page.expenseForm);
-            expect(expenseAddForm.props.onSubmit).toHaveBeenCalledWith(expenseModel);
+            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
 
-            expect(page.payerSelect.value).toEqual('' + participants[1].id);
-            expect(expenseAddForm.state.expense.payer).toEqual(participants[1].id);
+            expect(page.payerSelect.value).to.equal('' + participants[1].id);
+            expect(expenseAddForm.state.expense.payer).to.equal(participants[1].id);
 
             // this time without changing the payer select
             TestUtils.Simulate.change(page.nameField, { target: { value: expenseModel.name }});
@@ -140,9 +158,9 @@ describe('Component:ExpenseAddForm', function() {
             TestUtils.Simulate.change(page.participantsSelect, { target: { options: participantOptions }});
             TestUtils.Simulate.submit(page.expenseForm);
 
-            expect(expenseAddForm.props.onSubmit).toHaveBeenCalledWith(expenseModel);
-            expect(page.payerSelect.value).toEqual('' + participants[1].id);
-            expect(expenseAddForm.state.expense.payer).toEqual(participants[1].id);
+            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
+            expect(page.payerSelect.value).to.equal('' + participants[1].id);
+            expect(expenseAddForm.state.expense.payer).to.equal(participants[1].id);
         });
     });
 
@@ -162,10 +180,10 @@ describe('Component:ExpenseAddForm', function() {
             expenseAddForm.setState({ expense: expenseModel });
 
             TestUtils.Simulate.submit(page.expenseForm);
-            expect(expenseAddForm.props.onSubmit).toHaveBeenCalledWith(expenseModel);
+            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
 
-            //expect(page.participants.value).toEqual('' + participants[1].id);
-            expect(expenseAddForm.state.expense.participants).toEqual([ 1, 2 ]);
+            //expect(page.participants.value).to.equal('' + participants[1].id);
+            expect(expenseAddForm.state.expense.participants).to.deep.equal([ 1, 2 ]);
 
             // this time without changing the payer select
             TestUtils.Simulate.change(page.nameField, { target: { value: expenseModel.name }});
@@ -173,7 +191,7 @@ describe('Component:ExpenseAddForm', function() {
             TestUtils.Simulate.change(page.payerSelect, { target: { 'options': participantOptions, selectedIndex: 1 }});
             TestUtils.Simulate.submit(page.expenseForm);
 
-            expect(expenseAddForm.props.onSubmit).toHaveBeenCalledWith(expenseModel);
+            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
         });
     });
 
@@ -197,11 +215,11 @@ describe('Component:ExpenseAddForm', function() {
             page.participantsSelect.options[2].selected = true;
             TestUtils.Simulate.change(page.participantsSelect);
 
-            expect(page.errorText.style.display).toEqual('none');
-            expect(page.submitButton.disabled).toBeFalsy();
+            expect(page.errorText.style.display).to.equal('none');
+            expect(page.submitButton.disabled).not.to.be.ok;
             TestUtils.Simulate.submit(page.expenseForm);
 
-            expect(expenseAddForm.props.onSubmit).toHaveBeenCalledWith(expenseModel);
+            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
         });
     });
 });
