@@ -2,10 +2,9 @@ import {expect} from 'chai';
 import _ from 'lodash';
 import sinon from 'sinon';
 import {t} from '../../../src/js/dictionary/dictionary';
-import requireUncached from 'require-uncached';
 
 describe('Component:ExpenseAddForm', function() {
-    const jsdom = requireUncached('mocha-jsdom');
+    const jsdom = require('mocha-jsdom');
 
     let React;
     let ReactDOM;
