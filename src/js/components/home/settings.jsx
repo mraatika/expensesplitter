@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {Panel} from 'react-bootstrap';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
-import ActionCreators from '../../actions/dataactioncreators';
 
 /**
  * @class Settings
@@ -36,9 +35,7 @@ export default class Settings extends React.Component {
      * @return {undefined}
      */
     componentWillReceiveProps(props) {
-        if (props.sheet != this.props.sheet) {
-            this.setState(this._getDefaultState(props));
-        }
+        this.setState(this._getDefaultState(props));
     }
 
     /**
@@ -59,7 +56,7 @@ export default class Settings extends React.Component {
         const settings = (props.sheet || {}).settings;
 
         return {
-            isOpen: this.props.show,
+            isOpen: props.show,
             settings: settings ? _.clone(settings) : {
                 currencySymbol: t('app.locales.currency_symbol')
             }
@@ -101,20 +98,22 @@ export default class Settings extends React.Component {
     _getSettingsSection() {
         const {settings} = this.state;
 
-        return <section id="sheet-settings">
-            <label htmlFor="settings-currency">
-                { t('settings.currency_symbol') }:
-            </label>
+        return (
+            <section id="sheet-settings">
+                <label htmlFor="settings-currency">
+                    { t('settings.currency_symbol') }:
+                </label>
 
-            <input
-                type="text"
-                maxLength="3"
-                minLength="1"
-                size="3"
-                value={settings.currencySymbol}
-                onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
-                id="settings-currency"/>
-        </section>;
+                <input
+                    type="text"
+                    maxLength="3"
+                    minLength="1"
+                    size="3"
+                    value={settings.currencySymbol}
+                    onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
+                    id="settings-currency"/>
+            </section>
+        );
     }
 
     /**

@@ -45,7 +45,7 @@ export default class SheetForm extends React.Component {
 
         return {
             currentSheetName: (currentSheet || {}).name,
-            isSettingsActive: false
+            isSettingsActive: !currentSheet
         };
     }
 
@@ -112,7 +112,6 @@ export default class SheetForm extends React.Component {
      * @return {undefined}
      */
     _handleSettingsClick() {
-        this._settings.toggle();
         this.setState({ isSettingsActive: !this.state.isSettingsActive });
     }
 
@@ -154,7 +153,7 @@ export default class SheetForm extends React.Component {
                     </div>
                 </div>
 
-                <Settings ref={c => this._settings = c} sheet={currentSheet} show={this.isSettingsActive}/>
+                <Settings ref={c => this._settings = c} sheet={currentSheet} show={this.state.isSettingsActive}/>
 
                 <button
                     type="submit"

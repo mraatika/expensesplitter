@@ -75,6 +75,10 @@ describe('SheetForm', () => {
 
             expect(ActionCreators.createSheet.called).to.be.ok;
         });
+
+        it('should show the settings section', () => {
+            expect(sheetForm.state.isSettingsActive).to.be.ok;
+        });
     });
 
     describe('State when current sheet is defined', () => {
@@ -105,10 +109,8 @@ describe('SheetForm', () => {
             expect(button.disabled).to.equal(false);
         });
 
-        it('should find a settings section', () => {
-            expect(() => {
-                TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-settings');
-            }).not.to.throw();
+        it('should display settings section hidden', () => {
+            expect(sheetForm.state.isSettingsActive).not.to.be.ok;
         });
     });
 });
