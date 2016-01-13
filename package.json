@@ -37,7 +37,6 @@
     "react-tools": "^0.13.3",
     "reactify": "^1.1.1",
     "require-dir": "^0.3.0",
-    "require-uncached": "^1.0.2",
     "sinon": "^1.17.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
@@ -47,7 +46,7 @@
     "prod": "gulp --type prod",
     "start": "gulp --type dev",
     "build": "gulp build",
-    "test": "mocha --compilers 'jsx:test/support/jsxcompiler, .:babel-register'",
+    "test": "mocha --recursive --compilers 'jsx:test/support/jsxcompiler, .:babel-register'",
     "test-debug": "node debug --harmony ./node_modules/.bin/mocha --runInBand"
   },
   "dependencies": {
