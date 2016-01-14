@@ -59,13 +59,15 @@ export const DateUtils = {
      */
     format(date, format) {
         if (!_.isDate(date)) date = new Date(date);
+        const minutes = date.getMinutes();
+        const hours = date.getHours();
 
         return format
             .replace('${year}', date.getFullYear())
             .replace('${month}', date.getMonth() + 1)
             .replace('${day}', date.getDate())
-            .replace('${hour}', date.getHours())
-            .replace('${minute}', date.getMinutes());
+            .replace('${hour}', hours < 10 ? ('0' + hours) : hours)
+            .replace('${minute}', minutes < 10 ? ('0' + minutes) : minutes);
     }
 };
 
