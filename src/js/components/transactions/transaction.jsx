@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import {NumberUtils} from '../../util/utils.js';
 
 /**
  * @class Transaction
@@ -22,7 +23,7 @@ export default class Transaction extends React.Component {
                 <td className="transactions-list-from">{findParticipant(transaction.from)}</td>
                 <td>&#8680;</td>
                 <td className="transactions-list-to">{findParticipant(transaction.to)}</td>
-                <td className="transactions-list-amount">{transaction.amount} {currencySymbol}</td>
+                <td className="transactions-list-amount">{NumberUtils.round(transaction.amount, 1)} {currencySymbol}</td>
             </tr>
         );
     }

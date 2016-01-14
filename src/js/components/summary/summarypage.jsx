@@ -14,7 +14,6 @@ import {DateUtils, URLUtils} from '../../util/utils.js';
 import ActionCreators from '../../actions/dataactioncreators.js';
 import Router from '../../router/router.js';
 import SaveButton from '../common/savebutton.jsx';
-import MessageContainer from '../common/messagecontainer.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
 /**
@@ -117,7 +116,7 @@ export default class SheetSummaryPage extends React.Component {
                 <TransactionsList
                     participants={participants}
                     transactions={transactions}
-                    settings={settings}/>
+                    currencySymbol={settings.currencySymbol}/>
 
                 <h2>{t('lang.expense_plural')}:</h2>
                 <ExpenseList

@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+import {NumberUtils} from '../../../src/js/util/utils.js';
 
 describe('Component:Transaction', function() {
     const jsdom = require('mocha-jsdom');
@@ -29,13 +30,13 @@ describe('Component:Transaction', function() {
         Transaction = require('../../../src/js/components/transactions/transaction.jsx').default;
     });
 
-    beforeEach(function () {
+    const renderRow = (model) => {
         const TableWrapper = React.createClass({
             render: function() {
                 return (
                     <table>
                     <tbody>
-                        <Transaction transaction={ transactionModel } participants={ participants } currencySymbol="$"/>
+                        <Transaction transaction={model} participants={participants} currencySymbol="$"/>
                     </tbody>
                     </table>
                 );
@@ -48,20 +49,33 @@ describe('Component:Transaction', function() {
         page.fromCell = ReactDOM.findDOMNode(cells[0]);
         page.toCell = ReactDOM.findDOMNode(cells[2]);
         page.amountCell = ReactDOM.findDOMNode(cells[3]);
+    };
+
+    beforeEach(function () {
+        renderRow(transactionModel);
     });
 
-    it('Renders transaction\'s from attribute (participant name)', function() {
-        // verify from text
-        expect(page.fromCell.textContent).to.equal(participants[0].name);
-    });
+    describe('Initial state', function () {
+        it('should render the transaction\'s name', function() {
+            // verify from text
+            expect(page.fromCell.textContent).to.equal(participants[0].name);
+        });
 
-    it('Renders transaction\'s to attribute (participant name)', function() {
-        // verify to text
-        expect(page.toCell.textContent).to.equal(participants[1].name);
-    });
+        it('should render the names of the transaction\'s participants', function() {
+            // verify to text
+            expect(page.toCell.textContent).to.equal(participants[1].name);
+        });
 
-    it('Renders transaction\'s amount with currency symbol', function() {
-        // verify amount text
-        expect(page.amountCell.textContent).to.equal(`${transactionModel.amount} $`);
+        it('should render transaction\'s amount with currency symbol', function() {
+            // verify amount text
+            expect(page.amountCell.textContent).to.equal(`${transactionModel.amount} $`);
+        });
+
+        it('should display the amount with precision of one decimal', function () {
+            const model = Object.assign({}, transactionModel, { amount: 2.232323323232323 });
+            const expected = NumberUtils.round(model.amount, 1);
+            renderRow(model);
+            expect(page.amountCell.textContent).to.equal(`${expected} $`);
+        });
     });
 });
