@@ -171,7 +171,7 @@ describe('ParticipantStore', function () {
     describe('EVENTS', function () {
         const sheet = {
             id: '1',
-            participants: [{ id: '1' }, { id: '2'}]
+            participants: [{ id: '1', name: 'John' }, { id: '2', name: 'Mike'}]
         };
 
         const loadSheetSuccessPayload = () => {
@@ -184,8 +184,18 @@ describe('ParticipantStore', function () {
         };
 
         describe('Load sheet success event', function () {
+
+            beforeEach(() => removeAll(sheet.id));
+
             it('should add all participants of a sheet to the store', function () {
                 expect(ParticipantStore.getParticipants(sheet.id).length).to.equal(0);
+                dispatch(loadSheetSuccessPayload());
+                expect(ParticipantStore.getParticipants(sheet.id).length).to.equal(2);
+            });
+
+            it('should not add doubles with add all action', function () {
+                expect(ParticipantStore.getParticipants(sheet.id).length).to.equal(0);
+                dispatch(loadSheetSuccessPayload());
                 dispatch(loadSheetSuccessPayload());
                 expect(ParticipantStore.getParticipants(sheet.id).length).to.equal(2);
             });

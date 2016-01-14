@@ -54,6 +54,10 @@ describe('ExpenseStore', function () {
         };
     };
 
+    const removeAll = sheetId => {
+        ExpenseStore.getExpenses(sheetId).forEach(e => dispatch(removePayload(e)));
+    };
+
     it('should register a callback with the dispatcher', function () {
         expect(stubs.dispatcher.register.called).to.be.ok;
     });
@@ -252,8 +256,18 @@ describe('ExpenseStore', function () {
         };
 
         describe('Load sheet success event', function () {
+
+            beforeEach(() => removeAll(sheet.id));
+
             it('should add all expenses of a sheet to the store', function () {
                 expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(0);
+                dispatch(loadSheetSuccessPayload());
+                expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(2);
+            });
+
+            it('should not add doubles with add all action', function () {
+                expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(0);
+                dispatch(loadSheetSuccessPayload());
                 dispatch(loadSheetSuccessPayload());
                 expect(ExpenseStore.getExpenses(sheet.id).length).to.equal(2);
             });

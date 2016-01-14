@@ -31,7 +31,10 @@ const addParticipant = (participant, sheetId) => {
 
 const addParticipants = (participants, sheetId) => {
     // return true if all adds succeeded
-    return _.all(participants, p => addParticipant(p, sheetId));
+    return _.all(participants, p => {
+        if (!getParticipant(p.id))  return addParticipant(p, sheetId);
+        return true;
+    });
 };
 
 const removeParticipant = participant => {

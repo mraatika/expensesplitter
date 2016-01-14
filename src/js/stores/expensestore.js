@@ -33,7 +33,10 @@ const addExpense = (expense, sheetId) => {
 
 const addExpenses = (expenses, sheetId) => {
     // return true if all adds succeeded
-    return _.all(expenses.map(e => addExpense(e, sheetId)));
+    return _.all(expenses, e => {
+        if (!getExpense(e.id))  return addExpense(e, sheetId);
+        return true;
+    });
 };
 
 const removeExpense = expense => {
