@@ -3,7 +3,7 @@ import Constants from '../constants/AppConstants';
 import storageFactory from '../factory/storagefactory';
 import AppDispatcher from '../dispatchers/appdispatcher';
 
-const storage = storageFactory.create(Constants.SHEET_STORE_NAME);
+const storage = storageFactory.create(Constants.SETTINGS_STORE_NAME);
 
 function setLanguage(langCode) {
     storage.set('language', langCode);
