@@ -1,43 +1,6 @@
 @import "./variables.scss";
 @import "../../bower_components/Skeleton-Sass/scss/skeleton.scss";
 
-.info, .button-info {
-    background-color: $color-info;
-    border-color: $color-info;
-}
-
-.danger, .button-danger {
-    color: #fff;
-    background-color: $color-danger;
-    border-color: $color-danger;
-
-    &:hover {
-        color: #fff;
-        background-color: darken($color-danger, 10%);
-        border-color: darken($color-danger, 10%);
-    }
-}
-
-.success, .button-success {
-    background-color: $color-success;
-    border-color: $color-success;
-    color: #fff;
-
-    &:hover {
-        background-color: darken($color-success, 10%);
-        border-color: darken($color-success, 10%);
-    }
-
-    &:hover, &:focus {
-        color: #fff;
-    }
-}
-
-.warning, .button-warning {
-    background-color: $color-warning;
-    border-color: $color-warning;
-}
-
 .button,
 button,
 input {
@@ -60,6 +23,61 @@ button {
             background-color: lighten($primary-color, 20%);
         }
     }
+
+    &:focus {
+        color: $font-color;
+        border-color: $primary-color;
+    }
+}
+
+.info, .button-info {
+    background-color: $color-info;
+    border-color: $color-info;
+}
+
+.button-primary {
+    &:focus {
+        border-color: #337ab7 !important;
+    }
+}
+
+.danger, .button-danger {
+    color: #fff;
+    background-color: $color-danger;
+    border-color: $color-danger;
+
+    &:hover,
+    &:focus {
+        color: #fff;
+        background-color: darken($color-danger, 10%);
+        border-color: darken($color-danger, 10%);
+    }
+
+    &:focus {
+        border-color: darken($color-danger, 30%);
+    }
+}
+
+.success, .button-success {
+    background-color: $color-success;
+    border-color: $color-success;
+    color: #fff;
+
+    &:hover,
+    &:focus {
+        color: #fff;
+        background-color: darken($color-success, 10%);
+        border-color: darken($color-success, 10%);
+    }
+
+    &:focus {
+        border-color: darken($color-success, 30%);
+    }
+}
+
+.warning, .button-warning {
+    background-color: $color-warning;
+    border-color: $color-warning;
 }
 
 input[type="text"] {
