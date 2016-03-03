@@ -57,7 +57,8 @@
     "lang.summary": "Yhteenveto",
 
     "loadsheetdialog.header": "Lataa laskelma",
-    "loadsheetdialog.no_sheets": "Ei tallennettuja laskelmia!",
+    "loadsheetdialog.no_sheets": "Historia on vielä tyhjä!",
+    "loadsheetdialog.button.clear_history": "Tyhjennä historia",
 
     "error.expense.name.maxLength": "Kulun nimi tulee sisältää alle 100 merkkiä",
     "error.expense.name.required" : "Kulun nimi on pakollinen",

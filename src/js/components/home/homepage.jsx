@@ -98,7 +98,6 @@ export default class HomePage extends React.Component {
 
     render() {
         const currentSheet = SheetStore.getSheet(this.props.currentSheetId);
-        const allSheets = SheetStore.getSheets();
 
         return (
             <section id="home-page">
@@ -166,7 +165,6 @@ export default class HomePage extends React.Component {
 
                 <LoadSheetDialog
                     ref="loadSheetDialog"
-                    sheets={allSheets}
                     currentSheet={currentSheet} />
 
             </section>

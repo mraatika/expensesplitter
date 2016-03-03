@@ -1,9 +1,9 @@
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
+import SheetHistoryStore from '../../stores/sheethistorystore';
 import SheetsList from './sheetslist.jsx';
 import ModalDialog from '../common/modaldialog.jsx';
 import ActionCreators from '../..//actions/dataactioncreators';
-import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 
 /**
  * @class LoadSheetDialog
@@ -11,6 +11,36 @@ import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
  * @extends {ReactComponent}
  */
 export default class LoadSheetDialog extends React.Component {
+    /**
+     * @constructor
+     * @return {HomePage}
+     */
+    constructor(props) {
+        super(props);
+
+        this.state = { sheets: SheetHistoryStore.getHistory() };
+
+        this._onChange = this._onChange.bind(this);
+    }
+
+    componentDidMount() {
+        SheetHistoryStore.addChangeListener(this._onChange);
+    }
+
+    componentWillUnmount() {
+        SheetHistoryStore.removeChangeListener(this._onChange);
+    }
+
+
+    /**
+     * Callback for SheetHistoryStore's change events
+     * @private
+     * @return {undefined}
+     */
+    _onChange() {
+        this.setState({ sheets: SheetHistoryStore.getHistory()});
+    }
+
     /**
      * Open the dialog
      * @return {undefined}
@@ -27,37 +57,30 @@ export default class LoadSheetDialog extends React.Component {
         this._dialog.close();
     }
 
-    _handleRemoveClick(sheet) {
-        this._removeConfirmationDialog.open().then(() => {
-            this._removeSheet(sheet);
-        });
-    }
-
-    _removeSheet(sheet) {
-        ActionCreators.removeSheet(sheet);
+    _clearHistory() {
+        ActionCreators.clearHistory();
     }
 
     /**
      * @return {ReactComponent}
      */
     render() {
+        const buttons = [
+            { label: t('loadsheetdialog.button.clear_history'), icon: 'fa-trash-o', click: this._clearHistory },
+            { label: t('lang.close'), icon: 'fa-close' }
+        ];
+
         return (
             <ModalDialog
                 ref={c => this._dialog = c}
                 onCloseRequest={this.props.onCloseRequest}
-                header={t('loadsheetdialog.header')}>
+                header={t('loadsheetdialog.header')}
+                buttons={buttons}>
                 <section id="load-sheet-dialog">
                     <SheetsList
-                        onRemoveClick={this._handleRemoveClick.bind(this)}
-                        sheets={this.props.sheets}
+                        sheets={this.state.sheets}
                         currentSheet={this.props.currentSheet} />
                 </section>
-                <RemovalConfirmationDialog
-                    ref={c => this._removeConfirmationDialog = c}
-                    header={ t('home.remove_sheet_confirmation_title') }
-                    contentText={ t('home.remove_sheet_confirmation_msg') }
-                    okButtonLabel={ t('home.remove_sheet') }
-                />
             </ModalDialog>
         );
     }

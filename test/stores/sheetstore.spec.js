@@ -63,14 +63,14 @@ describe('SheetStore', function() {
                 expect(sheets[0]).to.equal(sheet);
             });
 
-            it('should emit a change event when adding succeeds', function () {
+            it('should emit a success event when adding succeeds', function () {
                 var spy = sinon.spy();
 
                 SheetStore.addChangeListener(spy);
 
                 dispatch(createPayload({ name: sheetName }));
 
-                expect(spy.calledWith(Constants.EventTypes.CHANGE_EVENT)).to.be.ok;
+                expect(spy.calledWith(Constants.EventTypes.CREATE_SHEET_SUCCESS)).to.be.ok;
             });
 
             it('should set current sheet id when adding succeeds', function () {

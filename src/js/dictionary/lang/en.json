@@ -57,7 +57,8 @@
     "lang.summary": "Summary",
 
     "loadsheetdialog.header": "Load sheet",
-    "loadsheetdialog.no_sheets": "No sheets saved yet!",
+    "loadsheetdialog.no_sheets": "History is currently empty!",
+    "loadsheetdialog.button.clear_history": "Clear history",
 
     "error.expense.name.maxLength": "Expense name should contain less than 100 characters",
     "error.expense.name.required" : "Expense name is required",

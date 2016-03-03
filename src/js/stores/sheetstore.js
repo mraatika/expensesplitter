@@ -71,7 +71,7 @@ const sheetStore = makeStore({
             const sheet = sheetFactory.create(action.sheet);
 
             if (addSheet(sheet)) {
-                sheetStore.emitChange(Constants.EventTypes.CHANGE_EVENT);
+                sheetStore.emitChange(Constants.EventTypes.CREATE_SHEET_SUCCESS);
             } else {
                 sheetStore.emitChange(Constants.ErrorEventTypes.ADD_SHEET);
             }

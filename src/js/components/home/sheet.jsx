@@ -1,19 +1,16 @@
 import React from 'react';
 import classNames from 'classnames';
-import ActionCreators from '../../actions/dataactioncreators';
-import TrashButton from '../common/trashbutton.jsx';
+import Router from '../../router/router.js';
+import ActionCreators from '../../actions/dataactioncreators.js';
+import pages from '../../constants/pages.js';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
 
 export default class Sheet extends React.Component {
 
     _handleSheetItemClick() {
-        ActionCreators.setActiveSheet(this.props.sheet.id);
-    }
-
-    _handleRemoveClick(e) {
-        e.stopPropagation();
-        this.props.onRemoveClick(this.props.sheet);
+        Router.navigateToSheetURL(pages.HOME.href, this.props.sheet.id);
+        ActionCreators.loadSheet(this.props.sheet.id);
     }
 
     render() {
@@ -33,7 +30,6 @@ export default class Sheet extends React.Component {
                     </div>
                     <div className="seven columns">
                         <span className="sheet-list-date">{DateUtils.format(sheet.createdOn, t('app.locales.date_format'))}</span>
-                        <TrashButton className="u-pull-right" onClick={this._handleRemoveClick.bind(this)}/>
                     </div>
                 </div>
             </li>

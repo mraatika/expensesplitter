@@ -19,8 +19,8 @@ export default {
     EventTypes: {
         ADD_EXPENSE_EVENT: Symbol(),
         ADD_PARTICIPANT_EVENT: Symbol(),
-        ADD_SHEET_EVENT: Symbol(),
         CHANGE_EVENT: Symbol(),
+        CREATE_SHEET_SUCCESS: Symbol(),
         LOAD_SHEET_SUCCESS: Symbol(),
         REMOVE_EXPENSE_EVENT: Symbol(),
         REMOVE_PARTICIPANT_EVENT: Symbol(),
@@ -35,6 +35,7 @@ export default {
     ActionTypes: {
         ADD_EXPENSE: Symbol(),
         ADD_PARTICIPANT: Symbol(),
+        CLEAR_HISTORY: Symbol('CLEAR_HISTORY'),
         CREATE_SHEET: Symbol(),
         REMOVE_EXPENSE: Symbol(),
         REMOVE_PARTICIPANT: Symbol(),

@@ -40,7 +40,8 @@ export default {
             new SheetService().removeSheet(sheet)
                 .then(() => {
                     AppDispatcher.handleServerAction({
-                        type: Constants.EventTypes.REMOVE_SHEET_SUCCESS
+                        type: Constants.EventTypes.REMOVE_SHEET_SUCCESS,
+                        sheet
                     });
                 })
                 .fail(error => {
@@ -211,6 +212,14 @@ export default {
         AppDispatcher.handleViewAction({
             type: Constants.ActionTypes.SET_LANGUAGE,
             language: langCode
+        });
+    },
+
+// history
+
+    clearHistory: function() {
+        AppDispatcher.handleViewAction({
+            type: Constants.ActionTypes.CLEAR_HISTORY
         });
     }
 };
