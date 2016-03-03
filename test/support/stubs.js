@@ -1,19 +1,31 @@
 import sinon from 'sinon';
 
 export default function getStubs() {
+    const sandbox = sinon.sandbox.create();
 
     return {
+        sandbox,
         dispatcher: {
-            register: sinon.stub(),
-            waitFor: sinon.stub()
+            register: sandbox.stub(),
+            waitFor: sandbox.stub()
         },
 
         validation: {
-            validate: sinon.stub().returns({})
+            validate: sandbox.stub().returns({})
         },
 
         factory: {
-            create: sinon.stub()
+            create: sandbox.stub()
+        },
+
+        storage: {
+            getAll: sandbox.stub(),
+            get: sandbox.stub(),
+            set: sandbox.stub(),
+            remove: sandbox.stub(),
+            save: sandbox.stub(),
+            clear: sandbox.stub(),
+            load: sandbox.stub()
         }
     };
 }
