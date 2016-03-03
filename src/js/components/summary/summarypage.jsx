@@ -159,7 +159,7 @@ export default class SheetSummaryPage extends React.Component {
                     </div>
 
                     <div className="row">
-                        <div className="four columns">
+                        <div className="six columns">
                             <SaveButton
                                 type="button"
                                 className="u-full-width"
@@ -170,8 +170,10 @@ export default class SheetSummaryPage extends React.Component {
                                 onSavingText={t('lang.saving')}
                                 onClick={this._saveSheet.bind(this)} />
                         </div>
-                        <div className="four columns">
-                            <button className="button-danger u-full-width" onClick={this._removeSheet.bind(this)}>
+                        <div className="six columns">
+                            <button
+                                className={ 'button-danger u-full-width' }
+                                onClick={this._removeSheet.bind(this)}>
                                 <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
                                 { t('transactions.remove_sheet') }
                             </button>
