@@ -10,7 +10,7 @@ module.exports = {
         settings: {
             root: dest,
             host: 'localhost',
-            port: 8080,
+            port: 4932,
             livereload: {
                 port: 35929
             },
@@ -18,7 +18,7 @@ module.exports = {
                 return [
                     modRewrite(
                         [
-                            '^/api/(.*)$ http://localhost:8888/$1 [P]',
+                            '^/api/(.*)$ http://localhost:8080/$1 [P]',
                             '!\\.\\w+$ /index.html [L]'
                         ]
                     )
