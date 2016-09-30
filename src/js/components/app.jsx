@@ -1,17 +1,16 @@
 import React from 'react';
+import {browserHistory, Link} from 'react-router';
 import Swipeable from 'react-swipeable';
 import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
 import NotificationStore from '../stores/notificationstore.js';
 import ActionCreators from '../actions/dataactioncreators.js';
-import Router from '../router/router';
 import pages from '../constants/pages.js';
 import SheetStore from '../stores/sheetstore.js';
 import SettingsStore from '../stores/settingsstore.js';
 import LanguagesSection from './language/languagessection.jsx';
 import Constants from '../constants/AppConstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
-import {URLUtils} from '../util/utils.js';
 import {Modal} from 'react-bootstrap';
 import {t} from '../dictionary/dictionary.js';
 
@@ -36,7 +35,7 @@ export default class App extends React.Component {
     }
 
     componentWillMount() {
-        const currentSheetId = URLUtils.getCurrentSheetId();
+        const currentSheetId = this.props.params.sheetId;
 
         if (currentSheetId) {
             ActionCreators.loadSheet(currentSheetId);
@@ -46,8 +45,6 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        Router.start();
-
         SettingsStore.addChangeListener(this._onChange);
         SheetStore.addChangeListener(this._onChange);
         NotificationStore.addChangeListener(this._onNotficationAdded);
@@ -68,15 +65,12 @@ export default class App extends React.Component {
         if (eventType == Constants.EventTypes.LANGUAGE_CHANGED_EVENT) {
             setLanguage(SettingsStore.getSettings().language);
             // reload route to completely rerender the page
-            Router.navigateTo(window.location.pathname);
+            browserHistory.replace(window.location.pathname);
         }
 
-        if (eventType == Constants.EventTypes.LOAD_SHEET_SUCCESS) {
-            Router.navigateToSheetURL(Router.getCurrentRoute().href);
-        }
-
+        // return to the home page if sheet fetching fails
         if (eventType == Constants.ErrorEventTypes.LOAD_SHEET) {
-            Router.navigateTo(pages.HOME.href);
+            browserHistory.push(pages.HOME.href);
         }
 
         this.setState({ isLoading: false });
@@ -102,21 +96,23 @@ export default class App extends React.Component {
 
     _onHomeLinkClick(e) {
         e.preventDefault();
-        Router.navigateToSheetURL(pages.HOME.href);
+        //Router.navigateToSheetURL(pages.HOME.href);
     }
 
     /**
      * @return {ReactComponent}
      */
     render() {
+        const currentSheet = SheetStore.getSheet(this.props.params.sheetId);
+
         return (
             <Swipeable
-                onSwipedRight={() => Router.prev()}
-                onSwipedLeft={() => Router.next()}>
+                onSwipedRight={() => false/*Router.prev()*/}
+                onSwipedLeft={() => false /*Router.next()*/}>
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><a href="/" onClick={this._onHomeLinkClick}>{ appName }</a></h1>
+                        <h1><Link to={'/' + (currentSheet ? `sheet/${currentSheet.id}` : '' )}>{ appName }</Link></h1>
                     </header>
 
                     <Modal show={this.state.isLoading}>
@@ -130,7 +126,9 @@ export default class App extends React.Component {
 
                     <NotificationSystem ref={ c => this._notificationSystem = c} />
 
-                    <main role="main" id="content"></main>
+                    <main role="main" id="content">
+                        { React.cloneElement(this.props.children, { currentSheet }) }
+                    </main>
 
                     <footer role="contentinfo" className="text-right">
                         <div className="u-pull-left">

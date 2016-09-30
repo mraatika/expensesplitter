@@ -45,7 +45,7 @@ export default class ValidatedSelect extends ValidatedInput {
     }
 
     render() {
-        let props = this._formInputProperties();
+        const props = this._formInputProperties();
 
         return (
             <select ref="inputField" {...props}>

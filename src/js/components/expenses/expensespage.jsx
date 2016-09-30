@@ -38,7 +38,7 @@ export default class ExpensesPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
+        const currentSheet = props.currentSheet || {};
 
         return {
             currentSheet: currentSheet,
@@ -99,7 +99,7 @@ export default class ExpensesPage extends React.Component {
                         currencySymbol={settings.currencySymbol}/>
                 </section>
 
-                <Navigation currentPage={pages.EXPENSES} />
+                <Navigation currentPage={pages.EXPENSES} sheetId={this.state.currentSheet.id}/>
 
             </section>
         );

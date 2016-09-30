@@ -43,16 +43,16 @@ export default class SheetSummaryPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
+        const currentSheet = props.currentSheet || {};
 
         return {
-            currentSheet: currentSheet,
+            currentSheet,
             participants: ParticipantStore.getParticipants(currentSheet.id),
             expenses: ExpenseStore.getExpenses(currentSheet.id),
             settings: currentSheet.settings || {},
             isSavedToServer: false,
             isSavingToServer: false,
-            shareURL: currentSheet ? URLUtils.formSheetUrl(currentSheet.id) : null
+            shareURL: currentSheet ? `${URLUtils.formSheetUrl(currentSheet.id)}/summary` : null
         };
     }
 
@@ -183,7 +183,7 @@ export default class SheetSummaryPage extends React.Component {
                     </div>
                 </div>
 
-                <Navigation currentPage={pages.SUMMARY} />
+                <Navigation currentPage={pages.SUMMARY} sheetId={this.state.currentSheet.id}/>
             </div>
         );
     }
