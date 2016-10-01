@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import {expect} from 'chai';
 import getStubs from '../support/stubs.js';
-import Constants from '../../src/js/constants/AppConstants';
+import Constants from '../../src/js/constants/appconstants';
 
 const proxyquire = require('proxyquire').noCallThru();
 

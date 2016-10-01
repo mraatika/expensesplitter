@@ -2,7 +2,7 @@ import _ from 'lodash';
 import makeStore from 'makestore';
 import AppDispatcher from '../dispatchers/appdispatcher';
 import ExpenseStore from './expensestore';
-import Constants from '../constants/AppConstants';
+import Constants from '../constants/appconstants';
 import sheetFactory from '../factory/sheetfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';

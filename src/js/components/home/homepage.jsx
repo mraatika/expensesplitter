@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, browserHistory} from 'react-router';
 import SheetStore from '../../stores/sheetstore.js';
 import ActionCreators from '../../actions/dataactioncreators';
-import Constants from '../../constants/AppConstants';
+import Constants from '../../constants/appconstants';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import MessageContainer from '../common/messagecontainer.jsx';
@@ -107,7 +107,7 @@ export default class HomePage extends React.Component {
                     onClose={() => this.setState({ newSheetCreated: false })}
                     type="info">
                     { t('home.prev_sheet_saved') + ' ' }
-                    <a href="/" onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</a>.
+                    <Link to={'/'} onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</Link>.
                 </MessageContainer>
 
                 <MessageContainer show={this.state.errors.sheetNotFound} type="danger">

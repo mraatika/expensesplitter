@@ -9,7 +9,7 @@ import pages from '../constants/pages.js';
 import SheetStore from '../stores/sheetstore.js';
 import SettingsStore from '../stores/settingsstore.js';
 import LanguagesSection from './language/languagessection.jsx';
-import Constants from '../constants/AppConstants.js';
+import Constants from '../constants/appconstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
 import {Modal} from 'react-bootstrap';
 import {t} from '../dictionary/dictionary.js';
@@ -93,11 +93,6 @@ export default class App extends React.Component {
         if (currentLanguage) {
             setLanguage(currentLanguage);
         }
-    }
-
-    _onHomeLinkClick(e) {
-        e.preventDefault();
-        //Router.navigateToSheetURL(pages.HOME.href);
     }
 
     /**

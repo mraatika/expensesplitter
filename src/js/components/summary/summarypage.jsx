@@ -2,7 +2,7 @@ import React from 'react';
 import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
-import Constants from '../../constants/AppConstants.js';
+import Constants from '../../constants/appconstants.js';
 import SheetStore from '../../stores/sheetstore.js';
 import ExpenseStore from '../../stores/expensestore.js';
 import ParticipantStore from '../../stores/participantstore.js';

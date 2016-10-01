@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import Constants from '../../constants/AppConstants.js';
+import Constants from '../../constants/appconstants.js';
 import ActionCreators from '../../actions/dataactioncreators.js';
 
 export default class Languages extends React.Component {

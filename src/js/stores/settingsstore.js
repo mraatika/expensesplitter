@@ -1,5 +1,5 @@
 import makeStore from 'makestore';
-import Constants from '../constants/AppConstants';
+import Constants from '../constants/appconstants';
 import storageFactory from '../factory/storagefactory';
 import AppDispatcher from '../dispatchers/appdispatcher';
 

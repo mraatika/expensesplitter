@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import AppDispatcher from '../dispatchers/appdispatcher';
-import Constants from '../constants/AppConstants';
+import Constants from '../constants/appconstants';
 import SheetStore from '../stores/sheetstore.js';
 import SheetService from '../service/sheetservice.js';
 import {StringUtils} from '../util/utils';

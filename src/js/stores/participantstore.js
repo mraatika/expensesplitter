@@ -1,7 +1,7 @@
 import makeStore from 'makestore';
 import _ from 'lodash';
 import AppDispatcher from '../dispatchers/appdispatcher';
-import Constants from '../constants/AppConstants.js';
+import Constants from '../constants/appconstants.js';
 import ParticipantFactory from '../factory/participantfactory';
 import validation from '../validation/validation';
 import * as Schema from '../validation/schema/schema';

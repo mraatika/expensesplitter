@@ -1,5 +1,5 @@
 import {Dispatcher} from 'flux';
-import Constants from '../constants/AppConstants';
+import Constants from '../constants/appconstants';
 
 class AppDispatcher extends Dispatcher {
 

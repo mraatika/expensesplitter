@@ -1,6 +1,6 @@
 import makeStore from 'makestore';
 import AppDispatcher from '../dispatchers/appdispatcher.js';
-import Constants from '../constants/AppConstants';
+import Constants from '../constants/appconstants';
 import {t} from '../dictionary/dictionary.js';
 
 /**
