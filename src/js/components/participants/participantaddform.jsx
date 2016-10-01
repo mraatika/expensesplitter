@@ -66,7 +66,8 @@ export default class ParticipantAddForm extends React.Component {
 
                     <button
                         className="button-primary u-full-width"
-                        type="submit">
+                        type="submit"
+                        disabled={!this.props.currentSheet}>
                         <i className="fa fa-plus fa-lg fa-fw" />
                         { t('participants.add_participant') }
                     </button>

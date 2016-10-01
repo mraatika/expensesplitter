@@ -1,6 +1,6 @@
 import React from 'react';
+import {Link} from 'react-router';
 import {t} from '../../dictionary/dictionary';
-import Router from '../../router/router.js';
 import pages from '../../constants/pages.js';
 import NavigationSelect from './navigationselect.jsx';
 
@@ -12,7 +12,7 @@ import NavigationSelect from './navigationselect.jsx';
 export default class Navigation extends React.Component {
 
     render() {
-        const {currentPage} = this.props;
+        const {currentPage, sheetId} = this.props;
         const nextPage = pages[currentPage.next];
         const prevPage = pages[currentPage.prev];
         let prevLink = '';
@@ -20,18 +20,18 @@ export default class Navigation extends React.Component {
 
         if (prevPage) {
             prevLink =
-                <button onClick={() => Router.navigateToSheetURL(prevPage.href)} className="u-full-width">
+                <Link to={`/sheet/${sheetId}${prevPage.href}`} className="button u-full-width">
                     <i className="fa fa-angle-double-left"></i>&nbsp;
                     {t (prevPage.label) }
-                </button>;
+                </Link>;
         }
 
         if (nextPage) {
             nextLink =
-                <button onClick={() => Router.navigateToSheetURL(nextPage.href)} className="u-full-width">
+                <Link to={`/sheet/${sheetId}${nextPage.href}`} className="button u-full-width">
                     { t(nextPage.label) }&nbsp;
                     <i className="fa fa-angle-double-right"></i>
-                </button>;
+                </Link>;
         }
 
         return (
@@ -43,7 +43,7 @@ export default class Navigation extends React.Component {
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="four columns">
-                        <NavigationSelect className="u-full-width" currentPage={currentPage}/>
+                        <NavigationSelect className="u-full-width" currentPage={currentPage} sheetId={this.props.sheetId}/>
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="three columns">

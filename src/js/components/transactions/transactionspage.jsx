@@ -32,9 +32,10 @@ export default class TransactionsPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
+        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
 
         return {
+            currentSheet,
             participants: ParticipantStore.getParticipants(currentSheet.id),
             expenses: ExpenseStore.getExpenses(currentSheet.id),
             settings: currentSheet.settings || {}
@@ -68,7 +69,7 @@ export default class TransactionsPage extends React.Component {
                     expenses={expenses}
                     currencySymbol={settings.currencySymbol}/>
 
-                <Navigation currentPage={pages.TRANSACTIONS} />
+                <Navigation currentPage={pages.TRANSACTIONS} sheetId={this.state.currentSheet.id}/>
 
             </section>
         );

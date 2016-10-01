@@ -1,5 +1,5 @@
 import React from 'react';
-import App from './components/app.jsx';
+import ExpenseSplitterRouter from './router/expensesplitterrouter.jsx';
 import renderer from './util/renderer.js';
 
-renderer.render(<App />, 'main');
+renderer.render(<ExpenseSplitterRouter />, 'main');

@@ -39,10 +39,9 @@ export default class ParticipantsPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
+        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
 
         return {
-            currentSheet: currentSheet,
             participants: ParticipantStore.getParticipants(currentSheet.id)
         };
     }
@@ -63,7 +62,7 @@ export default class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const expensesService = new ExpensesService({ expenses: ExpenseStore.getExpenses(this.state.currentSheet.id) });
+        const expensesService = new ExpensesService({ expenses: ExpenseStore.getExpenses(this.props.currentSheet.id) });
         const expensesParticipatedIn = expensesService.findExpensesByParticipant(participant.id);
         const expensesPaidBy = expensesService.findExpensesPaidByParticipant(participant.id);
 
@@ -86,7 +85,7 @@ export default class ParticipantsPage extends React.Component {
     }
 
     _addParticipant(participantProperties) {
-        ActionCreator.addParticipant(participantProperties, this.state.currentSheet.id);
+        ActionCreator.addParticipant(participantProperties, this.props.currentSheet.id);
     }
 
     /**
@@ -101,9 +100,10 @@ export default class ParticipantsPage extends React.Component {
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm
                     onFormSubmit={this._addParticipant.bind(this)}
-                    participants={this.state.participants} />
+                    participants={this.state.participants}
+                    currentSheet={this.props.currentSheet} />
 
-                <Navigation currentPage={pages.PARTICIPANTS} />
+                <Navigation currentPage={pages.PARTICIPANTS} sheetId={(this.props.currentSheet || {}).id}/>
 
                 <RemovalConfirmationDialog
                     ref={c => this._removeConfirmationDialog = c}

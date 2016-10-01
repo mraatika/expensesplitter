@@ -1,4 +1,5 @@
 import React from 'react';
+import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import Constants from '../../constants/AppConstants.js';
@@ -12,7 +13,6 @@ import pages from '../../constants/pages';
 import Navigation from '../navigation/navigation.jsx';
 import {DateUtils, URLUtils} from '../../util/utils.js';
 import ActionCreators from '../../actions/dataactioncreators.js';
-import Router from '../../router/router.js';
 import SaveButton from '../common/savebutton.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
@@ -43,16 +43,16 @@ export default class SheetSummaryPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.currentSheetId) || {};
+        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
 
         return {
-            currentSheet: currentSheet,
+            currentSheet,
             participants: ParticipantStore.getParticipants(currentSheet.id),
             expenses: ExpenseStore.getExpenses(currentSheet.id),
             settings: currentSheet.settings || {},
             isSavedToServer: false,
             isSavingToServer: false,
-            shareURL: currentSheet ? URLUtils.formSheetUrl(currentSheet.id) : null
+            shareURL: currentSheet ? `${URLUtils.formSheetUrl(currentSheet.id)}/summary` : null
         };
     }
 
@@ -94,7 +94,7 @@ export default class SheetSummaryPage extends React.Component {
     _removeSheet() {
         ActionCreators.removeSheet(this.state.currentSheet);
         // optimistic
-        Router.navigateTo(pages.HOME.href);
+        browserHistory.push('/');
     }
 
     _shareLink() {
@@ -183,7 +183,7 @@ export default class SheetSummaryPage extends React.Component {
                     </div>
                 </div>
 
-                <Navigation currentPage={pages.SUMMARY} />
+                <Navigation currentPage={pages.SUMMARY} sheetId={this.state.currentSheet.id}/>
             </div>
         );
     }

@@ -1,10 +1,9 @@
 import React from 'react';
+import {Link, browserHistory} from 'react-router';
 import SheetStore from '../../stores/sheetstore.js';
 import ActionCreators from '../../actions/dataactioncreators';
 import Constants from '../../constants/AppConstants';
 import {t} from '../../dictionary/dictionary';
-import Router from '../../router/router.js';
-import pages from '../../constants/pages.js';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import MessageContainer from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
@@ -24,10 +23,7 @@ export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            newSheetCreated: false,
-            errors: {}
-        };
+        this.state = this._getDefaultState();
 
         this._onChange = this._onChange.bind(this);
     }
@@ -63,12 +59,8 @@ export default class HomePage extends React.Component {
 
         this.setState(newState);
 
-        if (eventType == Constants.EventTypes.REMOVE_SHEET_EVENT) {
-            Router.navigateTo(pages.HOME.href);
-        } else if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
+        if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
             this.setState({ errors: { sheetNotFound: true } });
-        } else if (this.props.currentSheetId !== (newState.currentSheet || {}).id) {
-            Router.navigateToSheetURL(pages.HOME.href);
         }
     }
 
@@ -90,14 +82,17 @@ export default class HomePage extends React.Component {
         }
     }
 
+    /**
+     * Add new sheet (clear current sheet from state). Callback for add sheet button.
+     * @private
+     * @return  {undefined}
+     */
     _handleAddSheetClick() {
-        if (this.props.currentSheetId) {
-            Router.navigateTo(pages.HOME.href);
-        }
+        if (this.props.params.sheetId) browserHistory.push('/');
     }
 
     render() {
-        const currentSheet = SheetStore.getSheet(this.props.currentSheetId);
+        const currentSheet = this.props.currentSheet;
 
         return (
             <section id="home-page">
@@ -123,14 +118,13 @@ export default class HomePage extends React.Component {
 
                 <div className="row">
                     <div className="four columns">
-                        <button
-                            id="button-add-sheet"
-                            className="u-full-width"
-                            disabled={!currentSheet}
-                            onClick={this._handleAddSheetClick.bind(this)}>
+                        <Link
+                            to={'/'}
+                            className="u-full-width button"
+                            disabled={!currentSheet}>
                             <i className="fa fa-plus fa-fw fa-lg" />
                             { t('home.button.new') }
-                        </button>
+                        </Link>
                     </div>
 
                     <div className="four columns">

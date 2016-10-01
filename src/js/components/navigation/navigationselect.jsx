@@ -1,5 +1,5 @@
 import React from 'react';
-import Router from '../../router/router.js';
+import {browserHistory} from 'react-router';
 import pages from '../../constants/pages';
 import _ from 'lodash';
 import {t} from '../../dictionary/dictionary';
@@ -19,7 +19,7 @@ export default class NavigationSelect extends React.Component {
     _onChange() {
         const link = this._select.options[this._select.selectedIndex].value;
         // defer to allow the pending update to be completed
-        _.defer(() => Router.navigateToSheetURL(link));
+        _.defer(() => browserHistory.push(`/sheet/${this.props.sheetId}${link}`));
     }
 
     /**

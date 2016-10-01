@@ -13,7 +13,7 @@ export default class SaveButton extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {isSaved, isSaving, beforeSaveText, afterSaveText, onSavingText} = this.props;
+        const {isSaved, isSaving, beforeSaveText, afterSaveText, onSavingText, ...other} = this.props;
         const buttonClassName = classNames(this.props.className, {
             'button-success': isSaved,
             'button-primary': !isSaved
@@ -21,7 +21,7 @@ export default class SaveButton extends React.Component {
 
         return (
             <button
-                {...this.props}
+                {...other}
                 className={buttonClassName}
                 disabled={this.isSaving || this.props.disabled}
                 aria-label={beforeSaveText}>

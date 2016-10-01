@@ -1,15 +1,23 @@
 import React from 'react';
+import {browserHistory} from 'react-router';
 import classNames from 'classnames';
-import Router from '../../router/router.js';
 import ActionCreators from '../../actions/dataactioncreators.js';
-import pages from '../../constants/pages.js';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
 
+/**
+ * @class Sheet
+ * @description A component to represent a single sheet in the sheets list
+ * @extends {React.Component}
+ */
 export default class Sheet extends React.Component {
 
+    /**
+     * Navigate to home page with selected sheet as current sheet
+     * @private
+     */
     _handleSheetItemClick() {
-        Router.navigateToSheetURL(pages.HOME.href, this.props.sheet.id);
+        browserHistory.push(`/sheet/${this.props.sheet.id}`);
         ActionCreators.loadSheet(this.props.sheet.id);
     }
 

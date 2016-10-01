@@ -1,4 +1,5 @@
 import React from 'react';
+import {omit} from 'lodash';
 import {validateProperty} from '../../validation/validation';
 import classNames from 'classnames';
 
@@ -30,7 +31,7 @@ export default class ValidatedInput extends React.Component {
      * @return {undefined}
      */
     _onInputChange() {
-        let value = this.refs.inputField.value;
+        let value = this.refs.inputField.value || '';
         let name = this.props.name;
         let error = this._validateProperty(name, value);
 
@@ -124,12 +125,20 @@ export default class ValidatedInput extends React.Component {
         return Object.assign(
             this._formValidationProperties(),
             this._formEventProperties(),
-            this.props
+            omit(this.props, [
+                'schema',
+                'success',
+                'fail',
+                'events'
+            ]   )
         );
     }
 
     render() {
-        let props = this._formInputProperties();
+        const props = this._formInputProperties();
+
+        // react warns if value is null
+        props.value = props.value || '';
 
         return (
             <input ref="inputField" {...props} />
