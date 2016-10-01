@@ -58,7 +58,6 @@
     "lodash": "^3.10.1",
     "makestore": "^1.0.0",
     "object-assign": "^4.0.1",
-    "page": "^1.6.4",
     "react": "^15.3.2",
     "react-addons-test-utils": "^15.3.2",
     "react-bootstrap": "^0.30.3",
