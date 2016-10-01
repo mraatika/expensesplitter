@@ -43,7 +43,7 @@ export default class SheetSummaryPage extends React.Component {
     }
 
     _formState(props) {
-        const currentSheet = props.currentSheet || {};
+        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
 
         return {
             currentSheet,
