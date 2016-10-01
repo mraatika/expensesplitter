@@ -13,6 +13,7 @@ import Constants from '../constants/AppConstants.js';
 import {setLanguage} from '../dictionary/dictionary.js';
 import {Modal} from 'react-bootstrap';
 import {t} from '../dictionary/dictionary.js';
+import RouterService from '../router/routerservice';
 
 /**
  * @class App
@@ -107,8 +108,8 @@ export default class App extends React.Component {
 
         return (
             <Swipeable
-                onSwipedRight={() => false/*Router.prev()*/}
-                onSwipedLeft={() => false /*Router.next()*/}>
+                onSwipedRight={() => RouterService.prev()}
+                onSwipedLeft={() => RouterService.next()}>
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">

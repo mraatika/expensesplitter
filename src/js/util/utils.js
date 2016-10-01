@@ -86,6 +86,15 @@ export const URLUtils = {
     },
 
     /**
+     * Form valid route for given page
+     * @param  {string} pageFragment Page name e.g. /participants
+     * @return {string} valid router route
+     */
+    formSheetUrlForPage(pageFragment) {
+        return `/sheet/${URLUtils.getCurrentSheetId()}${pageFragment}`;
+    },
+
+    /**
      * Extract current sheet's id from the url path
      * @return {string | null}
      */
