@@ -1,4 +1,5 @@
 import React from 'react';
+import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
 import Constants from '../../constants/AppConstants.js';
@@ -12,7 +13,6 @@ import pages from '../../constants/pages';
 import Navigation from '../navigation/navigation.jsx';
 import {DateUtils, URLUtils} from '../../util/utils.js';
 import ActionCreators from '../../actions/dataactioncreators.js';
-import Router from '../../router/router.js';
 import SaveButton from '../common/savebutton.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
@@ -94,7 +94,7 @@ export default class SheetSummaryPage extends React.Component {
     _removeSheet() {
         ActionCreators.removeSheet(this.state.currentSheet);
         // optimistic
-        Router.navigateTo(pages.HOME.href);
+        browserHistory.push('/');
     }
 
     _shareLink() {
