@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {omit} from 'lodash';
 import {validateProperty} from '../../validation/validation';
 import classNames from 'classnames';
 
@@ -125,7 +125,7 @@ export default class ValidatedInput extends React.Component {
         return Object.assign(
             this._formValidationProperties(),
             this._formEventProperties(),
-            _.omit(this.props, [
+            omit(this.props, [
                 'schema',
                 'success',
                 'fail',
