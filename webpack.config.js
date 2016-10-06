@@ -1,0 +1,212 @@
+/* eslint-env node */
+
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var packageJSON = require('./package.json');
+var path = require('path');
+
+var env = process.env.type || 'dev';
+var isProd = env === 'prod';
+
+var PATHS = {
+    app: '/src/js',
+    src: '/src',
+    build: '/dist'
+};
+
+/**
+ * UglifyJsPlugin options
+ * @type {Object}
+ */
+var uglifyOptions = {
+    mangle: false,
+    compress: { warnings: false },
+    output: { comments: false }
+};
+
+/**
+ * CommonsChunkPlugin options
+ * @type {Object}
+ */
+var commonsChunkOptions = {
+    name: 'vendor',
+    filename: 'vendor.js',
+    minChunks: Infinity
+};
+
+/**
+ * HtmlWebpackPlugin options
+ * @type {Object}
+ */
+var htmlOptions = {
+    template: __dirname + '/src/index.html',
+    title: packageJSON.name
+};
+
+/**
+ * Webpack dev server options
+ * @type {Object}
+ */
+var devServerOptions = {
+    contentBase: path.resolve(__dirname, 'dist'),
+    colors: true,
+    historyApiFallback: {
+        rewrites: [
+            { from: /^\/$/, to: '/' }
+        ]
+    },
+    inline: true,
+    progress: false,
+    port: 4932,
+    proxy: {
+        '/api': {
+            target: 'http://localhost:8080',
+            pathRewrite: {'^/api' : ''}
+        }
+    }
+};
+
+/**
+ * ExtractTextPlugin options (css file generation)
+ * @type {Object}
+ */
+var extractTextPluginOptions = {
+    file: 'main.css',
+    settings: {
+        allChunks: true
+    }
+};
+
+/**
+ * Eslint options
+ * @type {Object}
+ */
+var eslintOptions = {
+    config: './.eslintrc',
+    emitError: true,
+    failOnError: true
+};
+
+/**
+ * Plugins array. CommonsChunk and HtmlWebpackPlugin runs on dev and prod builds. Optimization
+ * plugins are only used in prod mode
+ * @type {Array}
+ */
+var plugins = [
+    new webpack.optimize.CommonsChunkPlugin(commonsChunkOptions),
+    new HtmlWebpackPlugin(htmlOptions),
+    new ExtractTextPlugin(extractTextPluginOptions.file, extractTextPluginOptions.settings)
+];
+
+// plugins used only when building a production version
+if (isProd) {
+    plugins = plugins.concat([
+        new webpack.optimize.UglifyJsPlugin(uglifyOptions),
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.DedupePlugin()
+    ]);
+// plugins used only when building a development version
+} else {
+    plugins = plugins.concat([
+        new webpack.HotModuleReplacementPlugin()
+        //new webpack.NoErrorsPlugin()
+    ]);
+
+}
+
+module.exports = {
+    entry: {
+        app: __dirname + PATHS.app + '/index.jsx',
+        vendor: [
+            'axios',
+            'classnames',
+            'flux',
+            'kew',
+            'keymirror',
+            'lodash',
+            'makestore',
+            'object-assign',
+            'react',
+            'react-addons-test-utils',
+            'react-bootstrap',
+            'react-dom',
+            'react-notification-system',
+            'react-router',
+            'react-swipeable',
+            'shortid'
+        ]
+    },
+
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'app.js',
+        publicPath: '/'
+    },
+
+    module: {
+
+        preLoaders: [
+            {
+                test: /\.jsx?$/,
+                loader: 'eslint-loader',
+                include: __dirname + '/src/js'
+            }
+        ],
+
+        loaders: [
+            {
+                test: /\.jsx?/,
+                loaders: ['babel?cacheDirectory'],
+                include: __dirname + '/src/js'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract('style?sourceMap', 'css?sourceMap!resolve-url!sass?sourceMap')
+            },/*
+            {
+                test: /\.scss$/,
+                loaders: [
+                    'style?sourceMap',
+                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap',
+                    'resolve-url',
+                    'sass?sourceMap'
+                ]
+            },*/
+            {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url?limit=10000&mimetype=application/font-woff'
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file'
+            }
+        ]
+    },
+
+    resolve: {
+        root: [path.resolve('./src')],
+        modulesDirectories: ['web_modules', 'node_modules', 'src/js']
+    },
+
+    debug: !isProd,
+
+    devtool: isProd ? 'source-map' : 'eval-source-map',
+
+    devServer: devServerOptions,
+
+    eslint: eslintOptions,
+
+    plugins: plugins
+};

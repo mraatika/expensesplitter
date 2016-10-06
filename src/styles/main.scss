@@ -1,9 +1,9 @@
-@import "../../bower_components/font-awesome/scss/font-awesome.scss";
-@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
-@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss";
-@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_component-animations.scss";
-@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss";
-@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_panels.scss";
+@import "~font-awesome/scss/font-awesome.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_component-animations.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_panels.scss";
 @import "./variables.scss";
 @import "./skeleton-custom.scss";
 @import "./dialog.scss";
@@ -37,6 +37,10 @@
 .bold { font-weight: bold; }
 .no-border { border: 0 !important; }
 .wrap-content { overflow: auto; }
+
+ul {
+    list-style-type: none;
+}
 
 input, select {
     &.error:not(:focus) {

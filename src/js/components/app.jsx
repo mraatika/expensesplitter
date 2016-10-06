@@ -3,17 +3,25 @@ import {browserHistory, Link} from 'react-router';
 import Swipeable from 'react-swipeable';
 import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
-import NotificationStore from '../stores/notificationstore.js';
-import ActionCreators from '../actions/dataactioncreators.js';
-import pages from '../constants/pages.js';
-import SheetStore from '../stores/sheetstore.js';
-import SettingsStore from '../stores/settingsstore.js';
-import LanguagesSection from './language/languagessection.jsx';
-import Constants from '../constants/appconstants.js';
-import {setLanguage} from '../dictionary/dictionary.js';
+import NotificationStore from 'stores/notificationstore.js';
+import ActionCreators from 'actions/dataactioncreators.js';
+import pages from 'constants/pages.js';
+import SheetStore from 'stores/sheetstore.js';
+import SettingsStore from 'stores/settingsstore.js';
+import LanguagesSection from 'components/language/languagessection.jsx';
+import Constants from 'constants/appconstants.js';
+import {setLanguage} from 'dictionary/dictionary.js';
 import {Modal} from 'react-bootstrap';
-import {t} from '../dictionary/dictionary.js';
-import RouterService from '../router/routerservice';
+import {t} from 'dictionary/dictionary.js';
+import RouterService from 'router/routerservice';
+
+// import styles
+// disabling eslinting because styles are here only to be included
+// in the package but the assigned variables are not used
+/* eslint-disable no-unused-vars */
+import * as fontAwesome from 'font-awesome-sass-loader';
+import * as styles from 'styles/main.scss';
+/* eslint-enable no-unused-vars */
 
 /**
  * @class App
