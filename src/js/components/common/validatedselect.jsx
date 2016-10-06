@@ -1,5 +1,4 @@
-import React from 'react';
-import _ from 'lodash';
+import {chain} from 'lodash';
 import ValidatedInput from './validatedinput.jsx';
 
 /**
@@ -35,7 +34,7 @@ export default class ValidatedSelect extends ValidatedInput {
         // from selected options
         if (this.props.multiple) {
             let options = this.refs.inputField.options;
-            return _.chain(options)
+            return chain(options)
                 .filter(option => !!option.selected)
                 .pluck('value')
                 .value();

@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import ExpensesService from '../../service/expensesservice';
 import ParticipantSummaryListItem from './participantsummarylistitem.jsx';
 
