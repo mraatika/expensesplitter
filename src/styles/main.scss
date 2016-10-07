@@ -240,7 +240,7 @@ footer {
         display: none !important;
     }
 }
-@media (#{$bp-larger-than-tablet}) {
+@media (#{$bp-larger-than-desktop}) {
     .no-desktop {
         display: none !important;
     }
