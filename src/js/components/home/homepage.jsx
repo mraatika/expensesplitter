@@ -57,6 +57,8 @@ export default class HomePage extends React.Component {
     _onChange(eventType) {
         const newState = this._getDefaultState();
 
+        newState.currentSheet = SheetStore.getSheet(this.props.params.sheetId) || {};
+
         this.setState(newState);
 
         if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
@@ -92,7 +94,7 @@ export default class HomePage extends React.Component {
     }
 
     render() {
-        const currentSheet = this.props.currentSheet;
+        const {currentSheet} = this.state;
 
         return (
             <section id="home-page">
