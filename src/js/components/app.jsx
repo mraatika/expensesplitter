@@ -16,12 +16,8 @@ import {t} from 'dictionary/dictionary.js';
 import RouterService from 'router/routerservice';
 
 // import styles
-// disabling eslinting because styles are here only to be included
-// in the package but the assigned variables are not used
-/* eslint-disable no-unused-vars */
-import * as fontAwesome from 'font-awesome-sass-loader';
-import * as styles from 'styles/main.scss';
-/* eslint-enable no-unused-vars */
+import 'font-awesome-sass-loader';
+import 'styles/main.scss';
 
 /**
  * @class App
