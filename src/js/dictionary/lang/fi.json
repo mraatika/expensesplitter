@@ -1,6 +1,7 @@
 {
     "app.description" : "ExpenseSplitter on työkalu, jolla voit jakaa yhteisiä kuluja helposti. ExpenseSplitter optimoi tarvittavat maksut siten, että niitä tarvitaan mahdollisimman vähän. Laskelmat voidaan tallentaa ja niitä voidaan myös jakaa muille osallistujille muokattavaksi.",
     "app.info" : "Jaa yhteisiä kuluja vaivattomasti",
+    "app.close_prompt_message": "Muutoksia on tallentamatta. Oletko varma, että haluat sulkea sovelluksen?",
 
     "app.locales.currency_symbol": "€",
     "app.locales.date_format": "${day}.${month}.${year} ${hour}:${minute}",

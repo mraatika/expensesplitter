@@ -19,6 +19,11 @@ import 'styles/main.scss';
  */
 class App extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this._promptCloseIfDirty = this._promptCloseIfDirty.bind(this);
+    }
+
     componentWillMount() {
         // sheet id from the router
         const sheetId = this.props.params.sheetId;
@@ -30,6 +35,10 @@ class App extends React.Component {
         if (sheetId) {
             this.props.fetchSheet(sheetId);
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener('beforeunload', this._promptCloseIfDirty);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -61,6 +70,24 @@ class App extends React.Component {
         if (this.props.params.sheetId && nextProps.params.sheetId && (this.props.params.sheetId !== nextProps.params.sheetId)) {
             this.props.fetchSheet(nextProps.params.sheetId);
             return;
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('beforeunload', this._promptCloseIfDirty);
+    }
+
+    /**
+     * Display confirmation before closing if the sheet is not saved
+     * @private
+     * @param   {Event} e
+     * @return  {string}
+     */
+    _promptCloseIfDirty(e) {
+        if (this.props.dirty) {
+            const message = t('app.close_prompt_message');
+            e.returnValue = message;
+            return message;
         }
     }
 
