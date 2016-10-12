@@ -253,7 +253,7 @@ export function removeSheet(sheet) {
 
     return dispatch => {
         return new SheetService().removeSheet(sheet)
-            .then(result => dispatch(sheetRemoved(result)))
+            .then(() => dispatch(sheetRemoved(sheet)))
             .fail(error => {
                 console.error(error);
                 dispatch(createServerError(Constants.ErrorEventTypes.REMOVE_SHEET, error));

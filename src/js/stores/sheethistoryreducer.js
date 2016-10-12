@@ -1,3 +1,4 @@
+import {omit} from 'lodash';
 import Constants from 'constants/appconstants';
 import SheetHistoryFactory from 'factory/sheethistoryfactory';
 import storageFactory from 'factory/storagefactory';
@@ -27,7 +28,7 @@ export function sheetHistory(state = storage.getAll(), action) {
         }
     case Constants.EventTypes.REMOVE_SHEET_SUCCESS:
         {
-            newState[sheet.id] = null;
+            newState = omit(newState, sheet.id);
             shouldSaveChanges = true;
             break;
         }
