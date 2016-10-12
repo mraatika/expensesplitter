@@ -15,7 +15,6 @@ const SheetFactory = {
     create: function(initialProps) {
         var sheet = {
             id: shortid.generate(),
-            dirty: true,
             createdOn: new Date(),
             lastSavedOn: null,
             name: (initialProps.name || '').trim(),
