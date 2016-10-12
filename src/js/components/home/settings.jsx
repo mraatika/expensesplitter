@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import {Panel} from 'react-bootstrap';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
@@ -10,51 +9,6 @@ import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
  * @extends {ReactComponent}
  */
 export default class Settings extends React.Component {
-
-    /**
-     * @constructor
-     * @param  {object} props
-     * @return {Settings}
-     */
-    constructor(props) {
-        super(props);
-        this.state = this._getDefaultState(this.props);
-    }
-
-    /**
-     * Show/hide the element
-     * @return {undefined}
-     */
-    toggle(state) {
-        this.setState({ isOpen: _.isUndefined(state) ? !this.state.isOpen : state });
-    }
-
-    /**
-     * @private
-     * @param  {object} props
-     * @return {undefined}
-     */
-    componentWillReceiveProps(props) {
-        this.setState(this._getDefaultState(props));
-    }
-
-    /**
-     * Returns default state
-     * @private
-     * @param  {object} props
-     * @return {object}
-     */
-    _getDefaultState(props) {
-        const settings = (props.sheet || {}).settings;
-
-        return {
-            isOpen: props.show,
-            settings: settings ? _.clone(settings) : {
-                currencySymbol: t('app.locales.currency_symbol')
-            }
-        };
-    }
-
     /**
      * Callback for setting value change
      * @private
@@ -78,9 +32,7 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getHeader() {
-        const text = this.props.sheet ?
-            `${t('settings.settings_for_sheet')} ${this.props.sheet.name}` :
-            t('lang.settings');
+        const text = `${t('settings.settings_for_sheet')} ${this.props.sheet.name}`;
 
         return <CollapsiblePanelHeader
             headerText={text}/>;
@@ -92,8 +44,6 @@ export default class Settings extends React.Component {
      * @return {ReactComponent}
      */
     _getSettingsSection() {
-        const {settings} = this.state;
-
         return (
             <section id="sheet-settings">
                 <label htmlFor="settings-currency">
@@ -105,7 +55,7 @@ export default class Settings extends React.Component {
                     maxLength="3"
                     minLength="1"
                     size="3"
-                    value={settings.currencySymbol}
+                    value={this.props.sheet.settings.currencySymbol}
                     onChange={(e) => this._onSettingChange('currencySymbol', e.target.value )}
                     id="settings-currency"/>
             </section>
@@ -119,8 +69,8 @@ export default class Settings extends React.Component {
         return (
             <Panel
                 collapsible
-                expanded={this.state.isOpen}
-                style={{'display': this.state.isOpen ? 'block' : 'none'}}
+                expanded={this.props.show}
+                style={{'display': this.props.show ? 'block' : 'none'}}
                 header={this._getHeader()}>
                 {this._getSettingsSection()}
             </Panel>

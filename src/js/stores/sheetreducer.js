@@ -49,7 +49,10 @@ export function sheet(state = initialState, action) {
     case Constants.ActionTypes.CREATE_SHEET:
         {
             const sheet = SheetFactory.create(action.sheet);
-            return assignToState({ sheet });
+            return assignToState({
+                sheet,
+                dirty: true
+            });
         }
     case Constants.ActionTypes.SAVE_SHEET:
         {
@@ -71,7 +74,8 @@ export function sheet(state = initialState, action) {
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
         return assignToState({
             isFetching: false,
-            sheet: action.sheet
+            sheet: action.sheet,
+            dirty: false
         });
     case Constants.EventTypes.SAVE_SHEET_SUCCESS:
         {

@@ -4,11 +4,12 @@ import {clearHistory, createSheet, removeSheet, saveSheet, updateSheet} from 'ac
 import {push} from 'react-router-redux';
 
 function mapStateToProps(state) {
-    const {sheet, newSheetCreated} = state.sheet;
+    const {sheet, newSheetCreated, dirty} = state.sheet;
 
     return {
         sheet,
         newSheetCreated,
+        dirty,
         sheetHistory: state.sheetHistory
     };
 }

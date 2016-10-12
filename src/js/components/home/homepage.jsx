@@ -65,7 +65,7 @@ export default class HomePage extends React.Component {
     }
 
     render() {
-        const {sheet} = this.props;
+        const {dirty, sheet} = this.props;
 
         return (
             <section id="home-page">
@@ -86,6 +86,7 @@ export default class HomePage extends React.Component {
                 <SheetForm
                     ref={c => this._sheetForm = c }
                     sheet={sheet}
+                    dirty={dirty}
                     saveSheet={this.props.saveSheet}
                     updateSheet={this.props.updateSheet}
                 />

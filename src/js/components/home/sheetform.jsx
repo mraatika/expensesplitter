@@ -32,7 +32,7 @@ class SheetForm extends React.Component {
      * @return {object}
      */
     _getDefaultState(props) {
-        return { isSettingsActive: !props.sheet.lastSavedOn };
+        return { isSettingsActive: props.dirty };
     }
 
     /**
