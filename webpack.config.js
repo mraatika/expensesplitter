@@ -121,7 +121,6 @@ module.exports = {
         vendor: [
             'axios',
             'classnames',
-            'flux',
             'kew',
             'keymirror',
             'lodash',
@@ -132,8 +131,13 @@ module.exports = {
             'react-bootstrap',
             'react-dom',
             'react-notification-system',
+            'react-redux',
             'react-router',
+            'react-router-redux',
             'react-swipeable',
+            'redux',
+            'redux-thunk',
+            'redux-logger',
             'shortid'
         ]
     },
