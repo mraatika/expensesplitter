@@ -105,7 +105,7 @@ export default class HomePage extends React.Component {
                         <button
                             id="button-remove-sheet"
                             className="u-full-width"
-                            disabled={sheet.lastSavedOn}
+                            disabled={!sheet.lastSavedOn}
                             onClick={this._handleRemoveSheetClick.bind(this)}>
                             <i className="fa fa-trash-o fa-fw fa-lg" />
                             { t('home.button.remove') }
