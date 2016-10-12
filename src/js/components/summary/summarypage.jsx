@@ -2,17 +2,12 @@ import React from 'react';
 import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import TransactionsService from '../../service/transactionsservice';
-import Constants from '../../constants/appconstants.js';
-import SheetStore from '../../stores/sheetstore.js';
-import ExpenseStore from '../../stores/expensestore.js';
-import ParticipantStore from '../../stores/participantstore.js';
 import ExpenseList from '../expenses/expenselist.jsx';
 import TransactionsList from '../transactions/transactionslist.jsx';
 import SharesTable from '../shares/sharestable.jsx';
 import pages from '../../constants/pages';
 import Navigation from '../navigation/navigation.jsx';
 import {DateUtils, URLUtils} from '../../util/utils.js';
-import ActionCreators from '../../actions/dataactioncreators.js';
 import SaveButton from '../common/savebutton.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 
@@ -22,77 +17,13 @@ import InputButtonSplit from '../common/inputbuttonsplit.jsx';
  * @extends {ReactComponent}
  */
 export default class SheetSummaryPage extends React.Component {
-
-    /**
-     * @constructor
-     * @param {Object} props
-     * @return {SheetSummaryPage}
-     */
-    constructor(props) {
-        super(props);
-        this.state = this._formState(props);
-        this._onChange = this._onChange.bind(this);
-    }
-
-    componentDidMount() {
-        SheetStore.addChangeListener(this._onChange);
-    }
-
-    componentWillUnmount() {
-        SheetStore.removeChangeListener(this._onChange);
-    }
-
-    _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
-
-        return {
-            currentSheet,
-            participants: ParticipantStore.getParticipants(currentSheet.id),
-            expenses: ExpenseStore.getExpenses(currentSheet.id),
-            settings: currentSheet.settings || {},
-            isSavedToServer: false,
-            isSavingToServer: false,
-            shareURL: currentSheet ? `${URLUtils.formSheetUrl(currentSheet.id)}/summary` : null
-        };
-    }
-
-    /**
-     * Callback for SheetStore's change events
-     * @private
-     * @param  {EventType} eventType
-     * @return {undefined}
-     */
-    _onChange(eventType) {
-        if (eventType == Constants.EventTypes.SAVE_SHEET_SUCCESS) {
-            const isSavedToServer = eventType != Constants.EventTypes.ERROR_EVENT;
-
-            this.setState({
-                currentSheet: SheetStore.getCurrentSheet(),
-                isSavingToServer: false,
-                isSavedToServer: isSavedToServer
-            });
-        } else {
-            this.setState(this._formState(this.props));
-        }
-    }
-
-    /**
-     * Save sheet to server
-     * @private
-     * @return  {undefined}
-     */
-    _saveSheet() {
-        this.setState({ isSavingToServer: true });
-        ActionCreators.saveSheet(this.state.currentSheet);
-    }
-
     /**
      * Remove current sheet from the server
      * @private
      * @return  {undefined}
      */
     _removeSheet() {
-        ActionCreators.removeSheet(this.state.currentSheet);
+        this.props.removeSheet(this.props.sheet);
         // optimistic
         browserHistory.push('/');
     }
@@ -105,12 +36,13 @@ export default class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {participants, expenses, settings} = this.state;
+        const {sheet} = this.props;
+        const {participants, expenses, settings} = sheet;
         const transactions = new TransactionsService().calculateTransactions(expenses, participants);
 
         return (
             <div id="summary-page">
-                <h1>{this.state.currentSheet.name}</h1>
+                <h1>{sheet.name}</h1>
 
                 <h2>{t('lang.transaction_plural')}:</h2>
                 <TransactionsList
@@ -145,7 +77,7 @@ export default class SheetSummaryPage extends React.Component {
                                     ref={c => this._shareUrlField = c}
                                     type="text"
                                     readOnly
-                                    value={this.state.shareURL}
+                                    value={`${URLUtils.formSheetUrl(sheet.id)}/summary`}
                                     onClick={() => this._shareUrlField.select() } />
                                 <button
                                     type="button"
@@ -163,12 +95,12 @@ export default class SheetSummaryPage extends React.Component {
                             <SaveButton
                                 type="button"
                                 className="u-full-width"
-                                isSaved={this.state.isSavedToServer}
-                                isSaving={this.state.isSavingToServer}
+                                isSaved={!this.props.dirty}
+                                isSaving={this.props.isSavingToServer}
                                 beforeSaveText={t('transactions.save_sheet')}
                                 afterSaveText={t('lang.saved')}
                                 onSavingText={t('lang.saving')}
-                                onClick={this._saveSheet.bind(this)} />
+                                onClick={() => this.props.saveSheet(sheet)} />
                         </div>
                         <div className="six columns">
                             <button
@@ -183,7 +115,7 @@ export default class SheetSummaryPage extends React.Component {
                     </div>
                 </div>
 
-                <Navigation currentPage={pages.SUMMARY} sheetId={this.state.currentSheet.id}/>
+                <Navigation currentPage={pages.SUMMARY} sheetId={sheet.id}/>
             </div>
         );
     }

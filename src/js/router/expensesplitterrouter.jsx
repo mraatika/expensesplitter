@@ -1,11 +1,12 @@
 import React from 'react';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
-import App from '../components/app.jsx';
-import HomePage from '../components/home/homepage.jsx';
-import ParticipantsPage from '../components/participants/participantspage.jsx';
-import ExpensesPage from '../components/expenses/expensespage.jsx';
-import TransactionsPage from '../components/transactions/transactionspage.jsx';
-import SummaryPage from '../components/summary/summarypage.jsx';
+import {syncHistoryWithStore} from 'react-router-redux';
+import AppContainer from 'containers/appcontainer';
+import HomePageContainer from 'containers/homepagecontainer';
+import ParticipantsPageContainer from 'containers/participantspagecontainer';
+import ExpensesPageContainer from 'containers/expensespagecontainer';
+import TransactionsPageContainer from 'containers/transactionspagecontainer';
+import SummaryPageContainer from 'containers/summarypagecontainer';
 
 /**
  * @class ExpenseSplitterRouter
@@ -14,18 +15,29 @@ import SummaryPage from '../components/summary/summarypage.jsx';
  */
 export default class ExpenseSplitterRouter extends React.Component {
 
+    /**
+     * @constructor
+     * @param       {Object} props
+     * @return      {ExpenseSplitterRouter}
+     */
+    constructor(props) {
+        super(props);
+        // sync routing history with redux store
+        this.history = syncHistoryWithStore(browserHistory, this.props.store);
+    }
+
     render() {
         return (
-            <Router history={browserHistory}>
-                <Route path="/" component={App}>
-                    <IndexRoute component={HomePage} />
+            <Router history={this.history}>
+                <Route path="/" component={AppContainer}>
+                    <IndexRoute component={HomePageContainer} />
 
                     <Route path="/sheet/:sheetId">
-                        <IndexRoute component={HomePage} />
-                        <Route path="participants" component={ParticipantsPage} />
-                        <Route path="expenses" component={ExpensesPage} />
-                        <Route path="transactions" component={TransactionsPage} />
-                        <Route path="summary" component={SummaryPage} />
+                        <IndexRoute component={HomePageContainer} />
+                        <Route path="participants" component={ParticipantsPageContainer} />
+                        <Route path="expenses" component={ExpensesPageContainer} />
+                        <Route path="transactions" component={TransactionsPageContainer} />
+                        <Route path="summary" component={SummaryPageContainer} />
                     </Route>
                 </Route>
             </Router>

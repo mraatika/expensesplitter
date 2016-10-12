@@ -1,23 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
-import ActionCreator from '../../actions/dataactioncreators';
-import TrashButton from '../common/trashbutton.jsx';
-import {NumberUtils} from '../../util/utils';
+import TrashButton from 'components/common/trashbutton.jsx';
+import {NumberUtils} from 'util/utils';
 
 /**
  * @class Expense
  * @description A table row element to display details of an expense
  * @extends React.Component
  */
-export default class Expense extends React.Component {
-
-    /**
-     * Callback for the remove button
-     */
-    handleRemoveClick() {
-        ActionCreator.removeExpense(this.props.expense, this.props.sheet.id);
-    }
-
+class Expense extends React.Component {
     /**
      * Find participant from participants by id
      * @param  {String} participantId
@@ -43,7 +34,7 @@ export default class Expense extends React.Component {
                 <td className="text-right">
                     {
                         !this.props.isRemoveAllowed ? '' :
-                        <TrashButton onClick={this.handleRemoveClick.bind(this)}/>
+                        <TrashButton onClick={() => this.props.removeExpenses(this.props.expense)}/>
                     }
                 </td>
             </tr>
@@ -52,5 +43,9 @@ export default class Expense extends React.Component {
 }
 
 Expense.PropTypes = {
-    participant: React.PropTypes.array.isRequired
+    sheet: React.PropTypes.object.isRequired,
+    expense: React.PropTypes.object.isRequired,
+    participants: React.PropTypes.array.isRequired
 };
+
+export default Expense;

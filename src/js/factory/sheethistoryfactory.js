@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {pick} from 'lodash';
 
 /**
  * Factory for creating sheet history models from sheet model
@@ -11,7 +11,7 @@ const SheetHistoryFactory = {
      * @return {Object}
      */
     create: function(sheet) {
-        return _.pick(sheet, [
+        return pick(sheet, [
             'id',
             'name',
             'createdOn'

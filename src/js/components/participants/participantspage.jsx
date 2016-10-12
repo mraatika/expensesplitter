@@ -1,13 +1,9 @@
 import React from 'react';
-import SheetStore from '../../stores/sheetstore.js';
-import ParticipantStore from '../../stores/participantstore.js';
-import ExpenseStore from '../../stores/expensestore.js';
 import pages from '../../constants/pages';
 import ParticipantList from './participantlist.jsx';
 import ParticipantAddForm from './participantaddform.jsx';
 import Navigation from '../navigation/navigation.jsx';
 import {t} from '../../dictionary/dictionary';
-import ActionCreator from '../../actions/dataactioncreators';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 import ExpensesService from '../../service/expensesservice';
 
@@ -17,43 +13,6 @@ import ExpensesService from '../../service/expensesservice';
  * @extends {ReactComponent}
  */
 export default class ParticipantsPage extends React.Component {
-    /**
-     * @constructor
-     * @param  {object} props
-     * @return {ParticipantsPage}
-     */
-    constructor(props) {
-        super(props);
-        this.state = this._formState(props);
-        this._onChange = this._onChange.bind(this);
-    }
-
-    componentDidMount() {
-        ParticipantStore.addChangeListener(this._onChange);
-        SheetStore.addChangeListener(this._onChange);
-    }
-
-    componentWillUnmount() {
-        ParticipantStore.removeChangeListener(this._onChange);
-        SheetStore.removeChangeListener(this._onChange);
-    }
-
-    _formState(props) {
-        const currentSheet = SheetStore.getSheet(props.params.sheetId) || {};
-
-        return {
-            participants: ParticipantStore.getParticipants(currentSheet.id)
-        };
-    }
-
-    /**
-     * Callback for SheetStore's events
-     * @private
-     * @return {undefined}
-     */
-    _onChange() {
-        this.setState(this._formState(this.props));
-    }
 
     /**
      * Callback for participant removal button transfered to Participant component (list element)
@@ -62,7 +21,7 @@ export default class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const expensesService = new ExpensesService({ expenses: ExpenseStore.getExpenses(this.props.currentSheet.id) });
+        const expensesService = new ExpensesService({ expenses: this.props.sheet.expenses });
         const expensesParticipatedIn = expensesService.findExpensesByParticipant(participant.id);
         const expensesPaidBy = expensesService.findExpensesPaidByParticipant(participant.id);
 
@@ -81,29 +40,37 @@ export default class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _removeParticipant(participant) {
-        ActionCreator.removeParticipant(participant);
+        this.props.removeParticipant(this.props.sheet, participant);
     }
 
-    _addParticipant(participantProperties) {
-        ActionCreator.addParticipant(participantProperties, this.props.currentSheet.id);
+    /**
+     * Add participant to the current sheet's participants list
+     * @private
+     * @param  {Object} participant
+     * @return {undefined}
+     */
+    _addParticipant(participant) {
+        this.props.addParticipant(this.props.sheet, participant);
     }
 
     /**
      * @return {ReactComponent}
      */
     render() {
+        const {participants} = this.props.sheet;
+
         return (
             <section id="participants-page">
                 <h2>{ t('lang.participant_plural') }</h2>
                 <ParticipantList
-                    participants={this.state.participants}
+                    participants={participants}
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm
                     onFormSubmit={this._addParticipant.bind(this)}
-                    participants={this.state.participants}
-                    currentSheet={this.props.currentSheet} />
+                    participants={participants}
+                    currentSheet={this.props.sheet} />
 
-                <Navigation currentPage={pages.PARTICIPANTS} sheetId={(this.props.currentSheet || {}).id}/>
+                <Navigation currentPage={pages.PARTICIPANTS} sheetId={this.props.sheet.id} />
 
                 <RemovalConfirmationDialog
                     ref={c => this._removeConfirmationDialog = c}

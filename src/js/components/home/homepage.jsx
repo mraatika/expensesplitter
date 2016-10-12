@@ -1,8 +1,6 @@
 import React from 'react';
-import {Link, browserHistory} from 'react-router';
-import SheetStore from '../../stores/sheetstore.js';
-import ActionCreators from '../../actions/dataactioncreators';
-import Constants from '../../constants/appconstants';
+import {browserHistory, Link} from 'react-router';
+import {toArray} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import LoadSheetDialog from './loadsheetdialog.jsx';
 import MessageContainer from '../common/messagecontainer.jsx';
@@ -22,79 +20,52 @@ export default class HomePage extends React.Component {
      */
     constructor(props) {
         super(props);
-
-        this.state = this._getDefaultState();
-
-        this._onChange = this._onChange.bind(this);
-    }
-
-    componentDidMount() {
-        SheetStore.addChangeListener(this._onChange);
-    }
-
-    componentWillUnmount() {
-        SheetStore.removeChangeListener(this._onChange);
+        this.state = { newSheetCreated: false };
     }
 
     /**
-     * Returns the initial state
+     * Callback for load sheet button
      * @private
-     * @return {object}
+     * @param   {Event} e
      */
-    _getDefaultState() {
-        return {
-            errors: {},
-            newSheetCreated: false
-        };
-    }
-
-    /**
-     * Callback for SheetStore's change events
-     * @private
-     * @param  {EventType} eventType
-     * @return {undefined}
-     */
-    _onChange(eventType) {
-        const newState = this._getDefaultState();
-
-        newState.currentSheet = SheetStore.getSheet(this.props.params.sheetId) || {};
-
-        this.setState(newState);
-
-        if (eventType === Constants.ErrorEventTypes.LOAD_SHEET) {
-            this.setState({ errors: { sheetNotFound: true } });
-        }
-    }
-
     _handleLoadSheetClick(e) {
         e.preventDefault();
         this.refs.loadSheetDialog.open();
     }
 
+    /**
+     * Callback for remove sheet button
+     * @private
+     */
     _handleRemoveSheetClick() {
         this.refs.removeSheetConfirmationDialog.open();
     }
 
+    /**
+     * Callback for sheet remove dialog's confirm
+     * @private
+     */
     _onSheetRemovalConfirmed() {
-        const currentSheet = SheetStore.getSheet(this.props.currentSheetId);
+        const {sheet} = this.props;
 
-        if (this.props.currentSheetId) {
+        if (sheet) {
             this.refs.removeSheetConfirmationDialog.close();
-            ActionCreators.removeSheet(currentSheet);
+            this.props.removeSheet(sheet);
+            browserHistory.push('/');
         }
     }
 
     /**
-     * Add new sheet (clear current sheet from state). Callback for add sheet button.
+     * Callback for new sheet button
      * @private
-     * @return  {undefined}
      */
-    _handleAddSheetClick() {
-        if (this.props.params.sheetId) browserHistory.push('/');
+    _onAddClick() {
+        this.setState({ newSheetCreated: true});
+        this.props.onAddClick();
     }
 
     render() {
-        const {currentSheet} = this.state;
+        const {sheet} = this.props;
 
         return (
             <section id="home-page">
@@ -112,28 +83,29 @@ export default class HomePage extends React.Component {
                     <Link to={'/'} onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</Link>.
                 </MessageContainer>
 
-                <MessageContainer show={this.state.errors.sheetNotFound} type="danger">
-                    { t('home.sheet_not_found') }
-                </MessageContainer>
-
-                <SheetForm ref={c => this._sheetForm = c } currentSheet={currentSheet} />
+                <SheetForm
+                    ref={c => this._sheetForm = c }
+                    sheet={sheet}
+                    saveSheet={this.props.saveSheet}
+                    updateSheet={this.props.updateSheet}
+                />
 
                 <div className="row">
                     <div className="four columns">
-                        <Link
-                            to={'/'}
+                        <button
+                            onClick={() => this._onAddClick()}
                             className="u-full-width button"
-                            disabled={!currentSheet}>
+                            disabled={!sheet.lastSavedOn}>
                             <i className="fa fa-plus fa-fw fa-lg" />
                             { t('home.button.new') }
-                        </Link>
+                        </button>
                     </div>
 
                     <div className="four columns">
                         <button
                             id="button-remove-sheet"
                             className="u-full-width"
-                            disabled={!currentSheet}
+                            disabled={sheet.lastSavedOn}
                             onClick={this._handleRemoveSheetClick.bind(this)}>
                             <i className="fa fa-trash-o fa-fw fa-lg" />
                             { t('home.button.remove') }
@@ -161,10 +133,11 @@ export default class HomePage extends React.Component {
 
                 <LoadSheetDialog
                     ref="loadSheetDialog"
-                    currentSheet={currentSheet} />
+                    sheet={sheet}
+                    clearSheetHistory={this.props.clearSheetHistory}
+                    sheets={toArray(this.props.sheetHistory)}/>
 
             </section>
         );
     }
-
 }

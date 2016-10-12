@@ -15,8 +15,9 @@ const SheetFactory = {
     create: function(initialProps) {
         var sheet = {
             id: shortid.generate(),
-            _isNew: true,
+            dirty: true,
             createdOn: new Date(),
+            lastSavedOn: null,
             name: (initialProps.name || '').trim(),
             settings: Object.assign({ currencySymbol: t('app.locales.currency_symbol') }, initialProps.settings),
             participants: [],

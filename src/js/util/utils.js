@@ -98,8 +98,8 @@ export const URLUtils = {
      * Extract current sheet's id from the url path
      * @return {string | null}
      */
-    getCurrentSheetId() {
-        const match = window.location.href.match(/\/sheet\/([\w_-]+)\/?/);
+    getCurrentSheetId(path = window.location.href) {
+        const match = path.match(/\/sheet\/([\w_-]+)\/?/);
         return match ? match[1] : null;
     }
 };

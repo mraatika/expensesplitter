@@ -1,225 +1,262 @@
-import _ from 'lodash';
-import AppDispatcher from '../dispatchers/appdispatcher';
+import {isEmpty, isObject, map} from 'lodash';
+import {push} from 'react-router-redux';
 import Constants from '../constants/appconstants';
-import SheetStore from '../stores/sheetstore.js';
+import {t} from 'dictionary/dictionary';
 import SheetService from '../service/sheetservice.js';
 import {StringUtils} from '../util/utils';
 import {InvalidArgumentsError} from '../util/errors.js';
+import validation from '../validation/validation';
+import {Sheet as SheetScema} from '../validation/schema/schema';
 
-export default {
 
-// sheet
+/**
+ * Pre fetch action
+ * @private
+ * @param  {string} sheetId
+ * @return {Object}
+ */
+function requestSheet(sheetId) {
+    if (!StringUtils.isNonEmptyString(sheetId)) {
+        throw new InvalidArgumentsError('sheetId missing or invalid!');
+    }
 
-    /**
-     * Create and add sheet locally to the store
-     * @param {Object} sheet Initial members
-     */
-    createSheet: function(sheet) {
-        if (!sheet || !_.isObject(sheet)) {
-            throw new InvalidArgumentsError('sheet missing or invalid!');
+    return {
+        type: Constants.ActionTypes.REQUEST_SHEET,
+        sheetId: sheetId
+    };
+}
+
+/**
+ * Pre save action
+ * @private
+ * @param  {Object} sheet
+ * @return {Object}
+ */
+function requestSaveSheet(sheet) {
+    return {
+        type: Constants.ActionTypes.SAVE_SHEET,
+        sheet
+    };
+}
+
+/**
+ * Sheet load success event
+ * @private
+ * @param  {string} sheetId
+ * @param  {Object} response Server's response
+ * @return {Object}
+ */
+function sheetReceived(sheetId, response) {
+    return {
+        type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
+        sheetId,
+        sheet: response.data.sheet,
+        receivedAt: new Date()
+    };
+}
+
+/**
+ * Sheet save success event
+ * @private
+ * @param  {Object} sheet
+ * @return {Object}
+ */
+function saveSheetSucceeded(sheet) {
+    return {
+        type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
+        sheet
+    };
+}
+
+/**
+ * Sheet remove success event
+ * @private
+ * @param  {Object} sheet
+ * @return {Object}
+ */
+function sheetRemoved(sheet) {
+    return {
+        type: Constants.EventTypes.REMOVE_SHEET_SUCCESS,
+        sheet
+    };
+}
+
+/**
+ * Server error event
+ * @private
+ * @param  {string} errorType
+ * @param {Object} error
+ * @return {Object}
+ */
+function createServerError(errorType, error) {
+    const {statusText, status} = error;
+
+    return {
+        type: errorType,
+        error: {
+            title: t(`errors.${errorType}.title`) + '!',
+            message: `${statusText} (${status})`,
+            level: 'error',
+            autoDismiss: 15
         }
+    };
+}
 
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.CREATE_SHEET,
-            sheet
-        });
-    },
-
-    /**
-     * Remove sheet from the server and the store
-     * @param  {Object} sheet
-     */
-    removeSheet: function(sheet) {
-        if (!sheet || !sheet.id) {
-            throw new InvalidArgumentsError('sheet or sheet\' id is missing or invalid!');
+/**
+ * User error event (e.g validation error)
+ * @private
+ * @param  {string} errorType
+ * @param {string} description
+ * @return {Object}
+ */
+function createUserError(errorType, description) {
+    return {
+        type: errorType,
+        error: {
+            title: t(`errors.${errorType}.title`) + '!',
+            message: description,
+            level: 'error',
+            autoDismiss: 15
         }
+    };
+}
 
-        // if the sheet is not yet saved to the server then
-        // skip the ajax call
-        if (!sheet._isNew) {
-            new SheetService().removeSheet(sheet)
-                .then(() => {
-                    AppDispatcher.handleServerAction({
-                        type: Constants.EventTypes.REMOVE_SHEET_SUCCESS,
-                        sheet
-                    });
-                })
-                .fail(error => {
-                    AppDispatcher.handleServerAction({
-                        type: Constants.ErrorEventTypes.REMOVE_SHEET,
-                        error, sheet
-                    });
-                });
-        }
+/**
+ *
+ *
+ *
+ *  PUBLIC API
+ *
+ *
+ *
+ *
+ *
+ */
 
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.REMOVE_SHEET,
-            sheet
-        });
-    },
+/**
+ * Create sheet action
+ * @param {Object} sheet
+ * @return {Object}
+ */
+export function createSheet(sheet) {
+    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
 
-    /**
-     * Load sheet from the server or the local store if present
-     * @param  {string} sheetId
-     * @return {undefined}
-     */
-    loadSheet: function(sheetId) {
-        if (!StringUtils.isNonEmptyString(sheetId)) {
-            throw new InvalidArgumentsError('sheetId missing or invalid!');
-        }
+    return {
+        type: Constants.ActionTypes.CREATE_SHEET,
+        sheet
+    };
+}
 
-        const sheet = SheetStore.getSheet(sheetId);
+/**
+ * Set application settings
+ * @param {Object} settings
+ * @return {Object}
+ */
+export function setSettings(settings) {
+    if (!isObject(settings)) {
+        throw new InvalidArgumentsError('settings object is missing or invalid!');
+    }
 
-        // return from sheet store if already loaded
-        if (sheet) {
-            AppDispatcher.handleServerAction({
-                type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
-                sheet: sheet
+    return {
+        type: Constants.ActionTypes.SET_SETTINGS,
+        settings: settings
+    };
+}
+
+/**
+ * Clear sheet history
+ * @return {Object}
+ */
+export function clearHistory() {
+    return {
+        type: Constants.ActionTypes.CLEAR_HISTORY
+    };
+}
+
+/**
+ * Fetch sheet from the server
+ * @param {string} sheetId
+ * @return {Function}
+ */
+export function fetchSheet(sheetId) {
+    return dispatch => {
+
+        dispatch(requestSheet(sheetId));
+
+        return new SheetService().getSheet(sheetId)
+            .then(result => dispatch(sheetReceived(sheetId, result)))
+            .fail(error => {
+                console.error(error);
+                dispatch(createServerError(Constants.ErrorEventTypes.LOAD_SHEET, error));
+                dispatch(push('/'));
             });
+    };
+}
+
+/**
+ * Save sheet to the server
+ * @param  {Object} sheet
+ * @return {Function}
+ */
+export function saveSheet(sheet) {
+    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
+
+    return (dispatch, getState) => {
+
+        // no need to save if the sheet hasn't changed
+        if (!getState().sheet.dirty) return;
+
+        dispatch(requestSaveSheet(sheet));
+
+        const errors = validation.validate(sheet, SheetScema);
+
+        if (!isEmpty(errors)) {
+            const errorDescription = map(errors, (value, key) => `${key}: ${value}`).join(', ');
+            dispatch(createUserError(Constants.ErrorEventTypes.ADD_SHEET, errorDescription));
             return;
         }
 
-        // if not found in store then fetch it from the server
-        new SheetService().getSheet(sheetId)
-            .then(response => {
-                AppDispatcher.handleServerAction({
-                    type: Constants.EventTypes.LOAD_SHEET_SUCCESS,
-                    sheet: response.data.sheet
-                });
+        return new SheetService().saveSheet(sheet)
+            .then(result => {
+                dispatch(saveSheetSucceeded(result.data.sheet));
             })
             .fail(error => {
-                AppDispatcher.handleServerAction({
-                    type: Constants.ErrorEventTypes.LOAD_SHEET,
-                    error
-                });
+                console.error(error);
+                dispatch(createServerError(Constants.ErrorEventTypes.SAVE_SHEET, error));
             });
+    };
+}
 
-    },
+/**
+ * Update sheet
+ * @param  {Object} sheet
+ * @param  {Object} update
+ * @return {Object}
+ */
+export function updateSheet(sheet, update = {}) {
+    if (!sheet) throw new InvalidArgumentsError('sheet missing or invalid!');
 
-    /**
-     * Set active sheet
-     * @param {string} sheetId
-     */
-    setActiveSheet: function(sheetId) {
-        if (!StringUtils.isNonEmptyString(sheetId)) {
-            throw new InvalidArgumentsError('sheetId is missing or invalid!');
-        }
+    return {
+        type: Constants.ActionTypes.UPDATE_SHEET,
+        sheet,
+        update
+    };
+}
 
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.SET_ACTIVE_SHEET,
-            sheetId
-        });
-    },
+/**
+ * Remove sheet
+ * @param  {Object} sheet
+ * @return {Function}
+ */
+export function removeSheet(sheet) {
+    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
 
-    /**
-     * Save sheet to the server
-     * @param  {Object} sheet
-     */
-    saveSheet: function(sheet) {
-        if (!sheet || !sheet.id) {
-            throw new InvalidArgumentsError('sheet or sheet\'s id is missing or invalid!');
-        }
-
-        new SheetService().saveSheet(sheet)
-            .then(response => {
-                AppDispatcher.handleServerAction({
-                    type: Constants.EventTypes.SAVE_SHEET_SUCCESS,
-                    sheetId: response.data.sheetId
-                });
-            })
+    return dispatch => {
+        return new SheetService().removeSheet(sheet)
+            .then(result => dispatch(sheetRemoved(result)))
             .fail(error => {
-                AppDispatcher.handleServerAction({
-                    type: Constants.ErrorEventTypes.SAVE_SHEET,
-                    error
-                });
+                console.error(error);
+                dispatch(createServerError(Constants.ErrorEventTypes.REMOVE_SHEET, error));
             });
-    },
-
-// participants
-
-    addParticipant: function(participant, sheetId) {
-        if (!participant || !sheetId) {
-            throw new InvalidArgumentsError('participant or sheetId is missing or invalid!');
-        }
-
-        AppDispatcher.handleServerAction({
-            type: Constants.ActionTypes.ADD_PARTICIPANT,
-            participant,
-            sheetId
-        });
-    },
-
-    removeParticipant: function(participant) {
-        if (!participant) {
-            throw new InvalidArgumentsError('participant is missing or invalid!');
-        }
-
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.REMOVE_PARTICIPANT,
-            participant
-        });
-    },
-
-// expenses
-
-    addExpense: function(expense, sheetId) {
-        if (!expense || !sheetId) {
-            throw new InvalidArgumentsError('expense or sheetId is missing or invalid!');
-        }
-
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.ADD_EXPENSE,
-            expense,
-            sheetId
-        });
-    },
-
-    removeExpense: function(expense) {
-        if (!expense) {
-            throw new InvalidArgumentsError('expense is missing or invalid!');
-        }
-
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.REMOVE_EXPENSE,
-            expense
-        });
-    },
-
-    removeAllExpenses: function(sheetId) {
-        if (!sheetId) {
-            throw new InvalidArgumentsError('sheetId is missing or invalid!');
-        }
-
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.REMOVE_ALL_EXPENSES,
-            sheetId
-        });
-    },
-
-// settings
-
-    setSettings: function (settings) {
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.SET_SHEET_SETTINGS,
-            settings
-        });
-    },
-
-    setLanguage: function(langCode) {
-        if (!langCode) {
-            throw new InvalidArgumentsError('langCode is missing or invalid!');
-        }
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.SET_LANGUAGE,
-            language: langCode
-        });
-    },
-
-// history
-
-    clearHistory: function() {
-        AppDispatcher.handleViewAction({
-            type: Constants.ActionTypes.CLEAR_HISTORY
-        });
-    }
-};
+    };
+}

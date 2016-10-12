@@ -39,14 +39,6 @@ export default class Settings extends React.Component {
     }
 
     /**
-     * Return settings from the current state
-     * @return {Object}
-     */
-    getSettings() {
-        return this.state.settings;
-    }
-
-    /**
      * Returns default state
      * @private
      * @param  {object} props
@@ -71,9 +63,13 @@ export default class Settings extends React.Component {
      * @return {undefined}
      */
     _onSettingChange(name, value) {
-        const {settings} = this.state;
-        settings[name] = value;
-        this.setState({ settings: settings });
+        const newSettings = Object.assign({}, this.props.sheet.settings, {
+            [name]: value
+        });
+
+        this.props.updateSheet(this.props.sheet, {
+            settings: newSettings
+        });
     }
 
     /**

@@ -1,16 +1,9 @@
 import React from 'react';
-import {browserHistory, Link} from 'react-router';
+import {Link} from 'react-router';
 import Swipeable from 'react-swipeable';
 import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
-import NotificationStore from 'stores/notificationstore.js';
-import ActionCreators from 'actions/dataactioncreators.js';
-import pages from 'constants/pages.js';
-import SheetStore from 'stores/sheetstore.js';
-import SettingsStore from 'stores/settingsstore.js';
 import LanguagesSection from 'components/language/languagessection.jsx';
-import Constants from 'constants/appconstants.js';
-import {setLanguage} from 'dictionary/dictionary.js';
 import {Modal} from 'react-bootstrap';
 import {t} from 'dictionary/dictionary.js';
 import RouterService from 'router/routerservice';
@@ -24,78 +17,50 @@ import 'styles/main.scss';
  * @description Main component for ExpenseSplitter
  * @extends {ReactComponent}
  */
-export default class App extends React.Component {
-
-    /**
-     * @constructor
-     * @param  {object} props
-     * @return {App}
-     */
-    constructor(props) {
-        super(props);
-        this._onChange = this._onChange.bind(this);
-        this._onNotficationAdded = this._onNotficationAdded.bind(this);
-        this.state = { isLoading: true };
-        this._setInitialLanguage();
-    }
+class App extends React.Component {
 
     componentWillMount() {
-        const currentSheetId = this.props.params.sheetId;
+        // sheet id from the router
+        const sheetId = this.props.params.sheetId;
 
-        if (currentSheetId) {
-            ActionCreators.loadSheet(currentSheetId);
-        } else {
-            this.setState({ isLoading: false });
+        // create a dummy sheet even if sheet id is given
+        // so there's always a sheet
+        this.props.createSheet({});
+
+        if (sheetId) {
+            this.props.fetchSheet(sheetId);
         }
     }
 
-    componentDidMount() {
-        SettingsStore.addChangeListener(this._onChange);
-        SheetStore.addChangeListener(this._onChange);
-        NotificationStore.addChangeListener(this._onNotficationAdded);
-    }
-
-    componentWillUnmount() {
-        SettingsStore.removeChangeListener(this._onChange);
-        SheetStore.removeChangeListener(this._onChange);
-        NotificationStore.removeChangeListener(this._onNotficationAdded);
-    }
-
-    /**
-     * Change listener for the settings store
-     * @param  {Symbol} eventType
-     * @return {undefined}
-     */
-    _onChange(eventType) {
-        if (eventType == Constants.EventTypes.LANGUAGE_CHANGED_EVENT) {
-            setLanguage(SettingsStore.getSettings().language);
-            // reload route to completely rerender the page
-            browserHistory.replace(window.location.pathname);
+    componentWillReceiveProps(nextProps) {
+        // check for notifications
+        if (nextProps.notifications.length !== this.props.notifications.length) {
+            const {notifications} = nextProps;
+            this._notificationSystem.addNotification(notifications[notifications.length - 1]);
         }
 
-        // return to the home page if sheet fetching fails
-        if (eventType == Constants.ErrorEventTypes.LOAD_SHEET) {
-            browserHistory.push(pages.HOME.href);
+        // replace active sheet with a new sheet when navigated to root url without the id in url params
+        if (this.props.params.sheetId && !nextProps.params.sheetId) {
+            this.props.createSheet({});
+            return;
         }
 
-        this.setState({ isLoading: false });
-    }
+        // fetch sheet from the server if navigated from the root url to url with sheet id in url params
+        if (!this.props.params.sheetId && nextProps.params.sheetId) {
+            // check if the sheet was ever saved 'cause
+            // when a new sheet is created the id in url params is empty
+            // and then moving to participants the id will be in url params but
+            // the sheet is not yet saved to the db
+            if (nextProps.sheet.lastSavedOn) {
+                this.props.fetchSheet(nextProps.params.sheetId);
+            }
+            return;
+        }
 
-    _onNotficationAdded() {
-        const notification = NotificationStore.getLastNotification();
-        this._notificationSystem.addNotification(notification);
-    }
-
-    /**
-     * Load saved language and set it to dictionary
-     * @private
-     * @return {undefined}
-     */
-    _setInitialLanguage() {
-        const currentLanguage = SettingsStore.getSettings().language;
-
-        if (currentLanguage) {
-            setLanguage(currentLanguage);
+        // fetch sheet from the server when the sheet id in url params is changed from sheet id to sheet id
+        if (this.props.params.sheetId && nextProps.params.sheetId && (this.props.params.sheetId !== nextProps.params.sheetId)) {
+            this.props.fetchSheet(nextProps.params.sheetId);
+            return;
         }
     }
 
@@ -103,7 +68,8 @@ export default class App extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const currentSheet = SheetStore.getSheet(this.props.params.sheetId);
+        const {isFetching} = this.props;
+        const {sheetId} = this.props.params;
 
         return (
             <Swipeable
@@ -112,10 +78,10 @@ export default class App extends React.Component {
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><Link to={'/' + (currentSheet ? `sheet/${currentSheet.id}` : '' )}>{ appName }</Link></h1>
+                        <h1><Link to={'/' + (sheetId ? `sheet/${sheetId}` : '' )}>{ appName }</Link></h1>
                     </header>
 
-                    <Modal show={this.state.isLoading}>
+                    <Modal show={isFetching}>
                         <Modal.Body>
                             <div className="text-center">
                                 <i className="fa fa-spinner fa-3x fa-spin" />&nbsp;
@@ -127,12 +93,12 @@ export default class App extends React.Component {
                     <NotificationSystem ref={ c => this._notificationSystem = c} />
 
                     <main role="main" id="content">
-                        { React.cloneElement(this.props.children, { currentSheet }) }
+                        { React.cloneElement(this.props.children) }
                     </main>
 
                     <footer role="contentinfo" className="text-right">
                         <div className="u-pull-left">
-                            <LanguagesSection />
+                            <LanguagesSection setLanguage={this.props.setLanguage} />
                         </div>
                         <small className="u-pull-right">{ `${appName} v${version}` }</small>
                     </footer>
@@ -141,3 +107,5 @@ export default class App extends React.Component {
         );
     }
 }
+
+export default App;

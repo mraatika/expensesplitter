@@ -1,3 +1,4 @@
+import React from 'react'; // eslint-disable-line no-unused-vars
 import {chain} from 'lodash';
 import ValidatedInput from './validatedinput.jsx';
 

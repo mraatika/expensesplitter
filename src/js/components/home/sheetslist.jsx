@@ -13,7 +13,7 @@ export default class SheetsList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheets, currentSheet} = this.props;
+        const {sheets} = this.props;
 
         return (
             <ul className="list-selectable">
@@ -31,7 +31,7 @@ export default class SheetsList extends React.Component {
                         <Sheet
                             key={sheet.id}
                             sheet={sheet}
-                            isCurrentSheet={currentSheet && sheet.id === currentSheet.id} />
+                            isCurrentSheet={sheet.id === this.props.sheet.id} />
                     ) : <li><i>{ t('loadsheetdialog.no_sheets') }</i></li>
                 }
             </ul>

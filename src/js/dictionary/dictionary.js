@@ -1,7 +1,5 @@
 import languages from './languages.js';
-
-// default language is english
-let currentLanguage = languages.en;
+import store from 'stores/store';
 
 /**
  * Translate function
@@ -9,7 +7,7 @@ let currentLanguage = languages.en;
  * @return {string}     translated value
  */
 export const t = (key) => {
-    var str = currentLanguage[key] || null;
+    const str = languages[store.getState().settings.language][key] || null;
 
     if (str == null) {
         console.error(`Translation not found for ${key}`);
@@ -17,8 +15,4 @@ export const t = (key) => {
     }
 
     return str;
-};
-
-export const setLanguage = langCode => {
-    currentLanguage = languages[langCode];
 };

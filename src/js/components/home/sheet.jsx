@@ -1,7 +1,6 @@
 import React from 'react';
 import {browserHistory} from 'react-router';
 import classNames from 'classnames';
-import ActionCreators from '../../actions/dataactioncreators.js';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
 
@@ -18,7 +17,6 @@ export default class Sheet extends React.Component {
      */
     _handleSheetItemClick() {
         browserHistory.push(`/sheet/${this.props.sheet.id}`);
-        ActionCreators.loadSheet(this.props.sheet.id);
     }
 
     render() {

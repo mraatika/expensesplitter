@@ -1,5 +1,5 @@
-import 'react';
-import ExpenseSplitterRouter from 'router/expensesplitterrouter.jsx';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import renderer from 'util/renderer.js';
+import Root from 'components/root.jsx';
 
-renderer.render(<ExpenseSplitterRouter />, 'main');
+renderer.render(<Root />, 'main');

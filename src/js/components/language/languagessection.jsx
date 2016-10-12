@@ -1,17 +1,17 @@
 import React from 'react';
-import _ from 'lodash';
-import Constants from '../../constants/appconstants.js';
-import ActionCreators from '../../actions/dataactioncreators.js';
+import {toArray} from 'lodash';
+import Constants from 'constants/appconstants';
 
-export default class Languages extends React.Component {
+/**
+ * @class LanguagesSection
+ * @description Change language section
+ * @extends {ReactComponent}
+ */
+export default class LanguagesSection extends React.Component {
 
     constructor(props) {
         super(props);
-        this.languages = _.toArray(Constants.Languages);
-    }
-
-    _onFlagClick(lang) {
-        ActionCreators.setLanguage(lang);
+        this.languages = toArray(Constants.Languages);
     }
 
     render() {
@@ -22,7 +22,7 @@ export default class Languages extends React.Component {
                         return <span
                             key={lang}
                             className={'flag ' + lang.toLowerCase() }
-                            onClick={() => this._onFlagClick(lang)}/>;
+                            onClick={() => this.props.setLanguage(lang)}/>;
                     })
                 }
             </div>

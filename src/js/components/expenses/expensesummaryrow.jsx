@@ -1,8 +1,7 @@
 import React from 'react';
-import ActionCreator from '../../actions/dataactioncreators';
-import ExpensesService from '../../service/expensesservice';
-import {t} from '../../dictionary/dictionary';
-import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
+import ExpensesService from 'service/expensesservice';
+import {t} from 'dictionary/dictionary';
+import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
 
 /**
  * @class ExpenseSummaryRow
@@ -15,17 +14,12 @@ export default class ExpenseSummaryRow extends React.Component {
         this._removalConfirmationDialog.open();
     }
 
-    _onRemovalConfirmed() {
-        ActionCreator.removeAllExpenses(this.props.sheet.id);
-    }
-
     /**
      * @return {ReactComponent}
      */
     render() {
-        const totalSum = new ExpensesService({
-            expenses: this.props.expenses
-        }).getTotalSum();
+        const {expenses} = this.props;
+        const totalSum = new ExpensesService({ expenses }).getTotalSum();
 
         return (
             <tr>
@@ -43,7 +37,7 @@ export default class ExpenseSummaryRow extends React.Component {
                             </button>
                             <RemovalConfirmationDialog
                                 ref={ c => this._removalConfirmationDialog = c }
-                                onRemoveConfirmed={this._onRemovalConfirmed.bind(this)}
+                                onRemoveConfirmed={() => this.props.removeExpenses(expenses)}
                                 header={ t('common.confirm_removal') }
                                 contentText={ t('expenses.remove_all_confirmation') }
                                 okButtonLabel={ t('expenses.remove_all_expenses') }

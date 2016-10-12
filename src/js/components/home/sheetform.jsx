@@ -1,17 +1,15 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary.js';
-import ActionCreators from '../../actions/dataactioncreators';
 import Settings from './settings.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
-import SheetStore from '../../stores/sheetstore.js';
 
 /**
  * @class SheetForm
  * @description Form component for creating new sheets
  * @extends {ReactComponent}
  */
-export default class SheetForm extends React.Component {
+class SheetForm extends React.Component {
 
     /**
      * @constructor
@@ -23,14 +21,8 @@ export default class SheetForm extends React.Component {
         this.state = this._getDefaultState(props);
     }
 
-    /**
-     * @param  {object} newProps
-     * @return {undefined}
-     */
-    componentWillReceiveProps(newProps) {
-        if (newProps.currentSheet != this.props.currentSheet) {
-            this.state = this._getDefaultState(newProps);
-        }
+    componentWillReceiveProps(nextProps) {
+        this.state = this._getDefaultState(nextProps);
     }
 
     /**
@@ -40,45 +32,7 @@ export default class SheetForm extends React.Component {
      * @return {object}
      */
     _getDefaultState(props) {
-        const currentSheet = props.currentSheet;
-
-        return {
-            currentSheetName: (currentSheet || {}).name || '',
-            isSettingsActive: !currentSheet
-        };
-    }
-
-    /**
-     * Move to participants page if currentSheet is present
-     * @private
-     * @return {undefined}
-     */
-    _continueWithCurrentSheet() {
-        const settings = this._settings.getSettings();
-
-        if (this.props.currentSheet) {
-            // save settings
-            ActionCreators.setSettings(settings);
-
-            // move to participants section
-            browserHistory.push(`/sheet/${this.props.currentSheet.id}/participants`);
-        }
-    }
-
-    /**
-     * Create new sheet with name from sheet name input
-     * @private
-     * @return {undefined}
-     */
-    _addSheet() {
-        const sheetName = this.state.currentSheetName;
-
-        if (sheetName) {
-            ActionCreators.createSheet({ name: sheetName, settings: this._settings.getSettings() });
-            const currentSheet = SheetStore.getCurrentSheet();
-            ActionCreators.saveSheet(currentSheet);
-            browserHistory.push(`/sheet/${currentSheet.id}/participants`);
-        }
+        return { isSettingsActive: !props.sheet.lastSavedOn };
     }
 
     /**
@@ -89,12 +43,8 @@ export default class SheetForm extends React.Component {
      */
     _handleFormSubmit(e) {
         e.preventDefault();
-
-        if (this.props.currentSheet) {
-            this._continueWithCurrentSheet();
-        } else {
-            this._addSheet();
-        }
+        this.props.saveSheet(this.props.sheet);
+        browserHistory.push(`/sheet/${this.props.sheet.id}/participants`);
     }
 
     /**
@@ -103,7 +53,7 @@ export default class SheetForm extends React.Component {
      * @return {undefined}
      */
     _handleCurrentSheetNameChange() {
-        this.setState({ currentSheetName: this.sheetNameInput.value });
+        this.props.updateSheet(this.props.sheet, { name: this.sheetNameInput.value });
     }
 
     /**
@@ -119,14 +69,14 @@ export default class SheetForm extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {currentSheet} = this.props;
+        const {sheet} = this.props;
 
         return (
             <form onSubmit={this._handleFormSubmit.bind(this)}>
                 <div className="row">
                     <div className="two columns">
                         <label htmlFor="sheet-name">
-                        { t( this.props.currentSheet ? 'lang.current_sheet' : 'home.name_your_sheet') }:
+                        { t( this.props.sheet ? 'lang.current_sheet' : 'home.name_your_sheet') }:
                         </label>
                     </div>
 
@@ -139,8 +89,8 @@ export default class SheetForm extends React.Component {
                                 ref={c => this.sheetNameInput = c}
                                 type="text"
                                 placeholder={ t('home.sheet_name_placeholder') + '...' }
-                                value={this.state.currentSheetName}
-                                disabled={currentSheet}
+                                value={this.props.sheet.name || ''}
+                                disabled={sheet.lastSavedOn}
                                 onChange={this._handleCurrentSheetNameChange.bind(this)} />
                             <button
                                 className={'settings-button' + (this.state.isSettingsActive ? ' active' : '')}
@@ -153,23 +103,36 @@ export default class SheetForm extends React.Component {
                     </div>
                 </div>
 
-                <Settings ref={c => this._settings = c} sheet={currentSheet} show={this.state.isSettingsActive}/>
+                <Settings
+                    ref={c => this._settings = c}
+                    sheet={sheet}
+                    show={this.state.isSettingsActive}
+                    updateSheet={this.props.updateSheet}
+                />
 
                 <button
                     type="submit"
                     className="button-primary u-full-width"
                     required={true}>
                     <i
-                        style={currentSheet ? { display: 'none' } : {}}
+                        style={sheet.lastSavedOn ? { display: 'none' } : {}}
                         className="fa fa-file-o fa-fw" />
                     &nbsp;
-                    { t(currentSheet ? 'home.button.edit' : 'home.button.add') }
+                    { t(sheet.lastSavedOn ? 'home.button.edit' : 'home.button.add') }
                     &nbsp;
                     <i
-                        style={!currentSheet ? { display: 'none' } : {}}
+                        style={!sheet.lastSavedOn ? { display: 'none' } : {}}
                         className="fa fa-angle-double-right" />
                 </button>
             </form>
         );
     }
 }
+
+SheetForm.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    saveSheet: PropTypes.func.isRequired,
+    updateSheet: PropTypes.func.isRequired
+};
+
+export default SheetForm;

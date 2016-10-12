@@ -1,5 +1,3 @@
-'use strict';
-
 export const Sheet = {
     id: {
         type: 'string',

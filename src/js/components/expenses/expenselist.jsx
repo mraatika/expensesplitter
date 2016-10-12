@@ -35,6 +35,7 @@ export default class ExpenseList extends React.Component {
                             <Expense
                                 sheet={sheet}
                                 key={expense.id}
+                                removeExpenses={this.props.removeExpenses}
                                 isRemoveAllowed={this.props.isRemoveAllowed}
                                 expense={expense}
                                 participants={participants} />
@@ -51,6 +52,7 @@ export default class ExpenseList extends React.Component {
                         <ExpenseSummaryRow
                             sheet={sheet}
                             expenses={expenses}
+                            removeExpenses={this.props.removeExpenses}
                             isRemoveAllowed={this.props.isRemoveAllowed}
                             currencySymbol={this.props.currencySymbol}/>
                     </tfoot>
