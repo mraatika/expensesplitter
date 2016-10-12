@@ -10,7 +10,8 @@ function mapStateToProps(state) {
         sheet,
         newSheetCreated,
         dirty,
-        sheetHistory: state.sheetHistory
+        sheetHistory: state.sheetHistory,
+        settings: state.settings
     };
 }
 

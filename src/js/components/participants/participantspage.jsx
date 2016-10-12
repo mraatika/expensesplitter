@@ -79,7 +79,6 @@ export default class ParticipantsPage extends React.Component {
                     okButtonLabel={ t('participants.remove_participant') }
                 />
             </section>
-
         );
     }
 }

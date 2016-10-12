@@ -6,7 +6,7 @@ import {updateSheet} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;
-    return { sheet };
+    return { sheet, settings: state.settings };
 }
 
 function mapDispatchToProps(dispatch) {

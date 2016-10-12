@@ -4,7 +4,12 @@ import {removeSheet, saveSheet} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, dirty, isSavingToServer} = state.sheet;
-    return { sheet, dirty, isSavingToServer};
+    return {
+        sheet,
+        dirty,
+        isSavingToServer,
+        settings: state.settings
+    };
 }
 
 function mapDispatchToProps(dispatch) {
