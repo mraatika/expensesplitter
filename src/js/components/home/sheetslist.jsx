@@ -1,6 +1,6 @@
 import React from 'react';
-import {t} from '../../dictionary/dictionary';
-import Sheet from './sheet.jsx';
+import {t} from 'dictionary/dictionary';
+import Sheet from 'components/home/sheet.jsx';
 
 /**
  * @class SheetsList
@@ -31,6 +31,7 @@ export default class SheetsList extends React.Component {
                         <Sheet
                             key={sheet.id}
                             sheet={sheet}
+                            onSheetItemClick={this.props.onSheetItemClick}
                             isCurrentSheet={sheet.id === this.props.sheet.id} />
                     ) : <li><i>{ t('loadsheetdialog.no_sheets') }</i></li>
                 }

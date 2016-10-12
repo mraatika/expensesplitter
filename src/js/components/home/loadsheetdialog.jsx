@@ -1,4 +1,5 @@
 import React from 'react';
+import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import SheetsList from './sheetslist.jsx';
 import ModalDialog from '../common/modaldialog.jsx';
@@ -28,6 +29,16 @@ class LoadSheetDialog extends React.Component {
     }
 
     /**
+     * Callback for sheet list's entry's click event
+     * @private
+     * @param   {Object} sheet
+     */
+    _onSheetItemClick(sheet) {
+        this.close();
+        browserHistory.push(`/sheet/${sheet.id}`);
+    }
+
+    /**
      * @return {ReactComponent}
      */
     render() {
@@ -46,11 +57,11 @@ class LoadSheetDialog extends React.Component {
         return (
             <ModalDialog
                 ref={c => this._dialog = c}
-                onCloseRequest={this.props.onCloseRequest}
                 header={t('loadsheetdialog.header')}
                 buttons={buttons}>
                 <section id="load-sheet-dialog">
                     <SheetsList
+                        onSheetItemClick={this._onSheetItemClick.bind(this)}
                         sheets={this.props.sheets}
                         sheet={this.props.sheet} />
                 </section>
@@ -69,12 +80,7 @@ LoadSheetDialog.propTypes = {
      * Currently loaded sheet
      * @type {object}
      */
-    sheet: React.PropTypes.object.isRequired,
-    /**
-     * Callback for the modal's close
-     * @type {function}
-     */
-    onCloseRequest: React.PropTypes.func
+    sheet: React.PropTypes.object.isRequired
 };
 
 export default LoadSheetDialog;
