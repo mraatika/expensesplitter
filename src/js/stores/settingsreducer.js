@@ -14,7 +14,7 @@ export function settings(state = initialState, action) {
     switch(action.type) {
     case Constants.ActionTypes.SET_SETTINGS:
         {
-            const newState = Object.assign({}, state, action.settings);
+            const newState = { ...state, ...action.settings };
             storage.setAll(newState);
             return newState;
         }
