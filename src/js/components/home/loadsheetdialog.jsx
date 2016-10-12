@@ -35,7 +35,10 @@ class LoadSheetDialog extends React.Component {
      */
     _onSheetItemClick(sheet) {
         this.close();
-        browserHistory.push(`/sheet/${sheet.id}`);
+
+        // first fetch the sheet and then update the url
+        this.props.fetchSheet(sheet.id)
+            .then(() => browserHistory.push(`/sheet/${sheet.id}`));
     }
 
     /**

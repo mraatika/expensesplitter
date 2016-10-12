@@ -135,6 +135,7 @@ export default class HomePage extends React.Component {
                 <LoadSheetDialog
                     ref="loadSheetDialog"
                     sheet={sheet}
+                    fetchSheet={this.props.fetchSheet}
                     clearSheetHistory={this.props.clearSheetHistory}
                     sheets={toArray(this.props.sheetHistory)}/>
 
