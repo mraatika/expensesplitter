@@ -19,7 +19,7 @@
     "home.button.new" : "Uusi laskelma",
     "home.button.add" : "Luo laskelma",
     "home.button.edit" : "Muokkaa valittua laskelmaa",
-    "home.button.load" : "Lataa tallennettu laskelma",
+    "home.button.load" : "Lataa aikaisempi laskelma",
     "home.button.remove" : "Poista nykyinen laskelma",
     "home.name_your_sheet" : "Nimeä laskelma",
     "home.prev_sheet_saved" : "Aikaisempi laskelma on tallennettu ja se voidaa ladata uudestaan käyttäen",
