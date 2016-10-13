@@ -66,6 +66,15 @@ class SheetForm extends React.Component {
     }
 
     /**
+     * Callback for summary button. Save sheet and navigate to summary page.
+     * @private
+     */
+    _onSummaryButtonClick() {
+        this.props.saveSheet(this.props.sheet);
+        browserHistory.push(`/sheet/${this.props.sheet.id}/summary`);
+    }
+
+    /**
      * @return {ReactComponent}
      */
     render() {
@@ -124,6 +133,15 @@ class SheetForm extends React.Component {
                         style={!sheet.lastSavedOn ? { display: 'none' } : {}}
                         className="fa fa-angle-double-right" />
                 </button>
+
+                <button
+                    type="button"
+                    className="u-full-width"
+                    disabled={this.props.summaryButtonDisabled}
+                    onClick={this._onSummaryButtonClick.bind(this)}>
+                    { t('lang.summary') }
+                    <i className="fa fa-angle-double-right" />
+                </button>
             </form>
         );
     }
@@ -132,7 +150,8 @@ class SheetForm extends React.Component {
 SheetForm.propTypes = {
     sheet: PropTypes.object.isRequired,
     saveSheet: PropTypes.func.isRequired,
-    updateSheet: PropTypes.func.isRequired
+    updateSheet: PropTypes.func.isRequired,
+    summaryButtonDisabled: PropTypes.boolean
 };
 
 export default SheetForm;

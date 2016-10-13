@@ -87,6 +87,7 @@ export default class HomePage extends React.Component {
                     ref={c => this._sheetForm = c }
                     sheet={sheet}
                     dirty={dirty}
+                    summaryButtonDisabled={!this.props.params.sheetId}
                     saveSheet={this.props.saveSheet}
                     updateSheet={this.props.updateSheet}
                 />
