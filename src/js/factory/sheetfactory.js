@@ -18,9 +18,10 @@ const SheetFactory = {
             createdOn: new Date(),
             lastSavedOn: null,
             name: (initialProps.name || '').trim(),
-            settings: Object.assign({ currencySymbol: t('app.locales.currency_symbol') }, initialProps.settings),
+            settings: { currencySymbol: t('app.locales.currency_symbol'), ...initialProps.settings },
             participants: [],
-            expenses: []
+            expenses: [],
+            additionalInformation: ''
         };
 
         return sheet;

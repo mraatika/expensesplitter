@@ -93,6 +93,7 @@
     "shares.participants_expenses" : "Participant's expenses",
 
     "summary.preview_created" : "Sheet summary created",
+    "summary.additional_information": "Additional information",
 
     "transactions.no_transactions" : "No transactions",
     "transactions.remove_sheet": "Delete sheet",

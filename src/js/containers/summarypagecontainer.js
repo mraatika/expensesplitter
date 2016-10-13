@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import SummaryPage from 'components/summary/summarypage.jsx';
-import {removeSheet, saveSheet} from 'actions/dataactioncreators';
+import {removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, dirty, isSavingToServer} = state.sheet;
@@ -23,7 +23,9 @@ function mapDispatchToProps(dispatch) {
          * Save sheet to server
          * @param  {Object} sheet
          */
-        saveSheet: sheet => dispatch(saveSheet(sheet))
+        saveSheet: sheet => dispatch(saveSheet(sheet)),
+
+        updateSheet: (sheet, update) => dispatch(updateSheet(sheet, update))
     };
 }
 

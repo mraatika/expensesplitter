@@ -11,12 +11,20 @@ export const Sheet = {
         msgKey: 'error.sheet.name'
     },
 
+    additionalInformation: {
+        type: 'string'
+    },
+
     participants: {
         type: 'array'
     },
 
     expenses: {
         type: 'array'
+    },
+
+    settings: {
+        type: 'object'
     }
 };
 

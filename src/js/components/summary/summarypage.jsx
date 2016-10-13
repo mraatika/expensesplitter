@@ -63,6 +63,16 @@ export default class SheetSummaryPage extends React.Component {
                     participants={participants}
                     expenses={expenses} />
 
+                <div>
+                    <label htmlFor="sheet-additional-information">{ t('summary.additional_information') + ':' }</label>
+                    <textarea
+                        id="sheet-additional-information"
+                        onChange={(e) => this.props.updateSheet(this.props.sheet, { additionalInformation: e.target.value })}
+                        className="u-full-width"
+                        value={sheet.additionalInformation}>
+                    </textarea>
+                </div>
+
                 <div id="summary-date">
                     {t('summary.preview_created')} { DateUtils.format(new Date(), t('app.locales.date_format')) }
                 </div>
