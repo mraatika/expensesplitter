@@ -9,7 +9,6 @@
     "common.confirm_removal": "Vahvista poisto",
 
     "errors.SAVE_SHEET_ERROR.title": "Laskelman tallennus epäonnistui",
-    "errors.ADD_SHEET_ERROR.title": "Laskelman luonti epäonnistui",
     "errors.REMOVE_SHEET_ERROR.title": "Laskelman poistaminen epäonnistui",
     "errors.LOAD_SHEET_ERROR.title": "Laskelman tuominen epäonnistui",
 
