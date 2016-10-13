@@ -50,14 +50,14 @@ var htmlOptions = {
  */
 var devServerOptions = {
     contentBase: path.resolve(__dirname, 'dist'),
-    colors: true,
     historyApiFallback: {
         rewrites: [
             { from: /^\/$/, to: '/' }
         ]
     },
+    colors: true,
     inline: true,
-    progress: false,
+    progress: true,
     port: 4932,
     proxy: {
         '/api': {
