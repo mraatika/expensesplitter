@@ -1,15 +1,16 @@
 import React from 'react';
 import {browserHistory} from 'react-router';
-import {t} from '../../dictionary/dictionary';
-import TransactionsService from '../../service/transactionsservice';
-import ExpenseList from '../expenses/expenselist.jsx';
-import TransactionsList from '../transactions/transactionslist.jsx';
-import SharesTable from '../shares/sharestable.jsx';
-import pages from '../../constants/pages';
-import Navigation from '../navigation/navigation.jsx';
-import {DateUtils, URLUtils} from '../../util/utils.js';
-import SaveButton from '../common/savebutton.jsx';
-import InputButtonSplit from '../common/inputbuttonsplit.jsx';
+import {t} from 'dictionary/dictionary';
+import TransactionsService from 'service/transactionsservice';
+import ExpenseList from 'components/expenses/expenselist.jsx';
+import TransactionsList from 'components/transactions/transactionslist.jsx';
+import SharesTable from 'components/shares/sharestable.jsx';
+import pages from 'constants/pages';
+import Navigation from 'components/navigation/navigation.jsx';
+import {DateUtils, URLUtils} from 'util/utils.js';
+import SaveButton from 'components/common/savebutton.jsx';
+import InputButtonSplit from 'components/common/inputbuttonsplit.jsx';
+import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
 
 /**
  * @class SheetSummaryPage
@@ -17,19 +18,31 @@ import InputButtonSplit from '../common/inputbuttonsplit.jsx';
  * @extends {ReactComponent}
  */
 export default class SheetSummaryPage extends React.Component {
-    /**
-     * Remove current sheet from the server
-     * @private
-     * @return  {undefined}
-     */
-    _removeSheet() {
-        this.props.removeSheet(this.props.sheet);
-        // optimistic
-        browserHistory.push('/');
-    }
 
     _shareLink() {
         console.log('Share link');
+    }
+
+    /**
+     * Callback for remove sheet button. Open the sheet removal
+     * confirmation dialog
+     * @private
+     */
+    _handleRemoveSheetClick() {
+        this._removeSheetConfirmationDialog.open();
+    }
+
+    /**
+     * Callback for sheet remove dialog's confirm. Removes
+     * sheet from the server
+     * @private
+     */
+    _onSheetRemovalConfirmed() {
+        const {sheet} = this.props;
+
+        this._removeSheetConfirmationDialog.close();
+        this.props.removeSheet(sheet);
+        browserHistory.push('/');
     }
 
     /**
@@ -115,7 +128,7 @@ export default class SheetSummaryPage extends React.Component {
                         <div className="six columns">
                             <button
                                 className={ 'button-danger u-full-width' }
-                                onClick={this._removeSheet.bind(this)}>
+                                onClick={this._handleRemoveSheetClick.bind(this)}>
                                 <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
                                 { t('transactions.remove_sheet') }
                             </button>
@@ -124,6 +137,14 @@ export default class SheetSummaryPage extends React.Component {
                         </div>
                     </div>
                 </div>
+
+                <RemovalConfirmationDialog
+                    ref={ c => this._removeSheetConfirmationDialog = c }
+                    onRemoveConfirmed={this._onSheetRemovalConfirmed.bind(this)}
+                    header={ t('sheet_remove.confirmation_title') }
+                    contentText={ t('sheet_remove.confirmation_msg') }
+                    okButtonLabel={ t('sheet_remove.button') }
+                />
 
                 <Navigation currentPage={pages.SUMMARY} sheetId={sheet.id}/>
             </div>

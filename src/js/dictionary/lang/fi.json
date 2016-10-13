@@ -23,9 +23,6 @@
     "home.button.remove" : "Poista nykyinen laskelma",
     "home.name_your_sheet" : "Nimeä laskelma",
     "home.prev_sheet_saved" : "Aikaisempi laskelma on tallennettu ja se voidaa ladata uudestaan käyttäen",
-    "home.remove_sheet": "Poista laskelma",
-    "home.remove_sheet_confirmation_title": "Poista nykyinen laskelma",
-    "home.remove_sheet_confirmation_msg": "Nykyinen laskelma poistetaan pysyvästi. Oletko varma, että haluat poistaa laskelman?",
     "home.load_sheet_action" : "laskelman lataus toimintoa",
     "home.sheet_name_placeholder": "Syötä laskelman nimi",
     "home.sheet_name" : "Laskelman nimi",
@@ -92,6 +89,10 @@
     "settings.toggle_settings": "Näytä/piilota asetukset",
 
     "shares.participants_expenses" : "Osallistujan kulut",
+
+    "sheet_remove.button": "Poista laskelma",
+    "sheet_remove.confirmation_title": "Poista nykyinen laskelma",
+    "sheet_remove.confirmation_msg": "Nykyinen laskelma poistetaan pysyvästi. Oletko varma, että haluat poistaa laskelman?",
 
     "summary.additional_information": "Lisätiedot",
     "summary.preview_created" : "Laskelman yhteenveto luotu",

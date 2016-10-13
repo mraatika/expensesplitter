@@ -128,9 +128,9 @@ export default class HomePage extends React.Component {
                 <RemovalConfirmationDialog
                     ref="removeSheetConfirmationDialog"
                     onRemoveConfirmed={this._onSheetRemovalConfirmed.bind(this)}
-                    header={ t('home.remove_sheet_confirmation_title') }
-                    contentText={ t('home.remove_sheet_confirmation_msg') }
-                    okButtonLabel={ t('home.remove_sheet') }
+                    header={ t('sheet_remove.confirmation_title') }
+                    contentText={ t('sheet_remove.confirmation_msg') }
+                    okButtonLabel={ t('sheet_remove.button') }
                 />
 
                 <LoadSheetDialog

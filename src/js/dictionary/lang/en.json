@@ -22,9 +22,6 @@
     "home.button.remove" : "Remove current sheet",
     "home.name_your_sheet" : "Name your sheet",
     "home.prev_sheet_saved" : "Your previous sheet was saved and it can be reloaded using the",
-    "home.remove_sheet": "Remove sheet",
-    "home.remove_sheet_confirmation_title": "Remove current sheet",
-    "home.remove_sheet_confirmation_msg": "Current sheet will be permanently deleted. Are you sure you want to remove the current sheet?",
     "home.load_sheet_action" : "load sheet action",
     "home.sheet_name_placeholder": "Enter sheet name here",
     "home.sheet_name" : "Sheet name",
@@ -91,6 +88,10 @@
     "settings.toggle_settings": "Show/hide the settings section",
 
     "shares.participants_expenses" : "Participant's expenses",
+
+    "sheet_remove.button": "Remove sheet",
+    "sheet_remove.confirmation_title": "Remove current sheet",
+    "sheet_remove.confirmation_msg": "Current sheet will be permanently deleted. Are you sure you want to remove the current sheet?",
 
     "summary.preview_created" : "Sheet summary created",
     "summary.additional_information": "Additional information",
