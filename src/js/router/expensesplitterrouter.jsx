@@ -5,7 +5,6 @@ import AppContainer from 'containers/appcontainer';
 import HomePageContainer from 'containers/homepagecontainer';
 import ParticipantsPageContainer from 'containers/participantspagecontainer';
 import ExpensesPageContainer from 'containers/expensespagecontainer';
-import TransactionsPageContainer from 'containers/transactionspagecontainer';
 import SummaryPageContainer from 'containers/summarypagecontainer';
 
 /**
@@ -36,7 +35,6 @@ export default class ExpenseSplitterRouter extends React.Component {
                         <IndexRoute component={HomePageContainer} />
                         <Route path="participants" component={ParticipantsPageContainer} />
                         <Route path="expenses" component={ExpensesPageContainer} />
-                        <Route path="transactions" component={TransactionsPageContainer} />
                         <Route path="summary" component={SummaryPageContainer} />
                     </Route>
                 </Route>

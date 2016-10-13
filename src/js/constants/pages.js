@@ -23,22 +23,14 @@ export default Object.freeze({
         href: '/expenses',
         label: 'lang.expense_plural',
         displayInNavigation: true,
-        next: 'TRANSACTIONS',
-        prev: 'PARTICIPANTS'
-    },
-
-    TRANSACTIONS: {
-        href: '/transactions',
-        label: 'lang.transaction_plural',
-        displayInNavigation: true,
         next: 'SUMMARY',
-        prev: 'EXPENSES'
+        prev: 'PARTICIPANTS'
     },
 
     SUMMARY: {
         href: '/summary',
         label: 'lang.summary',
         displayInNavigation: true,
-        prev: 'TRANSACTIONS'
+        prev: 'EXPENSES'
     }
 });
