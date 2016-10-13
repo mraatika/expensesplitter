@@ -44,7 +44,7 @@
   },
   "scripts": {
     "prod": "webpack --type prod",
-    "start": "webpack-dev-server --progress --colors --type dev",
+    "start": "webpack-dev-server --type dev",
     "dev": "webpack --type dev",
     "test": "mocha --recursive --compilers 'jsx:test/support/jsxcompiler, .:babel-register'",
     "test-debug": "node debug --harmony ./node_modules/.bin/mocha --runInBand"
