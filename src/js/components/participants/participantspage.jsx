@@ -22,15 +22,17 @@ export default class ParticipantsPage extends React.Component {
      */
     _handleParticipantRemoval(participant) {
         const expensesService = new ExpensesService({ expenses: this.props.sheet.expenses });
-        const expensesParticipatedIn = expensesService.findExpensesByParticipant(participant.id);
-        const expensesPaidBy = expensesService.findExpensesPaidByParticipant(participant.id);
+        const expensesParticipatedIn = expensesService.findAllExpensesOfParticipant(participant.id);
 
-        if (expensesParticipatedIn.length || expensesPaidBy.length) {
-            // after confirmation promise is resolved
-            this._removeConfirmationDialog.open().then(() => this._removeParticipant(participant));
-        } else {
+        if (!expensesParticipatedIn.length) {
             this._removeParticipant(participant);
+            return;
         }
+
+        // after confirmation promise is resolved
+        this._removeConfirmationDialog
+            .open()
+            .then(() => this._removeParticipant(participant, expensesParticipatedIn));
     }
 
     /**
@@ -39,8 +41,8 @@ export default class ParticipantsPage extends React.Component {
      * @param  {object} participant
      * @return {undefined}
      */
-    _removeParticipant(participant) {
-        this.props.removeParticipant(this.props.sheet, participant);
+    _removeParticipant(participant, expenses = []) {
+        this.props.removeParticipant(this.props.sheet, participant, expenses);
     }
 
     /**

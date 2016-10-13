@@ -12,6 +12,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
     return {
+        /**
+         * Add new participant to sheet's participants list
+         * @param  {[type]} sheet [description]
+         * @param  {[type]} participantProperties [description]
+         * @return {[type]}
+         */
         addParticipant: (sheet, participantProperties) => {
             const participant = ParticipantFactory.create(participantProperties);
 
@@ -19,9 +25,17 @@ function mapDispatchToProps(dispatch) {
                 participants: sheet.participants.concat([ participant ])
             }));
         },
-        removeParticipant: (sheet, participant) => {
+        /**
+         * Remove a participant (and expenses the participant is participated in)
+         * from given sheet
+         * @param  {Object} sheet
+         * @param  {Object} participant
+         * @param  {Array} expensesToBeRemoved
+         */
+        removeParticipant: (sheet, participant, expensesToBeRemoved) => {
             dispatch(updateSheet(sheet, {
-                participants: without(sheet.participants, participant)
+                participants: without(sheet.participants, participant),
+                expenses: without(sheet.expenses, ...expensesToBeRemoved)
             }));
         }
     };
