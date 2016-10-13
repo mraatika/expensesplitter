@@ -2,7 +2,7 @@ import React from 'react';
 import {browserHistory} from 'react-router';
 import {t} from 'dictionary/dictionary';
 import TransactionsService from 'service/transactionsservice';
-import ExpenseList from 'components/expenses/expenselist.jsx';
+import ParticipantSummaryList from 'components/shares/participantsummarylist.jsx';
 import TransactionsList from 'components/transactions/transactionslist.jsx';
 import SharesTable from 'components/shares/sharestable.jsx';
 import pages from 'constants/pages';
@@ -11,6 +11,7 @@ import {DateUtils, URLUtils} from 'util/utils.js';
 import SaveButton from 'components/common/savebutton.jsx';
 import InputButtonSplit from 'components/common/inputbuttonsplit.jsx';
 import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
+import ExpensesService from 'service/expensesservice';
 
 /**
  * @class SheetSummaryPage
@@ -52,6 +53,7 @@ export default class SheetSummaryPage extends React.Component {
         const {sheet} = this.props;
         const {participants, expenses, settings} = sheet;
         const transactions = new TransactionsService().calculateTransactions(expenses, participants);
+        const sharesAndBalances = new ExpensesService().getAllBalancesAndShares(participants, expenses);
 
         return (
             <div id="summary-page">
@@ -63,11 +65,11 @@ export default class SheetSummaryPage extends React.Component {
                     transactions={transactions}
                     currencySymbol={settings.currencySymbol}/>
 
-                <h2>{t('lang.expense_plural')}:</h2>
-                <ExpenseList
-                    expenses={expenses}
+                <h2>{ t('lang.expense_plural') }</h2>
+                <ParticipantSummaryList
                     participants={participants}
-                    isRemoveAllowed={false}
+                    sharesAndBalances={sharesAndBalances}
+                    expenses={expenses}
                     currencySymbol={settings.currencySymbol}/>
 
                 <h2>{t('lang.share_plural')}:</h2>
@@ -93,7 +95,7 @@ export default class SheetSummaryPage extends React.Component {
                 <div id="server-actions">
                     <div className="row">
                         <div className="twelve columns">
-                            <label htmlFor="sheet-share-url">{t('transactions.share_url')}:</label>
+                            <label htmlFor="sheet-share-url">{t('summary.share_url')}:</label>
                             <InputButtonSplit>
                                 <input
                                     id="sheet-share-url"
@@ -104,8 +106,8 @@ export default class SheetSummaryPage extends React.Component {
                                     onClick={() => this._shareUrlField.select() } />
                                 <button
                                     type="button"
-                                    title={ t('transactions.share_link') }
-                                    aria-label={ t('transactions.share_link') }
+                                    title={ t('summary.share_link') }
+                                    aria-label={ t('summary.share_link') }
                                     onClick={this._shareLink.bind(this)}>
                                     <i className="fa fa-lg fa-fw fa-share-alt"/>
                                 </button>
@@ -120,7 +122,7 @@ export default class SheetSummaryPage extends React.Component {
                                 className="u-full-width"
                                 isSaved={!this.props.dirty}
                                 isSaving={this.props.isSavingToServer}
-                                beforeSaveText={t('transactions.save_sheet')}
+                                beforeSaveText={t('summary.save_sheet')}
                                 afterSaveText={t('lang.saved')}
                                 onSavingText={t('lang.saving')}
                                 onClick={() => this.props.saveSheet(sheet)} />
@@ -130,7 +132,7 @@ export default class SheetSummaryPage extends React.Component {
                                 className={ 'button-danger u-full-width' }
                                 onClick={this._handleRemoveSheetClick.bind(this)}>
                                 <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
-                                { t('transactions.remove_sheet') }
+                                { t('sheet_remove.button') }
                             </button>
                         </div>
                         <div className="four columns">

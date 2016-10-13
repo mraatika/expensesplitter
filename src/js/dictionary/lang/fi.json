@@ -95,10 +95,9 @@
 
     "summary.additional_information": "Lisätiedot",
     "summary.preview_created" : "Laskelman yhteenveto luotu",
+    "summary.save_sheet": "Tallenna laskelma",
+    "summary.share_link": "Jaa linkki laskelmaan",
+    "summary.share_url": "Jaettava linkki tähän laskelmaan",
 
-    "transactions.no_transactions" : "Ei maksuja",
-    "transactions.remove_sheet": "Poista laskelma",
-    "transactions.save_sheet": "Tallenna laskelma",
-    "transactions.share_link": "Jaa linkki laskelmaan",
-    "transactions.share_url": "Jaettava linkki tähän laskelmaan"
+    "transactions.no_transactions" : "Ei maksuja"
 }

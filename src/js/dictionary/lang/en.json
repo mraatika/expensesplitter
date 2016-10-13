@@ -95,10 +95,9 @@
 
     "summary.preview_created" : "Sheet summary created",
     "summary.additional_information": "Additional information",
+    "summary.save_sheet" : "Save sheet",
+    "summary.share_link": "Share sheet link",
+    "summary.share_url": "Shareable link to this sheet",
 
-    "transactions.no_transactions" : "No transactions",
-    "transactions.remove_sheet": "Delete sheet",
-    "transactions.save_sheet" : "Save sheet",
-    "transactions.share_link": "Share sheet link",
-    "transactions.share_url": "Shareable link to this sheet"
+    "transactions.no_transactions" : "No transactions"
 }
