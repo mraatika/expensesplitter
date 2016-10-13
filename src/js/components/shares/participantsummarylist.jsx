@@ -15,7 +15,7 @@ export default class ParticipantSummaryList extends React.Component {
         const expensesService = new ExpensesService({ expenses: this.props.expenses });
 
         return (
-            <div className="panel-group">
+            <div className="panel-group participant-summary-list">
                 {
                     this.props.sharesAndBalances.map(shareAndBalance => {
                         const expenses = expensesService.findAllExpensesOfParticipant(shareAndBalance.participantId);
