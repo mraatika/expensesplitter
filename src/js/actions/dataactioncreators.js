@@ -212,7 +212,7 @@ export function saveSheet(sheet) {
 
         if (!isEmpty(errors)) {
             const errorDescription = map(errors, (value, key) => `${key}: ${value}`).join(', ');
-            dispatch(createUserError(Constants.ErrorEventTypes.ADD_SHEET, errorDescription));
+            dispatch(createUserError(Constants.ErrorEventTypes.SAVE_SHEET, errorDescription));
             return;
         }
 
