@@ -50,27 +50,23 @@ class App extends React.Component {
 
         const currentSheetId = this.props.params.sheetId;
         const nextSheetId = nextProps.params.sheetId;
+        const propId = this.props.sheet.id;
 
         // replace active sheet with a new sheet when navigated to root url without the id in url params
-        if (currentSheetId && !nextSheetId) {
-            this.props.createSheet({});
+        if (!nextSheetId) {
+            if (currentSheetId)  this.props.createSheet({});
             return;
         }
 
         // fetch sheet from the server if navigated from the root url to url with sheet id in url params
-        if (!currentSheetId && nextSheetId) {
-            // check if the sheet was ever saved 'cause
-            // when a new sheet is created the id in url params is empty
-            // and then moving to participants the id will be in url params but
-            // the sheet is not yet saved to the db
-            if (nextProps.sheet.lastSavedOn) {
-                this.props.fetchSheet(nextSheetId);
-            }
+        if (!currentSheetId) {
+            // do not fetch if already fetched but the url hasn't yet changed
+            if (nextSheetId !== propId) this.props.fetchSheet(nextSheetId);
             return;
         }
 
         // fetch sheet from the server when the sheet id in url params is changed from sheet id to sheet id
-        if (currentSheetId && nextSheetId && (currentSheetId!== nextSheetId)) {
+        if (nextSheetId !== currentSheetId && nextSheetId !== propId) {
             this.props.fetchSheet(nextSheetId);
             return;
         }
