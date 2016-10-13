@@ -95,7 +95,7 @@ export default class HomePage extends React.Component {
                 <div className="row">
                     <div className="four columns">
                         <button
-                            onClick={() => this._onAddClick()}
+                            onClick={() => browserHistory.push('/')}
                             className="u-full-width button"
                             disabled={!sheet.lastSavedOn}>
                             <i className="fa fa-plus fa-fw fa-lg" />
