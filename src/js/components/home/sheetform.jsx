@@ -151,7 +151,7 @@ SheetForm.propTypes = {
     sheet: PropTypes.object.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
-    summaryButtonDisabled: PropTypes.boolean
+    summaryButtonDisabled: PropTypes.bool
 };
 
 export default SheetForm;
