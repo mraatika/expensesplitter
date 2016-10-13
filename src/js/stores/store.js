@@ -1,9 +1,3 @@
-/*
-
-    case Constants.ErrorEventTypes.REMOVE_SHEET:
-        restoreSheet(action.sheet);
-*/
-
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {browserHistory} from 'react-router';
 import {routerMiddleware, routerReducer} from 'react-router-redux';
