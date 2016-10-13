@@ -30,6 +30,8 @@
     "lang.balance": "Balanssi",
     "lang.cancel": "Peruuta",
     "lang.close": "Sulje",
+    "lang.copy": "Kopioi",
+    "lang.copied": "Kopioitu",
     "lang.created_on": "Luotu pvm",
     "lang.current_sheet": "Nykyinen laskelma",
     "lang.email": "E-mail",
@@ -96,7 +98,6 @@
     "summary.additional_information": "Lisätiedot",
     "summary.preview_created" : "Laskelman yhteenveto luotu",
     "summary.save_sheet": "Tallenna laskelma",
-    "summary.share_link": "Jaa linkki laskelmaan",
     "summary.share_url": "Jaettava linkki tähän laskelmaan",
 
     "transactions.no_transactions" : "Ei maksuja"

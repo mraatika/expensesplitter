@@ -52,6 +52,7 @@
   "dependencies": {
     "axios": "^0.7.0",
     "classnames": "^2.2.0",
+    "clipboard": "^1.5.12",
     "font-awesome": "^4.6.3",
     "kew": "^0.7.0",
     "keymirror": "^0.1.1",

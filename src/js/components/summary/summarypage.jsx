@@ -1,5 +1,6 @@
 import React from 'react';
 import {browserHistory} from 'react-router';
+import Clipboard from 'clipboard';
 import {t} from 'dictionary/dictionary';
 import TransactionsService from 'service/transactionsservice';
 import ParticipantSummaryList from 'components/shares/participantsummarylist.jsx';
@@ -13,6 +14,7 @@ import InputButtonSplit from 'components/common/inputbuttonsplit.jsx';
 import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
 import ExpensesService from 'service/expensesservice';
 
+
 /**
  * @class SheetSummaryPage
  * @description Sheet summary page
@@ -20,8 +22,9 @@ import ExpensesService from 'service/expensesservice';
  */
 export default class SheetSummaryPage extends React.Component {
 
-    _shareLink() {
-        console.log('Share link');
+    constructor(props) {
+        super(props);
+        this.state = { urlCopied: false };
     }
 
     /**
@@ -44,6 +47,14 @@ export default class SheetSummaryPage extends React.Component {
         this._removeSheetConfirmationDialog.close();
         this.props.removeSheet(sheet);
         browserHistory.push('/');
+    }
+
+    componentDidMount() {
+        this.clipboard = new Clipboard('#copy-to-clipboard-button');
+
+        this.clipboard.on('success', () => {
+            this.setState({ urlCopied: true });
+        });
     }
 
     /**
@@ -106,10 +117,13 @@ export default class SheetSummaryPage extends React.Component {
                                     onClick={() => this._shareUrlField.select() } />
                                 <button
                                     type="button"
-                                    title={ t('summary.share_link') }
-                                    aria-label={ t('summary.share_link') }
-                                    onClick={this._shareLink.bind(this)}>
-                                    <i className="fa fa-lg fa-fw fa-share-alt"/>
+                                    id="copy-to-clipboard-button"
+                                    title={ t('lang.copy') }
+                                    aria-label={ t('lang.copy') }
+                                    data-clipboard-target="#sheet-share-url">
+                                    <i className={'fa fa-fw fa-lg ' + (this.state.urlCopied ? 'fa-check' : 'fa-clipboard')} />
+                                    &nbsp;
+                                    { t(this.state.urlCopied ? 'lang.copied' : 'lang.copy') }
                                 </button>
                             </InputButtonSplit>
                         </div>

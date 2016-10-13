@@ -30,6 +30,8 @@
     "lang.balance": "Balance",
     "lang.cancel": "Cancel",
     "lang.close": "Close",
+    "lang.copy": "Copy",
+    "lang.copied": "Copied",
     "lang.created_on": "Created on",
     "lang.current_sheet": "Current sheet",
     "lang.email": "E-mail",
@@ -96,7 +98,6 @@
     "summary.preview_created" : "Sheet summary created",
     "summary.additional_information": "Additional information",
     "summary.save_sheet" : "Save sheet",
-    "summary.share_link": "Share sheet link",
     "summary.share_url": "Shareable link to this sheet",
 
     "transactions.no_transactions" : "No transactions"
