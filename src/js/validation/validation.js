@@ -1,52 +1,52 @@
-'use strict';
-
-import _ from 'lodash';
+import {each, isString, isArray, isObject, isNumber, isFunction} from 'lodash';
 import {t} from '../dictionary/dictionary';
 
 export const validators = {
 
-    required: function(value, rule) {
+    required: (value, rule) => {
         return rule ? (value || value === 0) : void 0;
     },
 
-    maxLength: function(value, rule) {
+    maxLength: (value, rule) => {
         return (value || '').length <= rule;
     },
 
-    minLength: function(value, rule) {
+    minLength: (value, rule) => {
         return !value || (value || '').length >= rule;
     },
 
-    min: function(value, rule) {
+    min: (value, rule) => {
         return (!value && value !== 0) || value >= rule;
     },
 
-    max: function(value, rule) {
+    max: (value, rule) => {
         return (!value && value !== 0) || value <= rule;
     },
 
-    type: function(value, rule) {
+    type: (value, rule) => {
         switch (rule) {
         case 'string':
-            return _.isString(value);
+            return isString(value);
         case 'decimal':
-            let v = ('' + value).replace(',', ',');
-            return /^[0-9]+(\.[0-9]{1,})?$/.test(v);
+            {
+                const v = ('' + value).replace(',', ',');
+                return /^[0-9]+(\.[0-9]{1,})?$/.test(v);
+            }
         case 'number':
-            return _.isNumber(value) && !isNaN(value);
+            return isNumber(value) && !isNaN(value);
         case 'array':
-            return _.isArray(value);
+            return isArray(value);
         case 'object':
-            return _.isObject(value) &&
-                !_.isArray(value) &&
-                !_.isFunction(value);
+            return isObject(value) &&
+                !isArray(value) &&
+                !isFunction(value);
         default:
             return true;
         }
     },
 
-    pattern: function(value, rule) {
-        let regex = _.isFunction(rule) ? rule.call(null) : rule;
+    pattern: (value, rule) => {
+        const regex = isFunction(rule) ? rule.call(null) : rule;
 
         try {
             return new RegExp(regex).test(value);
@@ -57,17 +57,36 @@ export const validators = {
     }
 };
 
-var _formErrorReturnValue = function(msgKey, rule) {
+/**
+ * Form error message
+ * @private
+ * @param   {string} msgKey
+ * @param   {string} rule
+ * @return  {string}
+ */
+const _formErrorReturnValue = function(msgKey, rule) {
     return msgKey ? t(msgKey + '.' + rule) : true;
 };
 
-var _getAttributeValidator = function(subject) {
+/**
+ * Partial application function for validator functions. Get validation
+ * function for a rule
+ * @private
+ * @param   {Object} subject
+ * @return  {Function}
+ */
+const _getAttributeValidator = function(subject) {
 
-    return function(ruleName, ruleValue) {
-
-        for (var rule in ruleValue) {
+    /**
+     * Get validation function for a rule
+     * @param  {string} ruleName
+     * @param  {*} ruleValue
+     * @return {string}
+     */
+    return (ruleName, ruleValue) => {
+        for (let rule in ruleValue) {
             if (ruleValue.hasOwnProperty(rule)) {
-                let validator = validators[rule];
+                const validator = validators[rule];
 
                 if (validator && !validator.call(null, subject[ruleName], ruleValue[rule])) {
                     return _formErrorReturnValue(ruleValue.msgKey, rule);
@@ -79,31 +98,46 @@ var _getAttributeValidator = function(subject) {
     };
 };
 
-
+/**
+ * Validate an object against a schema
+ * @param  {Object} subject
+ * @param  {Object} schema
+ * @return {Object}
+ */
 export const validate = function(subject, schema) {
-    var errors = {};
-    var validator;
+    const errors = {};
 
     if (!schema)  throw new Error('IllegalArgumentsException: Schema missing!');
 
-    validator = _getAttributeValidator(subject);
+    const validator = _getAttributeValidator(subject);
 
-    _.each(schema, function(value, key) {
-        var error = validator(key, value);
-
-        if (error) {
-            errors[key] = error || void 0;
+    each(schema, (rules, key) => {
+        const value = subject[key];
+        // do not run validator if property is not required and is missing
+        if (rules.required && value !== null && value !== undefined) {
+            const error = validator(key, rules);
+            if (error) errors[key] = error;
         }
     });
 
     return errors;
 };
 
+/**
+ * Validate a property against given schema
+ * @param  {string} propertyName
+ * @param  {*} propertyValue
+ * @param  {Object} schema
+ * @return {string}
+ */
 export const validateProperty = function(propertyName, propertyValue, schema) {
-    var rules = schema[propertyName];
+    const rules = schema[propertyName];
 
-    for (var ruleName in rules) {
-        let validator  = validators[ruleName] ;
+    for (let ruleName in rules) {
+        const validator  = validators[ruleName] ;
+
+        if (!rules.required && !propertyValue) return;
+
         if (validator && !validator.call(null, propertyValue, rules[ruleName])) {
             return _formErrorReturnValue(rules.msgKey, ruleName);
         }
