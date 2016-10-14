@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {delay, chain} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import {Expense as ExpenseSchema} from '../../validation/schema/schema';
 import MessageContainer from '../common/messagecontainer.jsx';
@@ -127,7 +127,7 @@ export default class ExpenseAddForm extends React.Component {
         this._setExpenseValue(property, value);
         // delay displaying the error so it doesn't prevent the first click
         // on elements below it on the screen
-        _.delay(() => this._setValidationError(property, error), 100);
+        delay(() => this._setValidationError(property, error), 100);
     }
 
     /**
@@ -138,7 +138,7 @@ export default class ExpenseAddForm extends React.Component {
      */
     _handleParticipantsChange(e) {
         var options = e.target.options;
-        var selected = _.chain(options)
+        var selected = chain(options)
             .filter(option => !!option.selected)
             .pluck('value')
             .value();
@@ -171,7 +171,7 @@ export default class ExpenseAddForm extends React.Component {
 
     render() {
         const expense = this.state.expense;
-        const errorTexts = _.chain(this.state.errors)
+        const errorTexts = chain(this.state.errors)
             .values()
             .compact()
             .value();

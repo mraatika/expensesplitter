@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {find} from 'lodash';
 import {NumberUtils} from '../../util/utils.js';
 
 /**
@@ -15,7 +15,7 @@ export default class Transaction extends React.Component {
     render() {
         const {transaction, participants, currencySymbol} = this.props;
         const findParticipant = participantId => {
-            return _.find(participants, (participant => participant.id === participantId)).name;
+            return find(participants, (participant => participant.id === participantId)).name;
         };
 
         return (

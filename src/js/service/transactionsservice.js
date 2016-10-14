@@ -1,6 +1,6 @@
 import ExpensesService from './expensesservice';
 import {NumberUtils} from '../util/utils';
-import _ from 'lodash';
+import {filter, reject} from 'lodash';
 
 /**
  *  Calculates the transaction amount
@@ -30,7 +30,7 @@ export default class TransactionsService {
      */
     calculateTransactions(expenses, participants) {
         const transactions = [];
-        let balances = _.filter(new ExpensesService().calculateBalances(expenses, participants), balance => balance.balance != 0);
+        let balances = filter(new ExpensesService().calculateBalances(expenses, participants), balance => balance.balance != 0);
 
         // iterate until all accounts are even
         while (balances.length) {
@@ -59,7 +59,7 @@ export default class TransactionsService {
             max.balance -= amount;
 
             // filter out all zero balances
-            balances = _.reject(balances, zeroBalanceFilterer);
+            balances = reject(balances, zeroBalanceFilterer);
         }
 
         return transactions;

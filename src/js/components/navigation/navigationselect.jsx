@@ -1,7 +1,7 @@
 import React from 'react';
 import {browserHistory} from 'react-router';
 import pages from '../../constants/pages';
-import _ from 'lodash';
+import {defer, pick, map} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 
 /**
@@ -19,7 +19,7 @@ export default class NavigationSelect extends React.Component {
     _onChange() {
         const link = this._select.options[this._select.selectedIndex].value;
         // defer to allow the pending update to be completed
-        _.defer(() => browserHistory.push(`/sheet/${this.props.sheetId}${link}`));
+        defer(() => browserHistory.push(`/sheet/${this.props.sheetId}${link}`));
     }
 
     /**
@@ -28,7 +28,7 @@ export default class NavigationSelect extends React.Component {
      */
     render() {
         const {href:currentRoute} = this.props.currentPage;
-        const navigablePages = _.pick(pages, page => page.displayInNavigation);
+        const navigablePages = pick(pages, page => page.displayInNavigation);
 
         return (
             <select
@@ -37,7 +37,7 @@ export default class NavigationSelect extends React.Component {
                 defaultValue={currentRoute}
                 onChange={this._onChange.bind(this)}>
                 {
-                    _.map(navigablePages, (page, key) => {
+                    map(navigablePages, (page, key) => {
                         const isCurrentPage = page.href == currentRoute;
                         return <option key={key} value={page.href} className={isCurrentPage ? 'current' : ''}>
                             {t(page.label)}

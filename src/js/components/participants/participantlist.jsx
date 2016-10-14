@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {sortBy, map} from 'lodash';
 import Participant from './participant.jsx';
 import {t} from '../../dictionary/dictionary';
 
@@ -13,12 +13,12 @@ export default class ParticipantList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const participants = _.sortBy(this.props.participants, 'name');
+        const participants = sortBy(this.props.participants, 'name');
 
         return (
             <ul id="participants-list">
             {
-                participants.length ? participants.map(participant =>
+                participants.length ? map(participants, participant =>
                     <Participant
                         key={participant.id}
                         participant={participant}

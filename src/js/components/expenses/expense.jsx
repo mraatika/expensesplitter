@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {find} from 'lodash';
 import React from 'react';
 import TrashButton from 'components/common/trashbutton.jsx';
 import {NumberUtils} from 'util/utils';
@@ -15,7 +15,7 @@ class Expense extends React.Component {
      * @return {Object}
      */
     findParticipant(participantId) {
-        return _.find(this.props.participants, (participant => participant.id === participantId));
+        return find(this.props.participants, (participant => participant.id === participantId));
     }
 
     /**

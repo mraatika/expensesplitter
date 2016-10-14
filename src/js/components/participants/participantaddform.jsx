@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {find} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import MessageContainer from '../common/messagecontainer.jsx';
 
@@ -18,7 +18,7 @@ export default class ParticipantAddForm extends React.Component {
     }
 
     _validate(participantName) {
-        if (_.find(this.props.participants, (participant => participant.name === participantName))) {
+        if (find(this.props.participants, (participant => participant.name === participantName))) {
             return `${t('error.participant.name.duplicate')} ${participantName}`;
         }
     }

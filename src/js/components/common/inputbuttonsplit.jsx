@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {find} from 'lodash';
 
 /**
  * @class InputButtonSplit
@@ -16,7 +16,7 @@ export default class InputButtonSplit extends React.Component {
      */
     _findChildOfType(type) {
         const children = React.Children.toArray(this.props.children);
-        return _.find(children, c => c.type === type);
+        return find(children, c => c.type === type);
     }
 
     /**

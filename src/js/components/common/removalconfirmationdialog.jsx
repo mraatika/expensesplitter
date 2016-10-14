@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {isFunction}  from 'lodash';
 import Q from 'kew';
 import {t} from '../../dictionary/dictionary';
 import ModalDialog from '../common/modaldialog.jsx';
@@ -37,7 +37,7 @@ export default class RemovalConfirmationDialog extends React.Component {
      * @return {undefined} [description]
      */
     _onConfirmRemoval() {
-        if (_.isFunction(this.props.onRemoveConfirmed)) {
+        if (isFunction(this.props.onRemoveConfirmed)) {
             this.props.onRemoveConfirmed();
         }
         // resolve the promise object

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {isDate} from 'lodash';
 
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -58,7 +58,7 @@ export const DateUtils = {
      * @return {string}
      */
     format(date, format) {
-        if (!_.isDate(date)) date = new Date(date);
+        if (!isDate(date)) date = new Date(date);
         const minutes = date.getMinutes();
         const hours = date.getHours();
 

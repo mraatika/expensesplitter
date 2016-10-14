@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import {sortByAll} from 'lodash';
 import ExpensesService from '../../service/expensesservice';
 import {t} from '../../dictionary/dictionary';
 import Share from './share.jsx';
@@ -20,7 +20,7 @@ export default class SharesTable extends React.Component {
         const expensesService = new ExpensesService({ expenses, participants });
         const balancesAndShares = expensesService.getAllBalancesAndShares();
         // order shares first by balance and the by participant's name
-        const shares = _.sortByAll(balancesAndShares, ['balance', 'participantName']);
+        const shares = sortByAll(balancesAndShares, ['balance', 'participantName']);
 
         return (
             <table className="shares-list u-full-width">
