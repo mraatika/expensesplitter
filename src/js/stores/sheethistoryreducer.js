@@ -4,7 +4,7 @@ import SheetHistoryFactory from 'factory/sheethistoryfactory';
 import storageFactory from 'factory/storagefactory';
 
 // create local storage
-const storage = storageFactory.create(Constants.SHEET_STORE_NAME);
+const storage = storageFactory(Constants.SHEET_STORE_NAME);
 
 /**
  * Sheet history reducers

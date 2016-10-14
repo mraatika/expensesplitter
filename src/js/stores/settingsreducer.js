@@ -1,10 +1,9 @@
-import {extend} from 'lodash';
 import Constants from 'constants/appconstants';
-import languages from 'dictionary/languages';
 import storageFactory from 'factory/storagefactory';
 
-const storage = storageFactory.create(Constants.SETTINGS_STORE_NAME);
-const initialState = extend({ language: languages.en }, storage.getAll());
+const storage = storageFactory(Constants.SETTINGS_STORE_NAME, { language: Constants.Languages.EN });
+const initialState = storage.getAll();
+
 /**
  * Sheet history reducers
  * @param  {Object} state Initially read from local storage

@@ -1,12 +1,11 @@
-import LocalStorageAdapter from '../util/localstorageadapter';
+import LocalStorageAdapter from 'util/localstorageadapter';
 
-var StorageFactory = {
-
-    create: function(storeName) {
-        var storage = new LocalStorageAdapter(storeName);
-        return storage;
-    }
-};
-
-
-export default StorageFactory;
+/**
+ * Export create function for creating localstorage adapter
+ * @param  {string} storeName
+ * @param  {object} initialData
+ * @return {LocalStorageAdapter}
+ */
+export default function create(storeName, initialData) {
+    return new LocalStorageAdapter(storeName, initialData);
+}
