@@ -1,6 +1,6 @@
 import {extend} from 'lodash';
 import Constants from 'constants/appconstants';
-import SheetFactory from 'factory/sheetfactory';
+import sheetFactory from 'factory/sheetfactory';
 
 /**
  * Store's initial state
@@ -30,7 +30,7 @@ export function sheet(state = initialState, action) {
         return extend(state, {isFetching: true });
     case Constants.ActionTypes.CREATE_SHEET:
         {
-            const sheet = SheetFactory.create(action.sheet);
+            const sheet = sheetFactory(action.sheet);
             return extend(state, {sheet, dirty: true });
         }
     case Constants.ActionTypes.SAVE_SHEET:
