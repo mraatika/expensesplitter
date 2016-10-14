@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {chain, omit} from 'lodash';
+import {chain, extend, omit} from 'lodash';
 import {validateProperty} from 'validation/validation';
 
 /**
@@ -106,7 +106,7 @@ class ValidatedInput extends React.Component {
             break;
         }
 
-        return Object.assign(commonProps, typeProps);
+        return extend(commonProps, typeProps);
     }
 
     /**
@@ -133,7 +133,7 @@ class ValidatedInput extends React.Component {
      * @return {object}
      */
     _formInputProperties() {
-        return Object.assign(
+        return extend(
             this._formValidationProperties(),
             this._formEventProperties(),
             omit(this.props, [
@@ -149,7 +149,7 @@ class ValidatedInput extends React.Component {
     render() {
         const {isInvalid} = this.state;
         const p = this._formInputProperties();
-        const props = Object.assign(p, {
+        const props = extend(p, {
             ref: c => this._inputField = c,
             className: p.className + (isInvalid ? ' error' : '')
         });

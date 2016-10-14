@@ -1,4 +1,4 @@
-import {omit} from 'lodash';
+import {extend, omit} from 'lodash';
 
 var LocalStorageAdapter = function(storeName) {
     if (!storeName) throw new Error('IllegalArgumentsException: storeName missing!');
@@ -20,7 +20,7 @@ LocalStorageAdapter.prototype.set = function(key, value) {
 };
 
 LocalStorageAdapter.prototype.setAll = function(value) {
-    this._data = Object.assign({}, value);
+    this._data = extend({}, value);
     this.save();
 };
 

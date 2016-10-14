@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import {Panel} from 'react-bootstrap';
+import {extend} from 'lodash';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
 
@@ -18,7 +19,7 @@ class Settings extends React.Component {
      */
     _onSettingChange(name, value) {
         const {sheet} = this.props;
-        const newSettings = Object.assign({}, sheet.settings, {
+        const newSettings = extend({}, sheet.settings, {
             [name]: value
         });
 

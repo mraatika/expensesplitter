@@ -1,4 +1,4 @@
-import {omit} from 'lodash';
+import {extend, omit} from 'lodash';
 import Constants from 'constants/appconstants';
 import SheetHistoryFactory from 'factory/sheethistoryfactory';
 import storageFactory from 'factory/storagefactory';
@@ -14,7 +14,7 @@ const storage = storageFactory.create(Constants.SHEET_STORE_NAME);
  */
 export function sheetHistory(state = storage.getAll(), action) {
     const {sheet} = action;
-    let newState = Object.assign({}, state);
+    let newState = extend({}, state);
     let shouldSaveChanges = false;
 
     switch(action.type) {
