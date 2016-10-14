@@ -100,7 +100,8 @@ class App extends React.Component {
         return (
             <Swipeable
                 onSwipedRight={() => RouterService.prev()}
-                onSwipedLeft={() => RouterService.next()}>
+                onSwipedLeft={() => RouterService.next()}
+                delta={200}>
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
