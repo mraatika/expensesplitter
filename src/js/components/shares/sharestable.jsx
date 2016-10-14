@@ -35,7 +35,9 @@ class SharesTable extends React.Component {
                     {shares.map(share => <Share key={share.participantId} share={share} />)}
                 </tbody>
                 <tfoot>
-                    <ShareSummaryRow totalSum={expensesService.getTotalSum()} />
+                    <ShareSummaryRow
+                        totalSum={expensesService.getTotalSum()}
+                        currencySymbol={this.props.currencySymbol} />
                 </tfoot>
             </table>
         );
@@ -44,12 +46,14 @@ class SharesTable extends React.Component {
 
 SharesTable.defaultProps = {
     expenses: [],
-    participants: []
+    participants: [],
+    currencySymbol: ''
 };
 
 SharesTable.propTypes = {
     expenses: PropTypes.array,
-    participants: PropTypes.array
+    participants: PropTypes.array,
+    currencySymbol: PropTypes.string
 };
 
 export default SharesTable;

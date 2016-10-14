@@ -4,7 +4,7 @@ import {t} from '../../dictionary/dictionary';
 import Navigation from '../navigation/navigation.jsx';
 import ExpenseAddForm from './expenseaddform.jsx';
 import ExpenseList from './expenselist.jsx';
-import SharesSection from '../shares/sharessection.jsx';
+import SharesTable from 'components/shares/sharestable.jsx';
 
 /**
  * @class ExpensesPage
@@ -32,7 +32,11 @@ class ExpensesPage extends React.Component {
                     </div>
                     <div className="four columns">
                         <aside role="complementary" className="shares-section-container">
-                            <SharesSection expenses={sheet.expenses} participants={sheet.participants} />
+                            <h2>{ t('lang.share_plural') }</h2>
+                            <SharesTable
+                                participants={sheet.participants}
+                                expenses={sheet.expenses}
+                                currencySymbol={sheet.settings.currencySymbol}/>
                         </aside>
                     </div>
                 </section>

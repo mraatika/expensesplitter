@@ -84,10 +84,10 @@ class SheetSummaryPage extends React.Component {
                     currencySymbol={settings.currencySymbol}/>
 
                 <h2>{t('lang.share_plural')}:</h2>
-
                 <SharesTable
                     participants={participants}
-                    expenses={expenses} />
+                    expenses={expenses}
+                    currencySymbol={settings.currencySymbol}/>
 
                 <div>
                     <label htmlFor="sheet-additional-information">{ t('summary.additional_information') + ':' }</label>

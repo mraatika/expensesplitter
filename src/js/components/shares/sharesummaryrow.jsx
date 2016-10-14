@@ -12,18 +12,20 @@ class ShareSummaryRow extends React.Component {
         return (
             <tr>
                 <td>{t('lang.total')}:</td>
-                <td colSpan="2">{this.props.totalSum}</td>
+                <td colSpan="2">{this.props.totalSum} {this.props.currencySymbol}</td>
             </tr>
         );
     }
 }
 
 ShareSummaryRow.defaultProps = {
-    totalSum: 0
+    totalSum: 0,
+    currencySymbol: ''
 };
 
 ShareSummaryRow.propTypes = {
-    totalSum: PropTypes.number
+    totalSum: PropTypes.number,
+    currencySymbol: PropTypes.string
 };
 
 export default ShareSummaryRow;
