@@ -1,4 +1,4 @@
-import {chain, reduce, filter} from 'lodash';
+import {chain, reduce, filter, find} from 'lodash';
 
 /**
  * @class ExpensesService
@@ -144,7 +144,7 @@ export default class ExpensesService {
      * @return {array}
      */
     getAllBalancesAndShares(participants = this.sheet.participants, expenses = this.sheet.expenses) {
-        const findParticipant = (participantId =>find(participants, (p => p.id === participantId)));
+        const findParticipant = id => find(participants, p => p.id === id);
         const balances = this.calculateBalances(expenses, participants);
 
         return chain(balances)
