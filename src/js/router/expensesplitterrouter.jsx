@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import {syncHistoryWithStore} from 'react-router-redux';
 import AppContainer from 'containers/appcontainer';
@@ -12,7 +12,7 @@ import SummaryPageContainer from 'containers/summarypagecontainer';
  * @description Wrapper component for React Router
  * @extends {React.Component}
  */
-export default class ExpenseSplitterRouter extends React.Component {
+class ExpenseSplitterRouter extends React.Component {
 
     /**
      * @constructor
@@ -42,3 +42,9 @@ export default class ExpenseSplitterRouter extends React.Component {
         );
     }
 }
+
+ExpenseSplitterRouter.propTypes = {
+    store: PropTypes.object.isRequired
+};
+
+export default ExpenseSplitterRouter;

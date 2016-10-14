@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 
 /**
  * @class CollapsiblePanelHeader
  * @description Header for the collapsible expenses list
  * @extends {ReactComponent}
  */
-export default class CollapsiblePanelHeader extends React.Component {
+class CollapsiblePanelHeader extends React.Component {
 
     /**
      * @constructor
@@ -16,22 +16,30 @@ export default class CollapsiblePanelHeader extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const onExpand = this.props.onExpand;
+        const {onExpand, headerText, isExpanded} = this.props;
         let toggleButton = '';
 
         // only if onExpand callback is defined is the toggle button relevant
         if (onExpand) {
-            toggleButton = <i className={'u-pull-right fa fa-' + (this.props.isExpanded ? 'minus' : 'plus') + '-square-o'}/>;
+            toggleButton = <i className={'u-pull-right fa fa-' + (isExpanded ? 'minus' : 'plus') + '-square-o'}/>;
         }
 
         return (
-            <div className="wrap-content" onClick={onExpand || function() {}}>
-                <span className="u-pull-left bold">{this.props.headerText}</span>
+            <div className="wrap-content" onClick={onExpand}>
+                <span className="u-pull-left bold">{headerText}</span>
                 {toggleButton}
             </div>
         );
     }
 }
+
+/**
+ * Default properties
+ * @type {Object}
+ */
+CollapsiblePanelHeader.defaultProps = {
+    onExpand: () => {}
+};
 
 /**
  * Constructor param types
@@ -43,15 +51,17 @@ CollapsiblePanelHeader.propTypes = {
      * If omitted the component doesn't have the toggle button.
      * @type {function}
      */
-    onExpand: React.PropTypes.func,
+    onExpand: PropTypes.func,
     /**
      * Header text
      * @type {string}
      */
-    headerText: React.PropTypes.string,
+    headerText: PropTypes.string,
     /**
      * Collapsible's current state
      * @type {boolean}
      */
-    isExpanded: React.PropTypes.bool
+    isExpanded: PropTypes.bool
 };
+
+export default CollapsiblePanelHeader;

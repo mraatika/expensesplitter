@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
@@ -8,7 +8,7 @@ import {t} from '../../dictionary/dictionary.js';
  * @description A component to represent a single sheet in the sheets list
  * @extends {React.Component}
  */
-export default class Sheet extends React.Component {
+class Sheet extends React.Component {
 
     render() {
         const {sheet, isCurrentSheet} = this.props;
@@ -33,3 +33,15 @@ export default class Sheet extends React.Component {
         );
     }
 }
+
+Sheet.defaultProps = {
+    onSheetItemClick: () => {}
+};
+
+Sheet.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    isCurrentSheet: PropTypes.bool,
+    onSheetItemClick: PropTypes.func
+};
+
+export default Sheet;

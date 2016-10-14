@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import ExpensesService from '../../service/expensesservice';
 import ParticipantSummaryListItem from './participantsummarylistitem.jsx';
 
@@ -7,7 +7,7 @@ import ParticipantSummaryListItem from './participantsummarylistitem.jsx';
  * @description Section for displaying shares of all of the participants
  * @extends ReactComponent
  */
-export default class ParticipantSummaryList extends React.Component {
+class ParticipantSummaryList extends React.Component {
     /**
      * @return {ReactComponent}
      */
@@ -32,6 +32,13 @@ export default class ParticipantSummaryList extends React.Component {
     }
 }
 
+ParticipantSummaryList.defaultProps = {
+    expenses: [],
+    sharesAndBalances: [],
+    participants: [],
+    currencySymbol: ''
+};
+
 ParticipantSummaryList.propTypes = {
     /**
      * List of all the expenses in the current sheet
@@ -47,5 +54,13 @@ ParticipantSummaryList.propTypes = {
      * List of all the participants in the current sheet
      * @type {Array}
      */
-    participants: React.PropTypes.array
+    participants: React.PropTypes.array,
+
+    /**
+     * Symbol to be appended to currency values
+     * @type {string}
+     */
+    currencySymbol: PropTypes.string
 };
+
+export default ParticipantSummaryList;

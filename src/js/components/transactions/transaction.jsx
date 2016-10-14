@@ -7,7 +7,7 @@ import {NumberUtils} from '../../util/utils.js';
  * @description A list element representing a transaction
  * @extends {ReactComponent}
  */
-export default class Transaction extends React.Component {
+class Transaction extends React.Component {
 
     /**
      * @return {ReactComponent}
@@ -34,3 +34,5 @@ Transaction.propTypes = {
     participants: React.PropTypes.array.isRequired,
     currencySymbol: React.PropTypes.string
 };
+
+export default Transaction;

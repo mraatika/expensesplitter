@@ -85,7 +85,7 @@ class SheetForm extends React.Component {
                 <div className="row">
                     <div className="two columns">
                         <label htmlFor="sheet-name">
-                        { t( this.props.sheet ? 'lang.current_sheet' : 'home.name_your_sheet') }:
+                            { t( sheet.name ? 'lang.current_sheet' : 'home.name_your_sheet') }:
                         </label>
                     </div>
 
@@ -151,6 +151,7 @@ SheetForm.propTypes = {
     sheet: PropTypes.object.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
+    dirty: PropTypes.bool,
     summaryButtonDisabled: PropTypes.bool
 };
 

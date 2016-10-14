@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import SheetsList from './sheetslist.jsx';
@@ -65,7 +65,7 @@ class LoadSheetDialog extends React.Component {
                 <section id="load-sheet-dialog">
                     <SheetsList
                         onSheetItemClick={this._onSheetItemClick.bind(this)}
-                        sheets={this.props.sheets}
+                        sheets={this.props.sheetHistory}
                         sheet={this.props.sheet} />
                 </section>
             </ModalDialog>
@@ -78,12 +78,16 @@ LoadSheetDialog.propTypes = {
      * An array of sheet objects
      * @type {array}
      */
-    sheets: React.PropTypes.array.isRequired,
+    sheetHistory: PropTypes.array.isRequired,
     /**
      * Currently loaded sheet
      * @type {object}
      */
-    sheet: React.PropTypes.object.isRequired
+    sheet: PropTypes.object.isRequired,
+
+    fetchSheet: PropTypes.func.isRequired,
+
+    clearSheetHistory: PropTypes.func.isRequired
 };
 
 export default LoadSheetDialog;

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {find} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import MessageContainer from '../common/messagecontainer.jsx';
 
-export default class ParticipantAddForm extends React.Component {
+class ParticipantAddForm extends React.Component {
 
     constructor() {
         super();
@@ -46,7 +46,7 @@ export default class ParticipantAddForm extends React.Component {
             <form onSubmit={this._handleFormSubmit.bind(this)}>
 
                 <MessageContainer
-                    show={this.state.errorText}
+                    show={!!this.state.errorText}
                     onClose={() => this.setState({ errorText: null })}
                     type="danger">
                     {this.state.errorText}
@@ -64,10 +64,7 @@ export default class ParticipantAddForm extends React.Component {
                         placeholder={ t('lang.participant') + ' ' + (this.props.participants.length + 1)}
                         onChange={this._handleParticipantNameChange.bind(this)} />
 
-                    <button
-                        className="button-primary u-full-width"
-                        type="submit"
-                        disabled={!this.props.currentSheet}>
+                    <button className="button-primary u-full-width" type="submit">
                         <i className="fa fa-plus fa-lg fa-fw" />
                         { t('participants.add_participant') }
                     </button>
@@ -81,3 +78,10 @@ ParticipantAddForm.defaultProps = {
     participants: [],
     onFormSubmit: () => {}
 };
+
+ParticipantAddForm.propTypes = {
+    participants: PropTypes.array,
+    onFormSubmit: PropTypes.func
+};
+
+export default ParticipantAddForm;

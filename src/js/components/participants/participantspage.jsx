@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import pages from '../../constants/pages';
 import ParticipantList from './participantlist.jsx';
 import ParticipantAddForm from './participantaddform.jsx';
@@ -12,7 +12,7 @@ import ExpensesService from '../../service/expensesservice';
  * @description Page for displaying and adding participants
  * @extends {ReactComponent}
  */
-export default class ParticipantsPage extends React.Component {
+class ParticipantsPage extends React.Component {
 
     /**
      * Callback for participant removal button transfered to Participant component (list element)
@@ -69,8 +69,7 @@ export default class ParticipantsPage extends React.Component {
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm
                     onFormSubmit={this._addParticipant.bind(this)}
-                    participants={participants}
-                    currentSheet={this.props.sheet} />
+                    participants={participants} />
 
                 <Navigation currentPage={pages.PARTICIPANTS} sheetId={this.props.sheet.id} />
 
@@ -84,3 +83,11 @@ export default class ParticipantsPage extends React.Component {
         );
     }
 }
+
+ParticipantsPage.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    addParticipant: PropTypes.func.isRequired,
+    removeParticipant: PropTypes.func.isRequired
+};
+
+export default ParticipantsPage;

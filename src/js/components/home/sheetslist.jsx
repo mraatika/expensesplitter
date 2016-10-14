@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {t} from 'dictionary/dictionary';
 import Sheet from 'components/home/sheet.jsx';
 
@@ -7,7 +7,7 @@ import Sheet from 'components/home/sheet.jsx';
  * @description A list of Sheet components
  * @extends {ReactComponent}
  */
-export default class SheetsList extends React.Component {
+class SheetsList extends React.Component {
 
     /**
      * @return {ReactComponent}
@@ -39,3 +39,16 @@ export default class SheetsList extends React.Component {
         );
     }
 }
+
+SheetsList.defaultProps = {
+    sheets: [],
+    onSheetItemClick: () => {}
+};
+
+SheetsList.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    sheets: PropTypes.array,
+    onSheetItemClick: PropTypes.func
+};
+
+export default SheetsList;

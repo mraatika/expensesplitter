@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
 import {t} from '../../dictionary/dictionary';
 import pages from '../../constants/pages.js';
@@ -9,7 +9,7 @@ import NavigationSelect from './navigationselect.jsx';
  * @description Navigation component for pages
  * @extends {React.Component}
  */
-export default class Navigation extends React.Component {
+class Navigation extends React.Component {
 
     render() {
         const {currentPage, sheetId} = this.props;
@@ -43,7 +43,7 @@ export default class Navigation extends React.Component {
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="four columns">
-                        <NavigationSelect className="u-full-width" currentPage={currentPage} sheetId={this.props.sheetId}/>
+                        <NavigationSelect className="u-full-width" currentPage={currentPage} sheetId={sheetId}/>
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="three columns">
@@ -63,3 +63,10 @@ export default class Navigation extends React.Component {
         );
     }
 }
+
+Navigation.propTypes = {
+    currentPage: PropTypes.object.isRequired,
+    sheetId: PropTypes.string.isRequired
+};
+
+export default Navigation;

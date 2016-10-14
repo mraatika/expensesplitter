@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import pages from '../../constants/pages';
 import {defer, pick, map} from 'lodash';
@@ -9,7 +9,7 @@ import {t} from '../../dictionary/dictionary';
  * @description A select input used to navigate directly to a page
  * @extends {React.Component}
  */
-export default class NavigationSelect extends React.Component {
+class NavigationSelect extends React.Component {
 
     /**
      * Navigate to selected page
@@ -48,3 +48,10 @@ export default class NavigationSelect extends React.Component {
         );
     }
 }
+
+NavigationSelect.propTypes = {
+    currentPage: PropTypes.object.isRequired,
+    sheetId: PropTypes.string.isRequired
+};
+
+export default NavigationSelect;

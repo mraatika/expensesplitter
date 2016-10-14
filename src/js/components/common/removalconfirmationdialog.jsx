@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {isFunction}  from 'lodash';
 import Q from 'kew';
 import {t} from '../../dictionary/dictionary';
@@ -9,7 +9,7 @@ import ModalDialog from '../common/modaldialog.jsx';
  * @description Confirmation dialog for model removal
  * @extends {React.Component}
  */
-export default class RemovalConfirmationDialog extends React.Component {
+class RemovalConfirmationDialog extends React.Component {
 
     /**
      * Open the modal
@@ -74,3 +74,19 @@ export default class RemovalConfirmationDialog extends React.Component {
         );
     }
 }
+
+RemovalConfirmationDialog.defaultProps = {
+    contentText: '',
+    header: t('common.confirm_removal'),
+    okButtonLabel: t('lang.remove'),
+    onRemoveConfirmed: () => {}
+};
+
+RemovalConfirmationDialog.propTypes = {
+    contentText: PropTypes.string,
+    header: PropTypes.string,
+    okButtonLabel: PropTypes.string,
+    onRemoveConfirmed: PropTypes.func
+};
+
+export default RemovalConfirmationDialog;

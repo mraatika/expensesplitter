@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {Panel} from 'react-bootstrap';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
 import ExpenseList from '../expenses/expenselist.jsx';
@@ -8,7 +8,7 @@ import ExpenseList from '../expenses/expenselist.jsx';
  * @description Participant's summary list's single item (panel)
  * @extends {ReactComponent}
  */
-export default class ParticipantSummaryListItem extends React.Component {
+class ParticipantSummaryListItem extends React.Component {
 
     /**
      * @constructor
@@ -56,3 +56,19 @@ export default class ParticipantSummaryListItem extends React.Component {
         );
     }
 }
+
+ParticipantSummaryListItem.defaultProps = {
+    participantName: '',
+    currencySymbol: '',
+    expenses: [],
+    participants: []
+};
+
+ParticipantSummaryListItem.propTypes = {
+    participantName: PropTypes.string,
+    currencySymbol: PropTypes.string,
+    expenses: PropTypes.array,
+    participants: PropTypes.array
+};
+
+export default ParticipantSummaryListItem;

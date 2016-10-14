@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {sortByAll} from 'lodash';
 import ExpensesService from '../../service/expensesservice';
 import {t} from '../../dictionary/dictionary';
@@ -10,7 +10,7 @@ import ShareSummaryRow from './sharesummaryrow.jsx';
  * @description Table for displaying shares of each of the participants.
  * @extends ReactComponent
  */
-export default class SharesTable extends React.Component {
+class SharesTable extends React.Component {
 
     /**
      * @return {ReactComponent}
@@ -32,9 +32,7 @@ export default class SharesTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    { shares.map(share =>
-                        <Share key={share.participantName} share={share} />
-                    )}
+                    {shares.map(share => <Share key={share.participantId} share={share} />)}
                 </tbody>
                 <tfoot>
                     <ShareSummaryRow totalSum={expensesService.getTotalSum()} />
@@ -43,3 +41,15 @@ export default class SharesTable extends React.Component {
         );
     }
 }
+
+SharesTable.defaultProps = {
+    expenses: [],
+    participants: []
+};
+
+SharesTable.propTypes = {
+    expenses: PropTypes.array,
+    participants: PropTypes.array
+};
+
+export default SharesTable;

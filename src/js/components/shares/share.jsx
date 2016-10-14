@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {NumberUtils} from '../../util/utils.js';
 
 /**
@@ -6,7 +6,7 @@ import {NumberUtils} from '../../util/utils.js';
  * @description A list element representing a transaction
  * @extends {ReactComponent}
  */
-export default class Share extends React.Component {
+class Share extends React.Component {
 
     /**
      * Return class name that marks balance as positive or negative.
@@ -40,3 +40,9 @@ export default class Share extends React.Component {
         );
     }
 }
+
+Share.propTypes = {
+    share: PropTypes.object.isRequired
+};
+
+export default Share;

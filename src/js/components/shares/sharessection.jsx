@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import {t} from '../../dictionary/dictionary';
 import SharesTable from './sharestable.jsx';

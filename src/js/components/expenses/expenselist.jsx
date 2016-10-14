@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Expense from './expense.jsx';
 import ExpenseSummaryRow from './expensesummaryrow.jsx';
 import {t} from '../../dictionary/dictionary';
@@ -9,13 +9,13 @@ import {t} from '../../dictionary/dictionary';
  * expenses added to the current sheet
  * @extends {ReactComponent}
  */
-export default class ExpenseList extends React.Component {
+class ExpenseList extends React.Component {
 
     /**
      * @return {ReactComponent}
      */
     render() {
-        var {expenses, participants, sheet} = this.props;
+        var {expenses, participants} = this.props;
 
         return (
             <table className="u-full-width">
@@ -33,11 +33,10 @@ export default class ExpenseList extends React.Component {
                     {
                         expenses.length ? expenses.map(expense =>
                             <Expense
-                                sheet={sheet}
                                 key={expense.id}
+                                expense={expense}
                                 removeExpenses={this.props.removeExpenses}
                                 isRemoveAllowed={this.props.isRemoveAllowed}
-                                expense={expense}
                                 participants={participants} />
                         ) : <tr>
                             <td colSpan="6">
@@ -50,7 +49,6 @@ export default class ExpenseList extends React.Component {
                     this.props.hideFooter ? '' :
                     <tfoot>
                         <ExpenseSummaryRow
-                            sheet={sheet}
                             expenses={expenses}
                             removeExpenses={this.props.removeExpenses}
                             isRemoveAllowed={this.props.isRemoveAllowed}
@@ -66,28 +64,43 @@ ExpenseList.defaultProps = {
     expenses: [],
     participants: [],
     isRemoveAllowed: true,
-    hideFooter: false
+    hideFooter: false,
+    currencySymbol: ''
 };
 
 ExpenseList.propTypes = {
     /**
+     * Function for removing expenses
+     * @type {Function}
+     */
+    removeExpenses: PropTypes.func,
+    /**
      * An array of Expense objects
      * @type {array}
      */
-    expenses: React.PropTypes.array,
+    expenses: PropTypes.array,
     /**
      * An array of Participant objects
      * @type {array}
      */
-    participants: React.PropTypes.array,
+    participants: PropTypes.array,
     /**
      * Is removing of expenses allowed
      * @type {boolean}
      */
-    isRemoveAllowed: React.PropTypes.bool,
+    isRemoveAllowed: PropTypes.bool,
     /**
      * Should the footer be hidden
      * @type {boolean}
      */
-    hideFooter: React.PropTypes.bool
+    hideFooter: PropTypes.bool,
+
+    /**
+     * Symbol to be appended to currency values
+     * @type {string}
+     */
+    currencySymbol: PropTypes.string
+
 };
+
+export default ExpenseList;

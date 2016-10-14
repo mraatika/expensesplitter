@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import TrashButton from '../common/trashbutton.jsx';
 
-export default class Participant extends React.Component {
+class Participant extends React.Component {
     render() {
         return (
             <li>
@@ -18,3 +18,10 @@ export default class Participant extends React.Component {
         );
     }
 }
+
+Participant.propTypes = {
+    participant: PropTypes.object.isRequired,
+    onRemoveClick: PropTypes.func.isRequired
+};
+
+export default Participant;

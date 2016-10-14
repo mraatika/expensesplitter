@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import {t} from '../../dictionary/dictionary';
 
@@ -7,7 +7,7 @@ import {t} from '../../dictionary/dictionary';
  * @description Icon only button with a trash icon
  * @extends React.Component
  */
-export default class TrashButton extends React.Component {
+class TrashButton extends React.Component {
 
     render() {
         const iconClassName = classNames(
@@ -31,5 +31,7 @@ TrashButton.defaultProps = {
 };
 
 TrashButton.propTypes = {
-    onClick: React.PropTypes.func
+    onClick: PropTypes.func
 };
+
+export default TrashButton;

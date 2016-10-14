@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 
 /**
@@ -7,7 +7,7 @@ import classNames from 'classnames';
  * on current save state
  * @extends {ReactComponent}
  */
-export default class SaveButton extends React.Component {
+class SaveButton extends React.Component {
 
     /**
      * @return {ReactComponent}
@@ -45,25 +45,27 @@ SaveButton.propTypes = {
      * Should the component display save or saved state
      * @type {Boolean}
      */
-    isSaved: React.PropTypes.bool,
+    isSaved: PropTypes.bool,
     /**
      * Should the component display saving state
      * @type {Boolean}
      */
-    isSaving: React.PropTypes.bool,
+    isSaving: PropTypes.bool,
     /**
      * Button text before saving is done
      * @type {String}
      */
-    beforeSaveText: React.PropTypes.string,
+    beforeSaveText: PropTypes.string,
     /**
      * Button text when saving is in process
      * @type {String}
      */
-    onSavingText: React.PropTypes.string,
+    onSavingText: PropTypes.string,
     /**
      * Button text after saving is done
      * @type {String}
      */
-    afterSaveText: React.PropTypes.string
+    afterSaveText: PropTypes.string
 };
+
+export default SaveButton;

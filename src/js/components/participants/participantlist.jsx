@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {sortBy, map} from 'lodash';
 import Participant from './participant.jsx';
 import {t} from '../../dictionary/dictionary';
@@ -8,7 +8,7 @@ import {t} from '../../dictionary/dictionary';
  * @description List of Participant components
  * @extends {ReactComponent}
  */
-export default class ParticipantList extends React.Component {
+class ParticipantList extends React.Component {
     /**
      * @return {ReactComponent}
      */
@@ -30,10 +30,13 @@ export default class ParticipantList extends React.Component {
     }
 }
 
-ParticipantList.propTypes = {
-    /**
-     * The current sheet. Required.
-     * @type {object}
-     */
-    participants: React.PropTypes.array.isRequired
+ParticipantList.defaultProps = {
+    participants: []
 };
+
+ParticipantList.propTypes = {
+    onRemoveClick: PropTypes.func.isRequired,
+    participants: PropTypes.array
+};
+
+export default ParticipantList;

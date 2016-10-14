@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {t} from '../../dictionary/dictionary';
 import {isFunction} from 'lodash';
 import {Modal} from 'react-bootstrap';
@@ -8,7 +8,7 @@ import {Modal} from 'react-bootstrap';
  * @description Wrapper for react-bootstrap's modal component
  * @extends {ReactComponent}
  */
-export default class ModalDialog extends React.Component {
+class ModalDialog extends React.Component {
 
     /**
      * @constructor
@@ -33,10 +33,7 @@ export default class ModalDialog extends React.Component {
      * @return {undefined}
      */
     close() {
-        const {onCloseRequest} = this.props;
-
-        if (onCloseRequest) onCloseRequest();
-
+        this.props.onCloseRequest();
         this.setState({ showModal: false });
     }
 
@@ -77,7 +74,8 @@ export default class ModalDialog extends React.Component {
 }
 
 ModalDialog.defaultProps = {
-    buttons: [{ label: t('lang.close'), icon: 'fa-close' }]
+    buttons: [{ label: t('lang.close'), icon: 'fa-close' }],
+    onCloseRequest: () => {}
 };
 
 ModalDialog.propTypes = {
@@ -85,7 +83,7 @@ ModalDialog.propTypes = {
      * A callback fn called before closing
      * @type {function}
      */
-    onCloseRequest: React.PropTypes.func,
+    onCloseRequest: PropTypes.func,
     /**
      * An array of button definition objects. Object should
      * label property (text on the button) and icon class name.
@@ -93,10 +91,12 @@ ModalDialog.propTypes = {
      *     [{ label: 'Close', icon; 'fa-close' }]
      * @type {array}
      */
-    buttons: React.PropTypes.array,
+    buttons: PropTypes.array,
     /**
      * Text on the dialog header
      * @type {string}
      */
-    header: React.PropTypes.string
+    header: PropTypes.string
 };
+
+export default ModalDialog;

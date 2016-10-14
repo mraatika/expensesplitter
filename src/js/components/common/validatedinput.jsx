@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {omit} from 'lodash';
 import {validateProperty} from '../../validation/validation';
 import classNames from 'classnames';
@@ -8,23 +8,7 @@ import classNames from 'classnames';
  * @description An input field that is validated against a schema
  * @extends {React.Component}
  */
-export default class ValidatedInput extends React.Component {
-
-    /**
-     * @constructor
-     * @param  {object} props
-     *     {object} schema      A schema object
-     *     {string} name        Name of the property this field is bound to in the model
-     *     {success} function   A success callback (fired when property validation passes)
-     *     {fail} function      A fail callback (fired when property validation fails)
-     * @return {ValidatedInput}
-     */
-    constructor(props) {
-        super(props);
-        this.schema = this.props.schema;
-        if (!this.schema) throw new Error('InvalidArgumentsException: Property schema missing!');
-    }
-
+class ValidatedInput extends React.Component {
     /**
      * Callback for the input field's change/blur/etc. event
      * @private
@@ -74,7 +58,7 @@ export default class ValidatedInput extends React.Component {
      * @return {object}
      */
     _formValidationProperties() {
-        let schema = this.schema[this.props.name];
+        let schema = this.props.schema[this.props.name];
         let type = this.props.type;
         let typeProps = {};
         let commonProps = { required: !!schema.required };
@@ -160,9 +144,11 @@ ValidatedInput.defaultProps = {
  * @type {object}
  */
 ValidatedInput.propTypes = {
-    schema: React.PropTypes.object.isRequired,
-    name: React.PropTypes.string.isRequired,
-    success: React.PropTypes.func,
-    fail: React.PropTypes.func,
-    events: React.PropTypes.object
+    schema: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    success: PropTypes.func,
+    fail: PropTypes.func,
+    events: PropTypes.object
 };
+
+export default ValidatedInput;

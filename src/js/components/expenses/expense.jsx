@@ -1,5 +1,5 @@
+import React, {PropTypes} from 'react';
 import {find} from 'lodash';
-import React from 'react';
 import TrashButton from 'components/common/trashbutton.jsx';
 import {NumberUtils} from 'util/utils';
 
@@ -15,14 +15,14 @@ class Expense extends React.Component {
      * @return {Object}
      */
     findParticipant(participantId) {
-        return find(this.props.participants, (participant => participant.id === participantId));
+        return find(this.props.participants, participant => participant.id === participantId);
     }
 
     /**
      * @return {Component}
      */
     render() {
-        var expense = this.props.expense;
+        const {expense} = this.props;
 
         return (
             <tr>
@@ -43,9 +43,10 @@ class Expense extends React.Component {
 }
 
 Expense.PropTypes = {
-    sheet: React.PropTypes.object.isRequired,
-    expense: React.PropTypes.object.isRequired,
-    participants: React.PropTypes.array.isRequired
+    expense: PropTypes.object.isRequired,
+    participants: PropTypes.array.isRequired,
+    iRemoveAllowed: PropTypes.bool,
+    removeExpenses: PropTypes.func
 };
 
 export default Expense;

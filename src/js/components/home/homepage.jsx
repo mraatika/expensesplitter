@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {browserHistory, Link} from 'react-router';
 import {toArray} from 'lodash';
 import {t} from '../../dictionary/dictionary';
@@ -12,7 +12,7 @@ import SheetForm from './sheetform.jsx';
  * @description The index page
  * @extends {React.Component}
  */
-export default class HomePage extends React.Component {
+class HomePage extends React.Component {
 
     /**
      * @constructor
@@ -138,9 +138,23 @@ export default class HomePage extends React.Component {
                     sheet={sheet}
                     fetchSheet={this.props.fetchSheet}
                     clearSheetHistory={this.props.clearSheetHistory}
-                    sheets={toArray(this.props.sheetHistory)}/>
+                    sheetHistory={toArray(this.props.sheetHistory)}/>
 
             </section>
         );
     }
 }
+
+HomePage.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    clearSheetHistory: PropTypes.func.isRequired,
+    fetchSheet: PropTypes.func.isRequired,
+    saveSheet: PropTypes.func.isRequired,
+    updateSheet: PropTypes.func.isRequired,
+    removeSheet: PropTypes.func.isRequired,
+    params: PropTypes.object.isRequired,
+    dirty: PropTypes.bool,
+    sheetHistory: PropTypes.object
+};
+
+export default HomePage;

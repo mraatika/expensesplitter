@@ -7,7 +7,7 @@ import {t} from '../../dictionary/dictionary';
  * @description List for transactions
  * @extends {ReactComponent}
  */
-export default class TransactionsList extends React.Component {
+class TransactionsList extends React.Component {
 
     /**
      * @return {ReactComponent}
@@ -20,7 +20,10 @@ export default class TransactionsList extends React.Component {
             <tbody>
                 {
                     transactions.length ? transactions.map(transaction =>
-                        <Transaction key={transaction.from + '-' + transaction.to} transaction={transaction} {...this.props}/>
+                        <Transaction
+                            key={transaction.from + '-' + transaction.to}
+                            transaction={transaction}
+                            {...this.props} />
                     ) : <tr><td><i>{ t('transactions.no_transactions') }</i></td></tr>
                 }
             </tbody>
@@ -51,3 +54,5 @@ TransactionsList.propTypes = {
      */
     currencySymbol: React.PropTypes.string
 };
+
+export default TransactionsList;

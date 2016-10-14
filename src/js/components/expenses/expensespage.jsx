@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import pages from '../../constants/pages';
 import {t} from '../../dictionary/dictionary';
 import Navigation from '../navigation/navigation.jsx';
@@ -10,14 +10,12 @@ import SharesSection from '../shares/sharessection.jsx';
  * @class ExpensesPage
  * @description Main level Controller view for the expenses page.
  */
-export default class ExpensesPage extends React.Component {
+class ExpensesPage extends React.Component {
     /**
      * @return {ReactComponent}
      */
     render() {
         const {sheet} = this.props;
-
-        console.log(this.props);
 
         return (
             <section id="expenses-page">
@@ -52,3 +50,11 @@ export default class ExpensesPage extends React.Component {
         );
     }
 }
+
+ExpensesPage.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    addExpense: PropTypes.func.isRequired,
+    removeExpenses: PropTypes.func.isRequired
+};
+
+export default ExpensesPage;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {t} from '../../dictionary/dictionary';
 
 /**
@@ -6,7 +6,7 @@ import {t} from '../../dictionary/dictionary';
  * @description A togglable container to display messages with styling chosen by type
  * @extends React.Component
  */
-export default class MessageContainer extends React.Component {
+class MessageContainer extends React.Component {
 
     /**
      * @constructor
@@ -98,15 +98,17 @@ MessageContainer.propTypes = {
      * Truthy/falsy flag to indicate whether container is displayed or not.
      * @type {*}
      */
-    //show: React.PropTypes.bool,
+    show: PropTypes.bool,
     /**
      * Type of the container (visual style)
      * @type {info|danger|warning|success}
      */
-    type: React.PropTypes.oneOf(['info', 'danger', 'warning', 'success']),
+    type: PropTypes.oneOf(['info', 'danger', 'warning', 'success']),
     /**
      * Close callback
      * @type {function}
      */
-    onClose: React.PropTypes.func
+    onClose: PropTypes.func
 };
+
+export default MessageContainer;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {Panel} from 'react-bootstrap';
 import {t} from '../../dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
@@ -8,7 +8,7 @@ import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
  * @description Sheet's settings section
  * @extends {ReactComponent}
  */
-export default class Settings extends React.Component {
+class Settings extends React.Component {
     /**
      * Callback for setting value change
      * @private
@@ -17,13 +17,12 @@ export default class Settings extends React.Component {
      * @return {undefined}
      */
     _onSettingChange(name, value) {
-        const newSettings = Object.assign({}, this.props.sheet.settings, {
+        const {sheet} = this.props;
+        const newSettings = Object.assign({}, sheet.settings, {
             [name]: value
         });
 
-        this.props.updateSheet(this.props.sheet, {
-            settings: newSettings
-        });
+        this.props.updateSheet(sheet, { settings: newSettings });
     }
 
     /**
@@ -77,3 +76,11 @@ export default class Settings extends React.Component {
         );
     }
 }
+
+Settings.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    updateSheet: PropTypes.func.isRequired,
+    show: PropTypes.bool
+};
+
+export default Settings;

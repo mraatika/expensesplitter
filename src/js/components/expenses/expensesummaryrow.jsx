@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import ExpensesService from 'service/expensesservice';
 import {t} from 'dictionary/dictionary';
 import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
@@ -8,8 +8,12 @@ import RemovalConfirmationDialog from 'components/common/removalconfirmationdial
  * @description Footer row for ExpenseList table
  * @extends {ReactComponent}
  */
-export default class ExpenseSummaryRow extends React.Component {
+class ExpenseSummaryRow extends React.Component {
 
+    /**
+     * Callback for remove all buttons click. Opens a confirmation dialog.
+     * @private
+     */
     _handleRemoveAllClick() {
         this._removalConfirmationDialog.open();
     }
@@ -32,7 +36,7 @@ export default class ExpenseSummaryRow extends React.Component {
                             <button
                                 type="button"
                                 onClick={this._handleRemoveAllClick.bind(this)}
-                                disabled={!this.props.expenses.length}>
+                                disabled={!expenses.length}>
                                 { t('lang.remove_all') }
                             </button>
                             <RemovalConfirmationDialog
@@ -49,3 +53,19 @@ export default class ExpenseSummaryRow extends React.Component {
         );
     }
 }
+
+ExpenseSummaryRow.defaultProps = {
+    expenses: [],
+    currencySymbol: '',
+    isRemoveAllowed: true,
+    removeExpenses: () => {}
+};
+
+ExpenseSummaryRow.propTypes = {
+    currencySymbol: PropTypes.string,
+    expenses: PropTypes.array.isRequired,
+    isRemoveAllowed: PropTypes.bool,
+    removeExpenses: PropTypes.func
+};
+
+export default ExpenseSummaryRow;

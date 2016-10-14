@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {delay, chain} from 'lodash';
 import {t} from '../../dictionary/dictionary';
 import {Expense as ExpenseSchema} from '../../validation/schema/schema';
@@ -11,7 +11,7 @@ import ValidatedSelect from '../common/validatedselect.jsx';
  * @description A form component to add expenses
  * @extends React.Component
  */
-export default class ExpenseAddForm extends React.Component {
+class ExpenseAddForm extends React.Component {
 
     /**
      * @constructor
@@ -180,7 +180,7 @@ export default class ExpenseAddForm extends React.Component {
             <form onSubmit={this._handleAddExpense.bind(this)}>
                 <MessageContainer
                     type="danger"
-                    show={errorTexts.length}>
+                    show={!!errorTexts.length}>
                     {errorTexts.map(function (error) {
                         return ([
                             <span className="message-text">{error}</span>,
@@ -277,5 +277,13 @@ export default class ExpenseAddForm extends React.Component {
 
 ExpenseAddForm.defaultProps = {
     participants: [],
-    onSubmit: () => {}
+    currencySymbol: ''
 };
+
+ExpenseAddForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    participants: PropTypes.array,
+    currencySymbol: PropTypes.string
+};
+
+export default ExpenseAddForm;

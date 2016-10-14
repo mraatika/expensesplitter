@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import Clipboard from 'clipboard';
 import {t} from 'dictionary/dictionary';
@@ -20,7 +20,7 @@ import ExpensesService from 'service/expensesservice';
  * @description Sheet summary page
  * @extends {ReactComponent}
  */
-export default class SheetSummaryPage extends React.Component {
+class SheetSummaryPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -167,3 +167,14 @@ export default class SheetSummaryPage extends React.Component {
         );
     }
 }
+
+SheetSummaryPage.propTypes = {
+    sheet: PropTypes.object.isRequired,
+    removeSheet: PropTypes.func.isRequired,
+    saveSheet: PropTypes.func.isRequired,
+    updateSheet: PropTypes.func.isRequired,
+    dirty: PropTypes.bool,
+    isSavingToServer: PropTypes.bool
+};
+
+export default SheetSummaryPage;
