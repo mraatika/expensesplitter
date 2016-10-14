@@ -1,27 +1,20 @@
-'use strict';
+import {extend} from 'lodash';
+import {cid} from 'util/utils';
 
-import {cid} from '../util/utils';
-
-const _defaults = Object.freeze({
+const defaults = {
     name: '',
     price: null,
     participants: [],
     payer: null
-});
-
-var ExpenseFactory = {
-
-    create: function(props) {
-        var expense = {
-            id: cid(),
-            name: props.name || _defaults.name,
-            price: props.price || _defaults.price,
-            participants: props.participants || _defaults.participants,
-            payer: props.payer || _defaults.payer
-        };
-
-        return expense;
-    }
 };
 
-export default ExpenseFactory;
+/**
+ * Create expense
+ * @param  {Object} props
+ * @return {Object}
+ */
+export default function create(props) {
+    return extend({}, defaults, {
+        id: cid()
+    }, props);
+}

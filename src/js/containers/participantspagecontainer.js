@@ -1,6 +1,6 @@
 import {without} from 'lodash';
 import {connect} from 'react-redux';
-import ParticipantFactory from 'factory/participantfactory';
+import participantFactory from 'factory/participantfactory';
 import ParticipantsPage from 'components/participants/participantspage.jsx';
 import {updateSheet} from 'actions/dataactioncreators';
 
@@ -19,7 +19,7 @@ function mapDispatchToProps(dispatch) {
          * @return {[type]}
          */
         addParticipant: (sheet, participantProperties) => {
-            const participant = ParticipantFactory.create(participantProperties);
+            const participant = participantFactory(participantProperties);
 
             dispatch(updateSheet(sheet, {
                 participants: sheet.participants.concat([ participant ])

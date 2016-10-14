@@ -1,6 +1,6 @@
 import {without} from 'lodash';
 import {connect} from 'react-redux';
-import ExpenseFactory from 'factory/expensefactory';
+import expenseFactory from 'factory/expensefactory';
 import ExpensesPage from 'components/expenses/expensespage.jsx';
 import {updateSheet} from 'actions/dataactioncreators';
 
@@ -13,7 +13,7 @@ function mapDispatchToProps(dispatch) {
 
     return {
         addExpense: (sheet, expenseProperties) => {
-            const expense = ExpenseFactory.create(expenseProperties);
+            const expense = expenseFactory(expenseProperties);
 
             dispatch(updateSheet(sheet, {
                 expenses: sheet.expenses.concat([ expense ])
