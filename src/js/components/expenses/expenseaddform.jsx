@@ -4,7 +4,6 @@ import {t} from '../../dictionary/dictionary';
 import {Expense as ExpenseSchema} from '../../validation/schema/schema';
 import MessageContainer from '../common/messagecontainer.jsx';
 import ValidatedInput from '../common/validatedinput.jsx';
-import ValidatedSelect from '../common/validatedselect.jsx';
 
 /**
  * @class ExpensesAddForm
@@ -65,7 +64,7 @@ class ExpenseAddForm extends React.Component {
         return {
             expense: {
                 name: '',
-                price: null,
+                price: '',
                 participants,
                 payer
             },
@@ -222,9 +221,10 @@ class ExpenseAddForm extends React.Component {
 
                     <div className="three columns">
                         <label htmlFor="expense-participants">{t('lang.participant_plural')}:</label>
-                        <ValidatedSelect
+                        <ValidatedInput
                             name="participants"
                             id="expense-participants"
+                            type="select"
                             multiple={true}
                             className="u-full-width"
                             value={expense.participants}
@@ -239,14 +239,15 @@ class ExpenseAddForm extends React.Component {
                                         {participant.name}
                                     </option>
                                 )}
-                        </ValidatedSelect>
+                        </ValidatedInput>
                     </div>
 
                     <div className="three columns">
                         <label htmlFor="expense-participants">{t('lang.payer')}:</label>
-                        <ValidatedSelect
+                        <ValidatedInput
                             name="payer"
                             id="expense-payer"
+                            type="select"
                             className="u-full-width"
                             value={this.state.expense.payer}
                             schema={ExpenseSchema}
@@ -260,7 +261,7 @@ class ExpenseAddForm extends React.Component {
                                         {participant.name}
                                     </option>
                                 )}
-                        </ValidatedSelect>
+                        </ValidatedInput>
                     </div>
                 </div>
                 <button

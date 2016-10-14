@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
-import {omit} from 'lodash';
-import {validateProperty} from '../../validation/validation';
-import classNames from 'classnames';
+import {chain, omit} from 'lodash';
+import {validateProperty} from 'validation/validation';
 
 /**
  * @class ValidatedInput
@@ -9,21 +8,64 @@ import classNames from 'classnames';
  * @extends {React.Component}
  */
 class ValidatedInput extends React.Component {
+
+    /**
+     * @constructor
+     * @param {Object} props
+     * @return {ValidatedInput}
+     */
+    constructor(props) {
+        super(props);
+        this.state = { isInvalid: false };
+    }
+
     /**
      * Callback for the input field's change/blur/etc. event
      * @private
      * @return {undefined}
      */
     _onInputChange() {
-        let value = this.refs.inputField.value || '';
-        let name = this.props.name;
-        let error = this._validateProperty(name, value);
+        const value = this._getValue();
+        const name = this.props.name;
+        const error = this._validateProperty(name, value);
 
-        if (!error) {
-            this.props.success(name, value);
-        } else {
+        this.setState({ isInvalid: !!error });
+
+        if (error) {
             this.props.fail(name, value, error);
+            return;
         }
+
+        this.props.success(name, value);
+    }
+
+    /**
+     * Get select's value
+     * @private
+     * @return {array|string|number}
+     */
+    _getValue() {
+        const field = this._inputField;
+
+        switch(this.props.type) {
+        case 'select':
+            // if the select is a multiple selection form an array
+            // from selected options
+            if (this.props.multiple) {
+                const options = field.options;
+                return chain(options)
+                    .filter(option => !!option.selected)
+                    .pluck('value')
+                    .value();
+            }
+
+            return field
+                .options[field.selectedIndex]
+                .value;
+        default:
+            return field.value;
+        }
+
     }
 
     /**
@@ -34,22 +76,7 @@ class ValidatedInput extends React.Component {
      * @return {string} error text
      */
     _validateProperty(name, value) {
-        var error = validateProperty(name, value, this.props.schema);
-        this._toggleErrorClass(error);
-        return error;
-    }
-
-    /**
-     * Toggle input's error class
-     * @param  {boolean} hasErrors
-     * @return {undefined}
-     */
-    _toggleErrorClass(hasErrors) {
-        var inputClass = classNames(this.props.className, {
-            error: !!hasErrors
-        });
-
-        this.refs.inputField.className = inputClass;
+        return validateProperty(name, value, this.props.schema);
     }
 
     /**
@@ -58,10 +85,10 @@ class ValidatedInput extends React.Component {
      * @return {object}
      */
     _formValidationProperties() {
-        let schema = this.props.schema[this.props.name];
-        let type = this.props.type;
-        let typeProps = {};
-        let commonProps = { required: !!schema.required };
+        const type = this.props.type;
+        const schema = this.props.schema[this.props.name];
+        const commonProps = { required: !!schema.required };
+        let typeProps;
 
         switch (type) {
         case 'range':
@@ -88,11 +115,11 @@ class ValidatedInput extends React.Component {
      * @return {object}
      */
     _formEventProperties() {
-        let eventProps = {};
-        let changeCallBack = this._onInputChange.bind(this);
-        let formEventName = eventName => eventName[0].toUpperCase() + eventName.substring(1);
+        const eventProps = {};
+        const changeCallBack = this._onInputChange.bind(this);
+        const formEventName = eventName => eventName[0].toUpperCase() + eventName.substring(1);
 
-        for (let eventName in this.props.events) {
+        for (const eventName in this.props.events) {
             eventProps['on' + formEventName(eventName)] = changeCallBack;
         }
 
@@ -113,20 +140,28 @@ class ValidatedInput extends React.Component {
                 'schema',
                 'success',
                 'fail',
-                'events'
+                'events',
+                'children'
             ]   )
         );
     }
 
     render() {
-        const props = this._formInputProperties();
+        const {isInvalid} = this.state;
+        const p = this._formInputProperties();
+        const props = Object.assign(p, {
+            ref: c => this._inputField = c,
+            className: p.className + (isInvalid ? ' error' : '')
+        });
 
-        // react warns if value is null
-        props.value = props.value || '';
-
-        return (
-            <input ref="inputField" {...props} />
-        );
+        switch (this.props.type) {
+        case 'select':
+            return <select {...props}>{this.props.children}</select>;
+        case 'textarea':
+            return <textarea {...props} />;
+        default:
+            return <input {...props}/>;
+        }
     }
 }
 
