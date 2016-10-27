@@ -20,3 +20,15 @@ export function toggleLoadSheetDialog(state) {
         state
     };
 }
+
+/**
+ * Toggle new sheet added messages's display state
+ * @param  {boolean} state Show or not to show
+ * @return {Object}
+ */
+export function toggleNewSheetAdded(state) {
+    return {
+        type: Constants.ActionTypes.TOGGLE_NEW_SHEET_MESSAGE,
+        state
+    };
+}

@@ -14,15 +14,6 @@ import SheetForm from './sheetform.jsx';
 class HomePage extends React.Component {
 
     /**
-     * @constructor
-     * @return {HomePage}
-     */
-    constructor(props) {
-        super(props);
-        this.state = { newSheetCreated: false };
-    }
-
-    /**
      * Callback for load sheet button
      * @private
      * @param   {Event} e
@@ -59,8 +50,8 @@ class HomePage extends React.Component {
      * @private
      */
     _onAddClick() {
-        this.setState({ newSheetCreated: true});
-        this.props.onAddClick();
+        this.props.toggleNewSheetAdded(true);
+        browserHistory.push('/');
     }
 
     render() {
@@ -75,8 +66,7 @@ class HomePage extends React.Component {
                 </p>
 
                 <MessageContainer
-                    show={this.state.newSheetCreated}
-                    onClose={() => this.setState({ newSheetCreated: false })}
+                    show={this.props.newSheetAdded}
                     type="info">
                     { t('home.prev_sheet_saved') + ' ' }
                     <Link to={'/'} onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</Link>.
@@ -94,7 +84,7 @@ class HomePage extends React.Component {
                 <div className="row">
                     <div className="four columns">
                         <button
-                            onClick={() => browserHistory.push('/')}
+                            onClick={this._onAddClick.bind(this)}
                             className="u-full-width button"
                             disabled={!sheet.lastSavedOn}>
                             <i className="fa fa-plus fa-fw fa-lg" />
@@ -145,7 +135,8 @@ HomePage.propTypes = {
     updateSheet: PropTypes.func.isRequired,
     removeSheet: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
-    dirty: PropTypes.bool
+    dirty: PropTypes.bool,
+    newSheetAdded: PropTypes.bool
 };
 
 export default HomePage;

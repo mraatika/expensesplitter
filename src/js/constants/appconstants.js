@@ -26,6 +26,7 @@ export default {
         SET_SETTINGS                : 'SET_SETTINGS',
         SAVE_SHEET                  : 'SAVE_SHEET',
         TOGGLE_LOAD_SHEET_DIALOG    : 'TOGGLE_LOAD_SHEET_DIALOG',
+        TOGGLE_NEW_SHEET_MESSAGE    : 'TOGGLE_NEW_SHEET_MESSAGE',
         UPDATE_SHEET                : 'UPDATE_SHEET'
     },
 

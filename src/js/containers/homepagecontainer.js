@@ -4,12 +4,12 @@ import * as DataActions from 'actions/dataactioncreators';
 import * as UiActions from 'actions/uiactioncreators';
 
 function mapStateToProps(state) {
-    const {sheet, newSheetCreated, dirty} = state.sheet;
+    const {sheet, dirty} = state.sheet;
 
     return {
         sheet,
-        newSheetCreated,
         dirty,
+        newSheetAdded: state.ui.newSheetAdded,
         settings: state.settings
     };
 }
@@ -46,7 +46,13 @@ function mapDispatchToProps(dispatch) {
          * Toggle load sheet dialog's display state
          * @param  {boolean} state
          */
-        toggleLoadSheetDialog: state => dispatch(UiActions.toggleLoadSheetDialog(state))
+        toggleLoadSheetDialog: state => dispatch(UiActions.toggleLoadSheetDialog(state)),
+
+        /**
+         * Toggle new sheet message's display state
+         * @param  {boolean} state
+         */
+        toggleNewSheetAdded: state => dispatch(UiActions.toggleNewSheetAdded(state))
     };
 }
 
