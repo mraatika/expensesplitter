@@ -1,6 +1,6 @@
 import HomePage from 'components/home/homepage.jsx';
 import {connect} from 'react-redux';
-import {clearHistory, createSheet, fetchSheet, removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
+import {clearHistory, createSheet, removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, newSheetCreated, dirty} = state.sheet;
@@ -17,12 +17,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
     return {
-        /**
-         * Fetch sheet from the  server
-         * @param  {string} sheetId Sheet's id
-         */
-        fetchSheet: sheetId => dispatch(fetchSheet(sheetId)),
-
         /**
          * Create new sheet
          * @param  {Object} sheet

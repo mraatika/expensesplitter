@@ -1,4 +1,5 @@
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import App from 'components/app.jsx';
 import {createSheet, fetchSheet, setSettings} from 'actions/dataactioncreators';
 
@@ -19,7 +20,7 @@ function mapDispatchToProps(dispatch) {
          * Fetch sheet from the  server
          * @param  {string} sheetId Sheet's id
          */
-        fetchSheet: sheetId => dispatch(fetchSheet(sheetId)),
+        fetchSheet: sheetId => dispatch(fetchSheet(sheetId)).catch(() => dispatch(push('/'))),
         /**
          * Create new sheet
          * @param  {Object} sheet Sheet's properties

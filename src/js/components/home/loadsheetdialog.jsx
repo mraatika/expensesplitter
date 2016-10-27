@@ -35,10 +35,7 @@ class LoadSheetDialog extends React.Component {
      */
     _onSheetItemClick(sheet) {
         this.close();
-
-        // first fetch the sheet and then update the url
-        this.props.fetchSheet(sheet.id)
-            .then(() => browserHistory.push(`/sheet/${sheet.id}`));
+        browserHistory.push(`/sheet/${sheet.id}`);
     }
 
     /**
@@ -84,8 +81,6 @@ LoadSheetDialog.propTypes = {
      * @type {object}
      */
     sheet: PropTypes.object.isRequired,
-
-    fetchSheet: PropTypes.func.isRequired,
 
     clearSheetHistory: PropTypes.func.isRequired
 };

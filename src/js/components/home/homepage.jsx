@@ -136,7 +136,6 @@ class HomePage extends React.Component {
                 <LoadSheetDialog
                     ref="loadSheetDialog"
                     sheet={sheet}
-                    fetchSheet={this.props.fetchSheet}
                     clearSheetHistory={this.props.clearSheetHistory}
                     sheetHistory={toArray(this.props.sheetHistory)}/>
 
@@ -148,7 +147,6 @@ class HomePage extends React.Component {
 HomePage.propTypes = {
     sheet: PropTypes.object.isRequired,
     clearSheetHistory: PropTypes.func.isRequired,
-    fetchSheet: PropTypes.func.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
     removeSheet: PropTypes.func.isRequired,
