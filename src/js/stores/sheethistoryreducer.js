@@ -1,4 +1,4 @@
-import {extend, omit} from 'lodash';
+import {omit} from 'lodash';
 import Constants from 'constants/appconstants';
 import SheetHistoryFactory from 'factory/sheethistoryfactory';
 import storageFactory from 'factory/storagefactory';
@@ -12,23 +12,24 @@ const storage = storageFactory(Constants.SHEET_STORE_NAME);
  * @param  {Object} action
  * @return {Object} Modified state
  */
-export function sheetHistory(state = storage.getAll(), action) {
-    const {sheet} = action;
-    let newState = extend({}, state);
+export function sheetHistoryReducer(state = storage.getAll(), action) {
+    let newState = state;
     let shouldSaveChanges = false;
 
     switch(action.type) {
     case Constants.EventTypes.SAVE_SHEET_SUCCESS:
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
         {
+            const {sheet} = action.payload.data;
             const record = SheetHistoryFactory.create(sheet);
-            newState[sheet.id] = record;
+            newState = {...state, [sheet.id]: record };
             shouldSaveChanges = true;
             break;
         }
     case Constants.EventTypes.REMOVE_SHEET_SUCCESS:
         {
-            newState = omit(newState, sheet.id);
+            const {id} = action.payload.data;
+            newState = omit(newState, id);
             shouldSaveChanges = true;
             break;
         }

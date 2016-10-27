@@ -1,14 +1,9 @@
-import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {browserHistory} from 'react-router';
-import {routerMiddleware, routerReducer} from 'react-router-redux';
+import {createStore, applyMiddleware} from 'redux';
+import {routerMiddleware} from 'react-router-redux';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
-import {sheet} from 'stores/sheetreducer';
-import {sheetHistory} from 'stores/sheethistoryreducer';
-import {settings} from 'stores/settingsreducer';
-import {notifications} from 'stores/notificationsreducer';
-
-const loggerMiddleware = createLogger();
+import {browserHistory} from 'react-router';
+import rootReducer from 'stores/rootreducer';
 
 /**
  * Applcation state store factory
@@ -17,18 +12,12 @@ const loggerMiddleware = createLogger();
  */
 const sheetStore = function sheetStore(preloadedState) {
     return createStore(
-        combineReducers({
-            sheet,
-            notifications,
-            sheetHistory,
-            settings,
-            routing: routerReducer
-        }),
+        rootReducer,
         preloadedState,
         applyMiddleware(
             routerMiddleware(browserHistory),
             thunkMiddleware,
-            loggerMiddleware
+            createLogger()
         )
     );
 };

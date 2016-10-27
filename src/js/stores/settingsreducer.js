@@ -10,7 +10,7 @@ const initialState = storage.getAll();
  * @param  {Object} action
  * @return {Object} Modified state
  */
-export function settings(state = initialState, action) {
+export function settingsReducer(state = initialState, action) {
     switch(action.type) {
     case Constants.ActionTypes.SET_SETTINGS:
         {
