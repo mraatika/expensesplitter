@@ -179,8 +179,9 @@ class ExpenseAddForm extends React.Component {
             <form onSubmit={this._handleAddExpense.bind(this)}>
                 <MessageContainer
                     type="danger"
-                    show={!!errorTexts.length}>
-                    {errorTexts.map(function (error) {
+                    show={!!errorTexts.length}
+                    closable={false}>
+                    {errorTexts.map(error => {
                         return ([
                             <span className="message-text">{error}</span>,
                             <br/>

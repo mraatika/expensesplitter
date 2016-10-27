@@ -47,7 +47,7 @@ class ParticipantAddForm extends React.Component {
 
                 <MessageContainer
                     show={!!this.state.errorText}
-                    onClose={() => this.setState({ errorText: null })}
+                    closable={false}
                     type="danger">
                     {this.state.errorText}
                 </MessageContainer>
