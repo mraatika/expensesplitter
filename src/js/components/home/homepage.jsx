@@ -28,7 +28,7 @@ class HomePage extends React.Component {
      * @private
      */
     _handleRemoveSheetClick() {
-        this.refs.removeSheetConfirmationDialog.open();
+        this._removeSheetConfirmationDialog.open();
     }
 
     /**
@@ -39,7 +39,7 @@ class HomePage extends React.Component {
         const {sheet} = this.props;
 
         if (sheet) {
-            this.refs.removeSheetConfirmationDialog.close();
+            this._removeSheetConfirmationDialog.close();
             this.props.removeSheet(sheet);
             browserHistory.push('/');
         }
@@ -115,7 +115,7 @@ class HomePage extends React.Component {
                 </div>
 
                 <RemovalConfirmationDialog
-                    ref="removeSheetConfirmationDialog"
+                    ref={c => this._removeSheetConfirmationDialog = c}
                     onRemoveConfirmed={this._onSheetRemovalConfirmed.bind(this)}
                     header={ t('sheet_remove.confirmation_title') }
                     contentText={ t('sheet_remove.confirmation_msg') }
