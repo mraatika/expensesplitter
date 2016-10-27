@@ -9,32 +9,12 @@ import {t} from '../../dictionary/dictionary';
 class MessageContainer extends React.Component {
 
     /**
-     * @constructor
-     * @param  {Object} props
-     *     {String} type
-     */
-    constructor(props) {
-        super(props);
-        this.state = { isOpen: this.props.show };
-    }
-
-    /**
-     * Set isOpen state when props change
-     * @param  {Object} newProps
-     * @return {undefined}
-     */
-    componentWillReceiveProps(newProps) {
-        this.setState({ isOpen: newProps.show });
-    }
-
-    /**
      * Close the container
      * @private
      * @return  {undefined}
      */
     _close() {
         this.props.onClose();
-        this.setState({ isOpen: false });
     }
 
     /**
@@ -67,11 +47,12 @@ class MessageContainer extends React.Component {
 
         return (
             <div
-                style={{ display: (this.state.isOpen) ? 'block' : 'none' }}
+                style={{ display: (this.props.show) ? 'block' : 'none' }}
                 className={className}>
 
                 <i
                     onClick={this._close.bind(this)}
+                    style={{ display: (this.props.closable) ? 'block' : 'none' }}
                     aria-role="button"
                     className={'close-button fa fa-times u-pull-right ' + colorClass}
                     title={t('lang.close')} />
@@ -88,19 +69,27 @@ class MessageContainer extends React.Component {
 }
 
 MessageContainer.defaultProps = {
+    closable: true,
     show: false,
     type: 'info',
     onClose: () => {}
 };
 
 MessageContainer.propTypes = {
+
     /**
-     * Truthy/falsy flag to indicate whether container is displayed or not.
+     * Should the close button be displayed or not. Defaults to true.
+     * @type {boolean}
+     */
+    closable: PropTypes.bool,
+
+    /**
+     * Truthy/falsy flag to indicate whether container is displayed or not. Defaults to false.
      * @type {*}
      */
     show: PropTypes.bool,
     /**
-     * Type of the container (visual style)
+     * Type of the container (visual style). Defaults to 'info'.
      * @type {info|danger|warning|success}
      */
     type: PropTypes.oneOf(['info', 'danger', 'warning', 'success']),
