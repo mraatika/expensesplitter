@@ -33,12 +33,17 @@ export function sheetHistoryReducer(state = storage.getAll(), action) {
             shouldSaveChanges = true;
             break;
         }
-    case Constants.ActionTypes.CLEAR_HISTORY:
+    case Constants.ActionTypes.REMOVE_SHEET_HISTORY_ENTRY:
         {
-            newState = {};
+            const {id} = action.entry;
+            newState = omit(newState, id);
             shouldSaveChanges = true;
             break;
         }
+    case Constants.ActionTypes.CLEAR_HISTORY:
+        newState = {};
+        shouldSaveChanges = true;
+        break;
     }
 
     if (shouldSaveChanges) storage.setAll(newState);

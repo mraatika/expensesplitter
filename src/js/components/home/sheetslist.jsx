@@ -31,6 +31,7 @@ class SheetsList extends React.Component {
                         <Sheet
                             key={sheet.id}
                             sheet={sheet}
+                            onRemoveClick={this.props.onRemoveClick}
                             onSheetItemClick={this.props.onSheetItemClick}
                             isCurrentSheet={sheet.id === this.props.sheet.id} />
                     ) : <li><i>{ t('loadsheetdialog.no_sheets') }</i></li>
@@ -41,13 +42,13 @@ class SheetsList extends React.Component {
 }
 
 SheetsList.defaultProps = {
-    sheets: [],
-    onSheetItemClick: () => {}
+    sheets: []
 };
 
 SheetsList.propTypes = {
     sheet: PropTypes.object.isRequired,
     sheets: PropTypes.array,
+    onRemoveClick: PropTypes.func,
     onSheetItemClick: PropTypes.func
 };
 

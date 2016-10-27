@@ -1,6 +1,7 @@
 import HomePage from 'components/home/homepage.jsx';
 import {connect} from 'react-redux';
-import {clearHistory, createSheet, removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
+import * as DataActions from 'actions/dataactioncreators';
+import * as UiActions from 'actions/uiactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, newSheetCreated, dirty} = state.sheet;
@@ -9,7 +10,6 @@ function mapStateToProps(state) {
         sheet,
         newSheetCreated,
         dirty,
-        sheetHistory: state.sheetHistory,
         settings: state.settings
     };
 }
@@ -21,31 +21,32 @@ function mapDispatchToProps(dispatch) {
          * Create new sheet
          * @param  {Object} sheet
          */
-        createSheet: sheet => dispatch(createSheet(sheet)),
+        createSheet: sheet => dispatch(DataActions.createSheet(sheet)),
 
         /**
          * Save current sheet
          * @param  {Object} sheet
          */
-        saveSheet: sheet => dispatch(saveSheet(sheet)),
+        saveSheet: sheet => dispatch(DataActions.saveSheet(sheet)),
 
         /**
          * Update current sheet
          * @param  {Object} sheet
          * @param  {Object} updateObject
          */
-        updateSheet: (sheet, updateObject) => dispatch(updateSheet(sheet, updateObject)),
+        updateSheet: (sheet, updateObject) => dispatch(DataActions.updateSheet(sheet, updateObject)),
 
         /**
          * Remove current sheet
          * @param  {Object} sheet
          */
-        removeSheet: sheet => dispatch(removeSheet(sheet)),
+        removeSheet: sheet => dispatch(DataActions.removeSheet(sheet)),
 
         /**
-         * Clear sheet history
+         * Toggle load sheet dialog's display state
+         * @param  {boolean} state
          */
-        clearSheetHistory: () => { dispatch(clearHistory()); }
+        toggleLoadSheetDialog: state => dispatch(UiActions.toggleLoadSheetDialog(state))
     };
 }
 

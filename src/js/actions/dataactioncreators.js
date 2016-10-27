@@ -55,6 +55,18 @@ export function clearHistory() {
 }
 
 /**
+ * Remove a single sheet history entry from state and local db
+ * @param  {Object} entry
+ * @return {Object}
+ */
+export function removeSheetHistoryEntry(entry) {
+    return {
+        type: Constants.ActionTypes.REMOVE_SHEET_HISTORY_ENTRY,
+        entry
+    };
+}
+
+/**
  * Fetch sheet from the server
  * @param {string} sheetId
  * @return {Function}

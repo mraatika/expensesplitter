@@ -17,7 +17,17 @@ class ModalDialog extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { showModal: false };
+        this.state = { showModal: props.show };
+    }
+
+    /**
+     * Set display state when props change
+     * @param  {Object} newProps
+     */
+    componentWillReceiveProps(newProps) {
+        if (newProps.hasOwnProperty('show')) {
+            this.setState({ showModal: newProps.show });
+        }
     }
 
     /**
@@ -75,7 +85,8 @@ class ModalDialog extends React.Component {
 
 ModalDialog.defaultProps = {
     buttons: [{ label: t('lang.close'), icon: 'fa-close' }],
-    onCloseRequest: () => {}
+    onCloseRequest: () => {},
+    show: false
 };
 
 ModalDialog.propTypes = {
@@ -96,7 +107,14 @@ ModalDialog.propTypes = {
      * Text on the dialog header
      * @type {string}
      */
-    header: PropTypes.string
+    header: PropTypes.string,
+
+    /**
+     * Should the modal be displayed or not. Maps to state's showModal for
+     * legacy compatibility reasons. False by default.
+     * @type {boolean}
+     */
+    show: PropTypes.bool
 };
 
 export default ModalDialog;

@@ -11,30 +11,13 @@ import ModalDialog from '../common/modaldialog.jsx';
  */
 class LoadSheetDialog extends React.Component {
 
-
-    /**
-     * Open the dialog
-     * @return {undefined}
-     */
-    open() {
-        this._dialog.open();
-    }
-
-    /**
-     * Close the dialog
-     * @return {undefined}
-     */
-    close() {
-        this._dialog.close();
-    }
-
     /**
      * Callback for sheet list's entry's click event
      * @private
      * @param   {Object} sheet
      */
     _onSheetItemClick(sheet) {
-        this.close();
+        this.props.toggleLoadSheetDialog(false);
         browserHistory.push(`/sheet/${sheet.id}`);
     }
 
@@ -56,11 +39,12 @@ class LoadSheetDialog extends React.Component {
 
         return (
             <ModalDialog
-                ref={c => this._dialog = c}
                 header={t('loadsheetdialog.header')}
+                show={this.props.show}
                 buttons={buttons}>
                 <section id="load-sheet-dialog">
                     <SheetsList
+                        onRemoveClick={this.props.removeSheetHistoryEntry}
                         onSheetItemClick={this._onSheetItemClick.bind(this)}
                         sheets={this.props.sheetHistory}
                         sheet={this.props.sheet} />
@@ -82,7 +66,13 @@ LoadSheetDialog.propTypes = {
      */
     sheet: PropTypes.object.isRequired,
 
-    clearSheetHistory: PropTypes.func.isRequired
+    clearSheetHistory: PropTypes.func.isRequired,
+
+    show: PropTypes.bool,
+
+    removeSheetHistoryEntry: PropTypes.func,
+
+    toggleLoadSheetDialog: PropTypes.func
 };
 
 export default LoadSheetDialog;

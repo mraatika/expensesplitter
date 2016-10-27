@@ -1,8 +1,7 @@
 import React, {PropTypes} from 'react';
 import {browserHistory, Link} from 'react-router';
-import {toArray} from 'lodash';
 import {t} from '../../dictionary/dictionary';
-import LoadSheetDialog from './loadsheetdialog.jsx';
+import LoadSheetDialogContainer from 'containers/loadsheetdialogcontainer';
 import MessageContainer from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 import SheetForm from './sheetform.jsx';
@@ -30,7 +29,7 @@ class HomePage extends React.Component {
      */
     _handleLoadSheetClick(e) {
         e.preventDefault();
-        this.refs.loadSheetDialog.open();
+        this.props.toggleLoadSheetDialog(true);
     }
 
     /**
@@ -133,11 +132,7 @@ class HomePage extends React.Component {
                     okButtonLabel={ t('sheet_remove.button') }
                 />
 
-                <LoadSheetDialog
-                    ref="loadSheetDialog"
-                    sheet={sheet}
-                    clearSheetHistory={this.props.clearSheetHistory}
-                    sheetHistory={toArray(this.props.sheetHistory)}/>
+                <LoadSheetDialogContainer />
 
             </section>
         );
@@ -146,13 +141,11 @@ class HomePage extends React.Component {
 
 HomePage.propTypes = {
     sheet: PropTypes.object.isRequired,
-    clearSheetHistory: PropTypes.func.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
     removeSheet: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
-    dirty: PropTypes.bool,
-    sheetHistory: PropTypes.object
+    dirty: PropTypes.bool
 };
 
 export default HomePage;

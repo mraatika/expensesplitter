@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import {DateUtils} from '../../util/utils.js';
 import {t} from '../../dictionary/dictionary.js';
+import TrashButton from '../common/trashbutton.jsx';
 
 /**
  * @class Sheet
@@ -25,8 +26,14 @@ class Sheet extends React.Component {
                             className={iconClassName}
                             aria-hidden={!isCurrentSheet} />
                     </div>
-                    <div className="seven columns">
+                    <div className="six columns">
                         <span className="sheet-list-date">{DateUtils.format(sheet.createdOn, t('app.locales.date_format'))}</span>
+                    </div>
+                    <div className="one colum">
+                        <TrashButton onClick={e => {
+                            e.stopPropagation();
+                            this.props.onRemoveClick(sheet);
+                        }}/>
                     </div>
                 </div>
             </li>
@@ -35,12 +42,14 @@ class Sheet extends React.Component {
 }
 
 Sheet.defaultProps = {
+    onRemoveClick: () => {},
     onSheetItemClick: () => {}
 };
 
 Sheet.propTypes = {
     sheet: PropTypes.object.isRequired,
     isCurrentSheet: PropTypes.bool,
+    onRemoveClick: PropTypes.func,
     onSheetItemClick: PropTypes.func
 };
 
