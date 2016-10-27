@@ -8,9 +8,9 @@
 
     "common.confirm_removal": "Vahvista poisto",
 
-    "errors.SAVE_SHEET_ERROR.title": "Laskelman tallennus epäonnistui",
-    "errors.REMOVE_SHEET_ERROR.title": "Laskelman poistaminen epäonnistui",
-    "errors.LOAD_SHEET_ERROR.title": "Laskelman tuominen epäonnistui",
+    "errors.SAVE_SHEET_FAIL.title": "Laskelman tallennus epäonnistui",
+    "errors.REMOVE_SHEET_FAIL.title": "Laskelman poistaminen epäonnistui",
+    "errors.LOAD_SHEET_FAIL.title": "Laskelman tuominen epäonnistui",
 
     "expenses.remove_all_confirmation": "Kaikki kulut poistetaan pysyvästi. Oletko varma, että haluat poistaa kaikki kulut?",
     "expenses.remove_all_expenses": "Poista kaikki kulut",
