@@ -41,6 +41,7 @@ class LoadSheetDialog extends React.Component {
             <ModalDialog
                 header={t('loadsheetdialog.header')}
                 show={this.props.show}
+                onCloseRequest={() => this.props.toggleLoadSheetDialog(false)}
                 buttons={buttons}>
                 <section id="load-sheet-dialog">
                     <SheetsList
