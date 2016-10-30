@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {NumberUtils} from '../../../src/js/util/utils.js';
+import {NumberUtils} from 'util/utils.js';
 
 describe('Component:Transaction', function() {
     const jsdom = require('mocha-jsdom');
@@ -27,7 +27,7 @@ describe('Component:Transaction', function() {
         React = require('react');
         ReactDOM = require('react-dom');
         TestUtils = require('react-testutils-additions');
-        Transaction = require('../../../src/js/components/transactions/transaction.jsx').default;
+        Transaction = require('components/transactions/transaction.jsx').default;
     });
 
     const renderRow = (model) => {

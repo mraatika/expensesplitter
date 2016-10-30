@@ -1,8 +1,8 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 
-import {t} from '../../../src/js/dictionary/dictionary.js';
-import {DateUtils} from '../../../src/js/util/utils.js';
+import {t} from 'dictionary/dictionary.js';
+import {DateUtils} from 'util/utils.js';
 
 describe('Component:Sheet', function() {
     const jsdom = require('mocha-jsdom');
@@ -36,7 +36,7 @@ describe('Component:Sheet', function() {
         React = require('react');
         ReactDOM = require('react-dom');
         TestUtils = require('react-testutils-additions');
-        Sheet = require('../../../src/js/components/home/sheet.jsx').default;
+        Sheet = require('components/home/sheet.jsx').default;
     });
 
     describe('Initial state', function () {

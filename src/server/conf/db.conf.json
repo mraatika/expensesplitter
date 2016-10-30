@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "url": "http://127.0.0.1",
+        "port": "5984",
+        "db_name": "expensesplitter"
+    },
+    "test": {
+        "url": "http://127.0.0.1",
+        "port": "5983",
+        "db_name": "test_db"
+    }
+}

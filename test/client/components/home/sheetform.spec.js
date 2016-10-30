@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {t} from '../../../src/js/dictionary/dictionary.js';
+import {t} from 'dictionary/dictionary';
 import proxyquire from 'proxyquire';
 
 describe('SheetForm', () => {
@@ -22,11 +22,11 @@ describe('SheetForm', () => {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        SheetForm = proxyquire('../../../src/js/components/home/sheetform.jsx', {
+        SheetForm = proxyquire('components/home/sheetform.jsx', {
             '../../router/router.js': { navigateToSheetURL: sinon.spy() }
         }).default;
 
-        ActionCreators = require('../../../src/js/actions/dataactioncreators.js').default;
+        ActionCreators = require('actions/dataactioncreators.js').default;
     });
 
     describe('State when there isn\'t current sheet', () => {

@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {t} from '../../../src/js/dictionary/dictionary';
+import {t} from 'dictionary/dictionary';
 
 describe('Component:ParticipantAddForm', function() {
     const jsdom = require('mocha-jsdom');
@@ -17,7 +17,7 @@ describe('Component:ParticipantAddForm', function() {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        ParticipantAddForm = require('../../../src/js/components/participants/participantaddform.jsx').default;
+        ParticipantAddForm = require('components/participants/participantaddform.jsx').default;
     });
 
     beforeEach(function () {

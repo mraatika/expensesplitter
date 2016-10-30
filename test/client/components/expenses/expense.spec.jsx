@@ -32,10 +32,10 @@ describe('Component:Expense', () => {
         React = require('react');
         ReactDOM = require('react-dom');
         TestUtils = require('react-testutils-additions');
-        Expense = require('../../../src/js/components/expenses/expense.jsx').default;
-        TrashButton = require('../../../src/js/components/common/trashbutton.jsx').default;
-        NumberUtils = require('../../../src/js/util/utils').NumberUtils;
-        ActionCreators = require('../../../src/js/actions/dataactioncreators.js').default;
+        Expense = require('components/expenses/expense.jsx').default;
+        TrashButton = require('components/common/trashbutton.jsx').default;
+        NumberUtils = require('util/utils').NumberUtils;
+        ActionCreators = require('actions/dataactioncreators.js').default;
     });
 
     const renderExpense = (props = {}) => {

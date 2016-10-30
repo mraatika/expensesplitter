@@ -21,7 +21,7 @@ describe('Component:Participant', function() {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        Participant = require('../../../src/js/components/participants/participant.jsx').default;
+        Participant = require('components/participants/participant.jsx').default;
     });
 
     const renderListItem = (sheet, props) => {

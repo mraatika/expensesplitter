@@ -6,13 +6,13 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var packageJSON = require('./package.json');
 var path = require('path');
 
-var env = process.env.type || 'dev';
+var env = process.env.NODE_ENV || 'dev';
 var isProd = env === 'prod';
 
 var PATHS = {
     app: '/src/client',
     src: '/src',
-    build: '/dist'
+    build: './build/client'
 };
 
 /**
@@ -49,7 +49,7 @@ var htmlOptions = {
  * @type {Object}
  */
 var devServerOptions = {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.resolve(__dirname, PATHS.build),
     historyApiFallback: {
         rewrites: [
             { from: /^\/$/, to: '/' }
@@ -143,7 +143,7 @@ module.exports = {
     },
 
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, PATHS.build),
         filename: 'app.js',
         publicPath: '/'
     },

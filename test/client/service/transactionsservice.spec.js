@@ -12,7 +12,7 @@ describe('Service: TransactionsService', function () {
     const calculateBalancesStub = sinon.stub();
 
     before(function () {
-        const TransactionsService = proxyquire('../../src/js/service/transactionsservice', {
+        const TransactionsService = proxyquire('service/transactionsservice', {
             './expensesservice': function() {
                 return { calculateBalances: calculateBalancesStub };
             }

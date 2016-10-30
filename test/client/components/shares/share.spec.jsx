@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {NumberUtils} from '../../../src/js/util/utils.js';
+import {NumberUtils} from 'util/utils.js';
 
 describe('Component:Share', function() {
     const jsdom = require('mocha-jsdom');
@@ -31,7 +31,7 @@ describe('Component:Share', function() {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        Share = require('../../../src/js/components/shares/share.jsx').default;
+        Share = require('components/shares/share.jsx').default;
     });
 
     beforeEach(function () {

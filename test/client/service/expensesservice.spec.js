@@ -1,11 +1,11 @@
 import {expect} from 'chai';
-import ExpensesService from '../../src/js/service/expensesservice';
+import ExpensesService from 'service/expensesservice';
 
 /**
  * @TODO: needs more tests
  */
 
-describe('Service: ExpensesService', function () {
+describe.only('Service: ExpensesService', function () {
 
     let expensesService;
     const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' } ];

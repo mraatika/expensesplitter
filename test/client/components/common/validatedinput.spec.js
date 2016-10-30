@@ -13,7 +13,7 @@ describe('ValidatedInput', () => {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        ValidatedInput = require('../../../src/js/components/common/validatedinput.jsx').default;
+        ValidatedInput = require('components/common/validatedinput.jsx').default;
     });
 
     describe('Initialization', () => {

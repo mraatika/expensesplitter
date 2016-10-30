@@ -46,7 +46,7 @@ describe('Component:ExpenseSummaryRow', function() {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        ActionCreators = require('../../../src/js/actions/dataactioncreators').default;
+        ActionCreators = require('actions/dataactioncreators').default;
 
         RemovalConfirmationDialogStub = React.createClass({
             render: () => null,
@@ -54,7 +54,7 @@ describe('Component:ExpenseSummaryRow', function() {
             close: () => {}
         });
 
-        ExpenseSummaryRow = proxyquire('../../../src/js/components/expenses/expensesummaryrow.jsx', {
+        ExpenseSummaryRow = proxyquire('components/expenses/expensesummaryrow.jsx', {
             '../common/removalconfirmationdialog.jsx': RemovalConfirmationDialogStub
         }).default;
     });

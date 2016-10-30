@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import {t} from '../../../src/js/dictionary/dictionary.js';
+import {t} from 'dictionary/dictionary.js';
 
 describe('Component:HomePage', function() {
     const jsdom = require('mocha-jsdom');
@@ -33,12 +33,12 @@ describe('Component:HomePage', function() {
     before(() => {
         React = require('react');
         TestUtils = require('react-testutils-additions');
-        HomePage = proxyquire('../../../src/js/components/home/homepage.jsx', {
+        HomePage = proxyquire('components/home/homepage.jsx', {
             '../../stores/sheetstore.js': SheetStoreMock,
             '../../actions/dataactioncreators': DataActionCreatorsMock,
             '../../router/router.js': { navigateToSheetURL: sinon.spy(), navigateTo: sinon.spy() }
         }).default;
-        LoadSheetDialog = require('../../../src/js/components/home/loadsheetdialog.jsx').default;
+        LoadSheetDialog = require('components/home/loadsheetdialog.jsx').default;
     });
 
     describe('State when current sheet is not defined', function () {
