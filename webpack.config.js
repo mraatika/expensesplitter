@@ -10,7 +10,7 @@ var env = process.env.type || 'dev';
 var isProd = env === 'prod';
 
 var PATHS = {
-    app: '/src/js',
+    app: '/src/client',
     src: '/src',
     build: '/dist'
 };
@@ -154,7 +154,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
-                include: __dirname + '/src/js'
+                include: __dirname + '/src/client'
             }
         ],
 
@@ -162,7 +162,7 @@ module.exports = {
             {
                 test: /\.jsx?/,
                 loaders: ['babel?cacheDirectory'],
-                include: __dirname + '/src/js'
+                include: __dirname + '/src/client'
             },
             {
                 test: /\.json$/,
@@ -201,7 +201,7 @@ module.exports = {
 
     resolve: {
         root: [path.resolve('./src')],
-        modulesDirectories: ['web_modules', 'node_modules', 'src/js']
+        modulesDirectories: ['web_modules', 'node_modules', 'src/client']
     },
 
     debug: !isProd,
