@@ -1,5 +1,6 @@
 import languages from './languages.js';
-import store from 'stores/store';
+
+let _language = 'en';
 
 /**
  * Translate function
@@ -7,7 +8,7 @@ import store from 'stores/store';
  * @return {string}     translated value
  */
 export const t = (key) => {
-    const str = languages[store.getState().settings.language][key] || null;
+    const str = languages[_language][key] || null;
 
     if (str == null) {
         console.error(`Translation not found for ${key}`);
@@ -15,4 +16,13 @@ export const t = (key) => {
     }
 
     return str;
+};
+
+/**
+ * Set language used when translating
+ * @param  {string} lang
+ */
+export const setLanguage = (lang) => {
+    if (!languages[lang]) throw new Error(`Invalid language definition ${lang}`);
+    _language = lang;
 };

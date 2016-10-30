@@ -10,7 +10,8 @@ function mapStateToProps(state) {
         sheet,
         isFetching,
         dirty,
-        notifications: state.notifications
+        notifications: state.notifications,
+        language: state.settings.language
     };
 }
 

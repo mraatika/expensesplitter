@@ -5,7 +5,7 @@ import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
 import LanguagesSection from 'components/language/languagessection.jsx';
 import {Modal} from 'react-bootstrap';
-import {t} from 'dictionary/dictionary.js';
+import {t, setLanguage} from 'dictionary/dictionary.js';
 import RouterService from 'router/routerservice';
 
 // import styles
@@ -27,6 +27,8 @@ class App extends React.Component {
     componentWillMount() {
         // sheet id from the router
         const sheetId = this.props.params.sheetId;
+
+        setLanguage(this.props.language);
 
         // create a dummy sheet even if sheet id is given
         // so there's always a sheet
@@ -70,6 +72,9 @@ class App extends React.Component {
             this.props.fetchSheet(nextSheetId);
             return;
         }
+
+        // change the language used if changed
+        if (nextProps.language && nextProps.language !== this.props.language) setLanguage(nextProps.language);
     }
 
     componentWillUnmount() {
