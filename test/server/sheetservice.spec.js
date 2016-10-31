@@ -2,7 +2,11 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 import nock from 'nock';
 import {test as config} from 'server/conf/db.conf.json';
-import sheetService from 'server/service/sheetservice';
+
+const proxyquire = require('proxyquire');
+// stub validation.validate
+const validationStub = { validate: sinon.stub() };
+let sheetService;
 
 describe('SheetService', () => {
     // nock http interceptors
@@ -12,6 +16,13 @@ describe('SheetService', () => {
     const create = () => scope.put(idlessUrl);
     const update = () => scope.post(idlessUrl);
     const del = () => scope.delete(idlessUrl);
+
+
+    before(function () {
+        sheetService = proxyquire('server/service/sheetservice', {
+            'client/validation/validation': validationStub
+        }).default;
+    });
 
     describe('GET:', function () {
         it('should get an existing entry from the db', function (done) {
@@ -51,6 +62,8 @@ describe('SheetService', () => {
             const entry = { id: '1' };
             const response = { id: '1', _id: '1'};
 
+            validationStub.validate.returns({});
+
             create()
                 .reply(200);
 
@@ -71,6 +84,8 @@ describe('SheetService', () => {
         it('should reject the promise if request fails', function (done) {
             const entry = { id: '1' };
 
+            validationStub.validate.returns({});
+
             create()
                 .reply(500);
 
@@ -78,6 +93,21 @@ describe('SheetService', () => {
                 .fail(err => {
                     try {
                         expect(err.statusCode).to.equal(500);
+                        done();
+                    } catch (e) { done(e); }
+                });
+        });
+
+        it('should reject the promise with status code 422 if sheet validation fails', function (done) {
+            const entry = { id: '1' };
+
+            validationStub.validate.returns({ name: true });
+
+            sheetService.add(entry)
+                .fail(err => {
+                    try {
+                        expect(err.statusCode).to.equal(422);
+                        expect(err.message).not.to.be.undefined;
                         done();
                     } catch (e) { done(e); }
                 });

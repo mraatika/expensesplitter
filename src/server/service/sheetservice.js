@@ -1,6 +1,22 @@
 import Q from 'kew';
+import restify from 'restify';
 import dbConnector from 'server/common/dbconnector';
-import validation from 'common/validation/validator';
+import {validate} from 'common/validation/sheetvalidator';
+
+/**
+ * Validate sheet
+ * @private
+ * @param  {Object} sheet
+ * @return {UnprocessableEntityError|undefined}
+ */
+const validateSheet = (sheet) => {
+    const errors = validate(sheet);
+
+    if (Object.keys(errors).length) {
+        return new restify.UnprocessableEntityError(`Validation failed: Sheet ${sheet.id}, errors: ${JSON.stringify(errors)}`);
+    }
+};
+
 
 /**
  * Service for handling sheets
@@ -36,6 +52,13 @@ const SheetService = {
             lastSavedOn: new Date().toISOString()
         });
 
+        const validationError = validateSheet(sheet);
+
+        if (validationError) {
+            q.reject(validationError);
+            return q.promise;
+        }
+
         db.insert(addObject, addObject.id, err => {
             if (err) return q.reject(err);
 
@@ -59,6 +82,13 @@ const SheetService = {
         const updateObject = Object.assign(sheet, {
             lastSavedOn: new Date().toISOString()
         });
+
+        const validationError = validateSheet(sheet);
+
+        if (validationError) {
+            q.reject(validationError);
+            return q.promise;
+        }
 
         db.insert(updateObject, err => {
             // reject if error is not 409 (conflict)
