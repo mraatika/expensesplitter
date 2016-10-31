@@ -1,7 +1,8 @@
 export const Sheet = {
     id: {
         type: 'string',
-        required: true
+        required: true,
+        msgKey: 'error.sheet.id'
     },
 
     name: {
@@ -16,22 +17,28 @@ export const Sheet = {
     },
 
     participants: {
-        type: 'array'
+        type: 'array',
+        required: true,
+        msgKey: 'error.sheet.participants'
     },
 
     expenses: {
-        type: 'array'
+        type: 'array',
+        required: true,
+        msgKey: 'error.sheet.expenses'
     },
 
     settings: {
-        type: 'object'
+        type: 'object',
+        required: true
     }
 };
 
 export const Participant = {
     id: {
         required: true,
-        type: 'string'
+        type: 'string',
+        msgKey: 'error.participant.id'
     },
 
     name: {
@@ -45,7 +52,8 @@ export const Participant = {
 export const Expense = {
     id: {
         required: true,
-        type: 'string'
+        type: 'string',
+        msgKey: 'error.expense.id'
     },
 
     name: {
