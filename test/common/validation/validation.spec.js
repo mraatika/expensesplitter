@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {expect} from 'chai';
-import {t} from 'dictionary/dictionary';
-import validation from 'validation/validation';
+import {t} from 'common/dictionary/dictionary';
+import validation from 'common/validation/validator';
 
 describe('Validation', function() {
     it('should be defined', function() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import Transaction from './transaction.jsx';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 /**
  * @class TransactionsList

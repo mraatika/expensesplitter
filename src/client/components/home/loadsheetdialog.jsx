@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import SheetsList from './sheetslist.jsx';
 import ModalDialog from '../common/modaldialog.jsx';
 

@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {browserHistory, Link} from 'react-router';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import LoadSheetDialogContainer from 'containers/loadsheetdialogcontainer';
 import MessageContainer from '../common/messagecontainer.jsx';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';

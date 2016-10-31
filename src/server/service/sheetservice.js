@@ -1,6 +1,6 @@
 import Q from 'kew';
 import dbConnector from 'server/common/dbconnector';
-import validation from 'client/validation/validation';
+import validation from 'common/validation/validator';
 
 /**
  * Service for handling sheets

@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {Panel} from 'react-bootstrap';
 import {extend} from 'lodash';
-import {t} from '../../dictionary/dictionary.js';
+import {t} from 'common/dictionary/dictionary.js';
 import CollapsiblePanelHeader from '../common/collapsiblepanelheader.jsx';
 
 /**

@@ -1,4 +1,4 @@
-import languages from './languages.js';
+import languages from './languages';
 
 let _language = 'en';
 

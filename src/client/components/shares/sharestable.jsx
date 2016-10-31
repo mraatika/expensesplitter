@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {sortByAll} from 'lodash';
 import ExpensesService from '../../service/expensesservice';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import Share from './share.jsx';
 import ShareSummaryRow from './sharesummaryrow.jsx';
 

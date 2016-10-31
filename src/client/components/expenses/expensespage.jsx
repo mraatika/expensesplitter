@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import pages from '../../constants/pages';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import Navigation from '../navigation/navigation.jsx';
 import ExpenseAddForm from './expenseaddform.jsx';
 import ExpenseList from './expenselist.jsx';

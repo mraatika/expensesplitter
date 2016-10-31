@@ -1,5 +1,5 @@
 import {each, isString, isArray, isObject, isNumber, isFunction} from 'lodash';
-import {t} from '../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 export const validators = {
 

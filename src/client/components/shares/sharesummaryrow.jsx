@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 /**
  * @class ShareSummaryRow

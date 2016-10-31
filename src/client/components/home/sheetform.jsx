@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
-import {t} from '../../dictionary/dictionary.js';
+import {t} from 'common/dictionary/dictionary.js';
 import Settings from './settings.jsx';
 import InputButtonSplit from '../common/inputbuttonsplit.jsx';
 

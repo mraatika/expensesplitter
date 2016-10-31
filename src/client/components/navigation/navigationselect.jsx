@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import pages from '../../constants/pages';
 import {defer, pick, map} from 'lodash';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 /**
  * @class NavigationSelect

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import {isFunction} from 'lodash';
 import {Modal} from 'react-bootstrap';
 

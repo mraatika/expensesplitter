@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {delay, chain} from 'lodash';
-import {t} from '../../dictionary/dictionary';
-import {Expense as ExpenseSchema} from 'validation/schema';
+import {t} from 'common/dictionary/dictionary';
+import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from '../common/messagecontainer.jsx';
 import ValidatedInput from '../common/validatedinput.jsx';
 

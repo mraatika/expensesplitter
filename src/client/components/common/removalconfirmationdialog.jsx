@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {isFunction}  from 'lodash';
 import Q from 'kew';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import ModalDialog from '../common/modaldialog.jsx';
 
 /**

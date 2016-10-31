@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {find} from 'lodash';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import MessageContainer from '../common/messagecontainer.jsx';
 
 class ParticipantAddForm extends React.Component {

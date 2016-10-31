@@ -3,7 +3,7 @@ import pages from '../../constants/pages';
 import ParticipantList from './participantlist.jsx';
 import ParticipantAddForm from './participantaddform.jsx';
 import Navigation from '../navigation/navigation.jsx';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
 import ExpensesService from '../../service/expensesservice';
 

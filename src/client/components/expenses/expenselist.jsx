@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import Expense from './expense.jsx';
 import ExpenseSummaryRow from './expensesummaryrow.jsx';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 /**
  * @class ExpenseList

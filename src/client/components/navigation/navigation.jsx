@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
-import {t} from '../../dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 import pages from '../../constants/pages.js';
 import NavigationSelect from './navigationselect.jsx';
 

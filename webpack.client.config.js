@@ -154,7 +154,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
-                include: __dirname + '/src/client'
+                include: __dirname + '/src'
             }
         ],
 
@@ -162,7 +162,7 @@ module.exports = {
             {
                 test: /\.jsx?/,
                 loaders: ['babel?cacheDirectory'],
-                include: __dirname + '/src/client'
+                include: __dirname + '/src'
             },
             {
                 test: /\.json$/,
@@ -201,7 +201,7 @@ module.exports = {
 
     resolve: {
         root: [path.resolve('./src')],
-        modulesDirectories: ['web_modules', 'node_modules', 'src/client']
+        modulesDirectories: ['src/common', 'node_modules', 'src/client']
     },
 
     debug: !isProd,

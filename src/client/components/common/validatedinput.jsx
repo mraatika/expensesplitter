@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {chain, extend, omit} from 'lodash';
-import {validateProperty} from 'validation/validation';
+import {validateProperty} from 'common/validation/validator';
 
 /**
  * @class ValidatedInput
