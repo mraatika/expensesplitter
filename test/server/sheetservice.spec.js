@@ -8,7 +8,7 @@ const proxyquire = require('proxyquire');
 const validationStub = { validate: sinon.stub() };
 let sheetService;
 
-describe('SheetService', () => {
+describe.only('SheetService', () => {
     // nock http interceptors
     const scope = nock(`${config.url}:${config.port}`);
     const idlessUrl = new RegExp(`/${config.db_name}`);
@@ -20,7 +20,7 @@ describe('SheetService', () => {
 
     before(function () {
         sheetService = proxyquire('server/service/sheetservice', {
-            'client/validation/validation': validationStub
+            'common/validation/sheetvalidator': validationStub
         }).default;
     });
 
@@ -120,6 +120,7 @@ describe('SheetService', () => {
             const original = { _id: '1', id: '1', _rev: '1-1', prop: 1 };
             const updated = { _id: '1', id: '1', _rev: '1-2', prop: 2 };
 
+            validationStub.validate.returns({});
 
             update()
                 .reply(200);
@@ -140,6 +141,8 @@ describe('SheetService', () => {
         it('should reject the promise in case of error', function (done) {
             const original = { _id: '1', id: '1', _rev: '1-1', prop: 1 };
 
+            validationStub.validate.returns({});
+
             update()
                 .reply(500);
 
@@ -155,6 +158,8 @@ describe('SheetService', () => {
         it('should override the existing enrty in case of conflict', function (done) {
             const dbentry = { _id: '1', id: '1', _rev: '1-2', prop: 1 };
             const entryupdate = { _id: '1', id: '1', _rev: '1-1', prop: 2 };
+
+            validationStub.validate.returns({});
 
             // first insert conflicts
             update()
