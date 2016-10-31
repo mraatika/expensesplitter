@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {validate} from 'server/validation/sheetvalidator';
 import {t} from 'dictionary/dictionary';
-import Schema from 'validation/schema/schema';
+import Schema from 'validation/schema';
 
 describe('SheetValidator', function () {
     const validSheet = {

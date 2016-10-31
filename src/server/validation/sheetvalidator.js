@@ -1,5 +1,5 @@
 import {chain, isEmpty, toArray} from 'lodash';
-import * as Schema from 'validation/schema/schema';
+import * as Schema from 'validation/schema';
 import * as validator from 'validation/validation';
 
 /**
