@@ -113,11 +113,12 @@ export const validate = function(subject, schema) {
 
     each(schema, (rules, key) => {
         const value = subject[key];
+
         // do not run validator if property is not required and is missing
-        if (rules.required && value !== null && value !== undefined) {
-            const error = validator(key, rules);
-            if (error) errors[key] = error;
-        }
+        if (!rules.required && (value === null || value === undefined)) return;
+
+        const error = validator(key, rules);
+        if (error) errors[key] = error;
     });
 
     return errors;

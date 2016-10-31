@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {expect} from 'chai';
-import {t} from '../src/js/dictionary/dictionary.js';
-import validation from '../src/js/validation/validation.js';
+import {t} from 'dictionary/dictionary';
+import validation from 'validation/validation';
 
 describe('Validation', function() {
     it('should be defined', function() {
@@ -53,6 +53,20 @@ describe('Validation', function() {
                 var subject = {};
                 expect(validation.validate(subject, schema).name).to.be.ok;
             });
+
+            it('should not fail if a value is not required and is null', function () {
+                const schema = { name: { type: 'string', required: false }};
+                const subject = { name: null };
+
+                expect(validation.validate(subject, schema).name).to.be.undefined;
+            });
+
+            it('should not fail if a value is not required and is undefined', function () {
+                const schema = { name: { type: 'string', required: false }};
+                const subject = { name: undefined };
+
+                expect(validation.validate(subject, schema).name).to.be.undefined;
+            });
         });
 
         describe('pattern', function() {
@@ -100,6 +114,11 @@ describe('Validation', function() {
 
             it('should not accept a value of different type', function() {
                 subject.name = 12;
+                expect(validation.validate(subject, schema).name).to.be.ok;
+            });
+
+            it('should not accept a value of different (falsy) type', function() {
+                subject.name = NaN;
                 expect(validation.validate(subject, schema).name).to.be.ok;
             });
         });
