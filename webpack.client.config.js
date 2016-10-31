@@ -201,7 +201,7 @@ module.exports = {
 
     resolve: {
         root: [path.resolve('./src')],
-        modulesDirectories: ['src/common', 'node_modules', 'src/client']
+        modulesDirectories: ['src/common', 'node_modules', 'src/client', 'src']
     },
 
     debug: !isProd,
