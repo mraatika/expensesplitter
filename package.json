@@ -52,7 +52,7 @@
     "build-server": "rm -rf ./build/client && env NODE_PATH=./src/server/ NODE_ENV=dev babel ./src/r -d ./build/server --copy-files -s",
     "build-client": "rm -rf ./build/client && env NODE_ENV=dev webpack --config webpack.client.config.js --progress --colors",
     "test": "npm run test-server && npm run test-client",
-    "test-server": "env NODE_PATH=./src/ NODE_ENV=test ./node_modules/.bin/mocha 'test/server/**/*.spec.js' --compilers js:babel-register || true",
+    "test-server": "env NODE_PATH=./src:./src/client NODE_ENV=test ./node_modules/.bin/mocha 'test/server/**/*.spec.js' --compilers js:babel-register || true",
     "test-client": "env NODE_PATH=./src/client/ NODE_ENV=test ./node_modules/.bin/mocha 'test/client/**/*.spec.js' --recursive --watch --compilers 'jsx:test/client/support/jsxcompiler, .:babel-register' || true",
     "test-debug": "node debug --harmony ./node_modules/.bin/mocha --runInBand"
   },
