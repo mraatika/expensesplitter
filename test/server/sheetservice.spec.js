@@ -8,7 +8,7 @@ const proxyquire = require('proxyquire');
 const validationStub = { validate: sinon.stub() };
 let sheetService;
 
-describe.only('SheetService', () => {
+describe('SheetService', () => {
     // nock http interceptors
     const scope = nock(`${config.url}:${config.port}`);
     const idlessUrl = new RegExp(`/${config.db_name}`);

@@ -19,6 +19,17 @@ export const t = (key) => {
 };
 
 /**
+ * Template string helper. Replace ${key} substrings with corresponding values from vars object
+ * @param  {string} str The template string
+ * @param  {Object} vars Values to interpolate template with.
+ * @param  {boolean} [i10n] If true will treat string as a translation key. Defaults to true.
+ * @return {string}
+ */
+export const tpl =(str, vars = {}, i10n = true) => {
+    return Object.keys(vars).reduce((memo, k) => memo.replace('${' + k + '}', vars[k]), i10n ? t(str) : str);
+};
+
+/**
  * Set language used when translating
  * @param  {string} lang
  */

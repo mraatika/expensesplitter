@@ -72,13 +72,17 @@ export function removeSheetHistoryEntry(entry) {
  * @return {Function}
  */
 export function fetchSheet(sheetId) {
-    return {
-        type: Constants.ActionTypes.LOAD_SHEET,
-        payload: {
-            request: {
-                url: `/sheet/${sheetId}`
+
+    return (dispatch, getState) => {
+        return dispatch({
+            type: Constants.ActionTypes.LOAD_SHEET,
+            payload: {
+                request: {
+                    url: `/sheet/${sheetId}`,
+                    headers: { 'Accept-Language': getState().settings.language }
+                }
             }
-        }
+        });
     };
 }
 
@@ -102,7 +106,8 @@ export function saveSheet(sheet) {
                 request: {
                     method: isNew ? 'POST' : 'PUT',
                     url: `/sheet/${isNew ? '' : sheet.id}`,
-                    data: { sheet }
+                    data: { sheet },
+                    headers: { 'Accept-Language': getState().settings.language }
                 }
             }
         });
@@ -134,13 +139,16 @@ export function updateSheet(sheet, update = {}) {
 export function removeSheet(sheet) {
     if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
 
-    return {
-        type: Constants.ActionTypes.REMOVE_SHEET,
-        payload: {
-            request: {
-                method: 'DELETE',
-                url: `/sheet/${sheet.id}`
+    return (dispatch, getState) => {
+        return dispatch({
+            type: Constants.ActionTypes.REMOVE_SHEET,
+            payload: {
+                request: {
+                    method: 'DELETE',
+                    url: `/sheet/${sheet.id}`,
+                    headers: { 'Accept-Language': getState().settings.language }
+                }
             }
-        }
+        });
     };
 }

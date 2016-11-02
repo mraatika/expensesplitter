@@ -1,5 +1,12 @@
 import restify from 'restify';
 import service from 'server/service/sheetservice.js';
+import {tpl, setLanguage} from 'common/dictionary/dictionary';
+
+const readAndSetTranslationLanguage = (req) => {
+    const lang = req.header('Accept-Language');
+
+    if (lang) setLanguage(lang);
+};
 
 /**
  * Route factory create function. Adds routes to server object
@@ -12,6 +19,8 @@ export default (server) => {
     server.get('/sheet/:id', (req, res, next) => {
         const {id} = req.params;
 
+        readAndSetTranslationLanguage(req);
+
         server.log.info(`Requested a resource with id ${id}`);
 
         service.get(id)
@@ -21,11 +30,13 @@ export default (server) => {
             })
             .fail(err => {
                 if (err.statusCode == 404) {
-                    server.log.error(`Resource not found with id ${id}`);
-                    return next(new restify.ResourceNotFoundError(`Resource not found with id ${id}`));
+                    server.log.warn(`Sheet ${id} was not found!`);
+                    return next(new restify.ResourceNotFoundError(tpl('error.server.sheet_not_found', { id })));
                 }
-                server.log.error(`Resource get failed with id ${id} Error:`, err);
-                next(new restify.InternalServerError(err));
+
+                server.log.error(`Fetching of sheet (id: ${id}) failed with error:`, err);
+
+                next(err);
             });
     });
 
@@ -33,16 +44,18 @@ export default (server) => {
     server.post('/sheet', (req, res, next) => {
         const {sheet} = req.body;
 
+        readAndSetTranslationLanguage(req);
+
         server.log.info('Adding resource', sheet);
 
         service.add(sheet)
             .then(savedSheet => {
-                server.log.info(`Added sheet with id ${savedSheet.id}`);
+                server.log.info(`Saved new sheet with id ${savedSheet.id}`);
                 res.send(200, { sheet: savedSheet });
                 next();
             })
             .fail(err => {
-                server.log.error('Add failed, Error:', err);
+                server.log.error(`Add failed with error ${err}`);
                 next(err);
             });
     });
@@ -52,10 +65,18 @@ export default (server) => {
         const {id} = req.params;
         const {sheet} = req.body;
         const onError = err => {
-            server.log.error(`Update failed with id ${id}. Error:`, err);
+            server.log.error(`Update failed with id ${id}. Error: ${err}`);
+
+            if (err.statusCode === 404) {
+                return next(new restify.ResourceNotFoundError(tpl('error.server.sheet_not_found', { id })));
+            }
+
             next(err);
         };
 
+        readAndSetTranslationLanguage(req);
+
+        // check that the sheet is found in the database
         service.get(id)
             .then(() => {
                 service.update(sheet)
@@ -72,6 +93,8 @@ export default (server) => {
     server.del('/sheet/:id', (req, res, next) => {
         const {id} = req.params;
 
+        readAndSetTranslationLanguage(req);
+
         service.get(id)
             .then(sheet => {
                 service.delete(sheet)
@@ -84,8 +107,8 @@ export default (server) => {
                     });
             })
             .fail(err => {
-                if (err.statusCode === 404) return next(new restify.ResourceNotFoundError(err));
-                next(new restify.InternalServerError(err));
+                if (err.statusCode === 404) return next(new restify.ResourceNotFoundError(tpl('error.server.sheet_not_found', { id })));
+                next(err);
             });
     });
 };

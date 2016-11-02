@@ -25,8 +25,8 @@ describe('Routes', () => {
             // response configuration
             sinon.stub(sheetService, 'get')
                 .withArgs('1').returns(Q.resolve({ id: '1' }))
-                .withArgs('2').returns(Q.reject({ statusCode: 404 }))
-                .withArgs('3').returns(Q.reject({ statusCode: 500 }));
+                .withArgs('2').returns(Q.reject(new restify.NotFoundError()))
+                .withArgs('3').returns(Q.reject(new restify.InternalServerError()));
         });
 
         afterEach(() => {
@@ -217,19 +217,19 @@ describe('Routes', () => {
                 });
             });
 
-            it('should return 500 when get fails', done => {
-                sheetService.get.returns(Q.reject({}));
+            it('should return 404 when get fails', done => {
+                sheetService.get.returns(Q.reject(new restify.ResourceNotFoundError()));
 
                 client.del('/sheet/1', (err, req, res) => {
-                    expect(err.body.code).to.equal('InternalServerError');
-                    expect(res.statusCode).to.equal(500);
+                    expect(err.body.code).to.equal('ResourceNotFound');
+                    expect(res.statusCode).to.equal(404);
                     done();
                 });
             });
 
             it('should return 500 when delete fails', done => {
                 sheetService.get.returns(Q.resolve({ id: '1' }));
-                sheetService.delete.returns(Q.reject({}));
+                sheetService.delete.returns(Q.reject(new restify.InternalServerError()));
 
                 client.del('/sheet/1', (err, req, res) => {
                     expect(err.body.code).to.equal('InternalServerError');

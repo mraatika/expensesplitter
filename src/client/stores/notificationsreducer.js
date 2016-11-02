@@ -1,5 +1,6 @@
+import React from 'react'; // eslint-disable-line no-unused-vars
 import Constants from 'constants/appconstants';
-import {t} from 'dictionary/dictionary';
+import {t, tpl} from 'dictionary/dictionary';
 
 /**
  * Server error event notification object
@@ -9,11 +10,13 @@ import {t} from 'dictionary/dictionary';
  * @return {Object}
  */
 function createServerErrorNotification(errorType, error) {
-    const {statusText, status} = error.response;
+    const {status} = error.response;
+    const {message} = error.response.data;
 
     return {
         title: t(`errors.${errorType}.title`) + '!',
-        message: `${statusText} (${status})`,
+        message,
+        children: (<small>{tpl('error.server.status_code_info', { status })}</small>),
         level: 'error',
         autoDismiss: 15
     };
