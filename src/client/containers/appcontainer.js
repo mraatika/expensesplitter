@@ -21,7 +21,12 @@ function mapDispatchToProps(dispatch) {
          * Fetch sheet from the  server
          * @param  {string} sheetId Sheet's id
          */
-        fetchSheet: sheetId => dispatch(fetchSheet(sheetId)).catch(() => dispatch(push('/'))),
+        fetchSheet: sheetId => dispatch(fetchSheet(sheetId))
+            .then((response) => {
+                // even if request fails with a server error then handler is called
+                if (response.error) dispatch(push('/'));
+            })
+            .catch(() => dispatch(push('/'))),
         /**
          * Create new sheet
          * @param  {Object} sheet Sheet's properties
