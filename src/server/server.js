@@ -1,33 +1,42 @@
-import restify from 'restify';
+import express from 'express';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import helmet from 'helmet';
 import routes  from 'server/routes';
 import LoggerFactory from 'server/factory/loggerfactory';
 import serverConf from 'server/conf/server.conf.json';
-import {t} from 'common/dictionary/dictionary';
+import {errorHandler} from 'server/util/errorhandler';
 
 // get correct configuration for the current environment
 const conf = serverConf[process.env.NODE_ENV || 'dev'];
 
-const appName = 'expensesplitter-server';
+const app = express();
 
-const server = restify.createServer({
-    name : appName,
-    log  : LoggerFactory.create({ name: appName })
-});
+// create logger for logging custom messages
+const logger = LoggerFactory.create('process', { name: 'expensesplitter-server' });
 
-server.use(restify.bodyParser({ mapParams: false }));
-server.use(restify.gzipResponse());
-
+/*
 server.pre(restify.pre.sanitizePath());
 
 // Default error handler. Personalize according to your needs.
 server.on('uncaughtException', (req, res, err) => {
     server.log.error('Uncaught error happened', err);
     res.send(new restify.InternalServerError(t('error.server.internal_server_error')));
-});
+});*/
 
-//server.on('after', restify.auditLogger({ log: server.log }));
-
-routes(server);
+// use access logger
+app.use(LoggerFactory.create('access'));
+// use body parser to parse json
+// must be before route setup
+app.use(bodyParser.json());
+// use gzip comression
+app.use(compression());
+// use helmet to set security headers
+app.use(helmet());
+// set up routes, create process logger
+routes(app, logger);
+// use error handler (should be last use statement)
+app.use(errorHandler(logger));
 
 export default {
     /**
@@ -35,10 +44,11 @@ export default {
      * @return {undefined}
      */
     start: () => {
-        console.log(`Server started on port ${conf.port}.`);
-
-        server.listen(conf.port, () => {
-            server.log.info(`${server.name} listening at ${server.url}`);
+        const server = app.listen(conf.port, () => {
+            const {address, port} = server.address();
+            console.log(`Server started and listening at ${address}${port}`);
         });
+
+        return server;
     }
 };

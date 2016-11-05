@@ -10,8 +10,15 @@ import {t, tpl} from 'dictionary/dictionary';
  * @return {Object}
  */
 function createServerErrorNotification(errorType, error) {
-    const {status} = error.response;
-    const {message} = error.response.data;
+    const response = error.response;
+    let status = 0;
+    let message = t('error.server.0');
+
+    // if the server did not response then response is undefined
+    if (response) {
+        status = response.status;
+        if (response.data) message = response.data.message;
+    }
 
     return {
         title: t(`errors.${errorType}.title`) + '!',

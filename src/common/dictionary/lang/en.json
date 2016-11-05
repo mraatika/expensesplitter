@@ -81,9 +81,12 @@
     "error.sheet.participants.required" : "Sheet participants array is required",
     "error.sheet.participants.type" : "Participants should be of type array",
 
-    "error.server.db_connection_down": "Could not connect to database.",
-    "error.server.internal_server_error": "Unexpected error happened on the server.",
-    "error.server.sheet_not_found": "Reqested sheet was not found. It has most likely been removed by the admin user.",
+    "error.server.0": "Could not connect to the server.",
+    "error.server.404": "Reqested sheet was not found. It has most likely been removed by the admin user.",
+    "error.server.422": "Sheet is missing fields or contains invalid data.",
+    "error.server.500": "Unexpected error happened on the server.",
+    "error.server.503": "Could not connect to database.",
+    "error.server.general": "An error happened on the server.",
     "error.server.status_code_info": "Status code: ${status}",
 
     "expenseaddform.error.participants" : "Current sheet doesn't contain any participants. Go back to the participants page to add them.",

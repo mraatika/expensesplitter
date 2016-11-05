@@ -16,6 +16,7 @@
     "babel-watch": "^2.0.3",
     "bootstrap-sass": "^3.3.7",
     "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "css-loader": "^0.25.0",
     "eslint": "^1.7.3",
     "eslint-config-airbnb": "^0.1.0",
@@ -62,16 +63,19 @@
   },
   "dependencies": {
     "axios": "^0.15.1",
+    "body-parser": "^1.15.2",
     "bunyan": "^1.8.4",
     "classnames": "^2.2.0",
     "clipboard": "^1.5.12",
+    "compression": "^1.6.2",
+    "express": "^4.14.0",
     "font-awesome": "^4.6.3",
+    "helmet": "^3.1.0",
     "kew": "^0.7.0",
     "keymirror": "^0.1.1",
     "lodash": "^3.10.1",
     "makestore": "^1.0.0",
     "nano": "^6.2.0",
-    "object-assign": "^4.0.1",
     "react": "^15.3.2",
     "react-addons-test-utils": "^15.3.2",
     "react-bootstrap": "^0.30.3",
@@ -85,7 +89,6 @@
     "redux-axios-middleware": "^3.0.0",
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
-    "restify": "^4.2.0",
     "shortid": "^2.2.4"
   }
 }

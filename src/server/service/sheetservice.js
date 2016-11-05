@@ -1,6 +1,6 @@
 import Q from 'kew';
-import restify from 'restify';
-import dbConnector from 'server/common/dbconnector';
+import UnprocessableEntityError from 'server/validation/unprocessableentityerror';
+import dbConnector from 'server/util/dbconnector';
 import {validate} from 'common/validation/sheetvalidator';
 
 /**
@@ -13,7 +13,7 @@ const validateSheet = (sheet) => {
     const errors = validate(sheet);
 
     if (Object.keys(errors).length) {
-        return new restify.UnprocessableEntityError(`Validation failed: Sheet ${sheet.id}, errors: ${JSON.stringify(errors)}`);
+        return new UnprocessableEntityError(`Validation failed: Sheet ${sheet.id}, errors: ${JSON.stringify(errors)}`);
     }
 };
 

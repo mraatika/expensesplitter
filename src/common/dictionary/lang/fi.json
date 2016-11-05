@@ -81,11 +81,13 @@
     "error.sheet.participants.required" : "Laskelmalla tulee olla osallistujat taulu määritettynä",
     "error.sheet.participants.type" : "Osallistujien tulee olla tyyppiä array",
 
-    "error.server.db_connection_down": "Yhteyttä tietokantaan ei saatu.",
-    "error.server.internal_server_error": "Palvelimella tapahtui odottamaton virhe.",
-    "error.server.sheet_not_found": "Haettua laskelmaa ei löytynyt. Luultavasti laskelma on poistettu admin-käyttäjän toimesta.",
+    "error.server.0": "Yhteyttä palvelimeen ei saatu.",
+    "error.server.404": "Haettua laskelmaa ei löytynyt. Luultavasti laskelma on poistettu admin-käyttäjän toimesta.",
+    "error.server.422": "Laskelman tiedot ovat puutteelliset tai virheelliset.",
+    "error.server.500": "Palvelimella tapahtui odottamaton virhe.",
+    "error.server.503": "Yhteyttä tietokantaan ei saatu.",
+    "error.server.general": "Palvelimella tapahtui virhe.",
     "error.server.status_code_info": "Status-koodi: ${status}",
-    "error.server.status.500": "",
 
     "expenseaddform.error.participants" : "Laskelmalle ei ole lisätty osallistujia. Palaa osallistujat-sivulle lisätäksesi niitä.",
     "expenses.add_expense" : "Lisää kulu",

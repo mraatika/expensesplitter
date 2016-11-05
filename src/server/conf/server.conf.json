@@ -7,7 +7,7 @@
             "streams": [
                 {
                     "level": "info",
-                    "path": "./expensesplitter.log"
+                    "path": "./expensesplitter.dev.log"
                 }
             ]
         }
