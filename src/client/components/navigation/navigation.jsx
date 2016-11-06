@@ -1,8 +1,8 @@
 import React, {PropTypes} from 'react';
-import {Link} from 'react-router';
 import {t} from 'common/dictionary/dictionary';
-import pages from '../../constants/pages.js';
-import NavigationSelect from './navigationselect.jsx';
+import pages from 'client/constants/pages';
+import NavigationSelect from 'client/components/navigation/navigationselect.jsx';
+import RouterService from 'client/router/routerservice';
 
 /**
  * @class Navigation
@@ -12,7 +12,7 @@ import NavigationSelect from './navigationselect.jsx';
 class Navigation extends React.Component {
 
     render() {
-        const {currentPage, sheetId} = this.props;
+        const {currentPage} = this.props;
         const nextPage = pages[currentPage.next];
         const prevPage = pages[currentPage.prev];
         let prevLink = '';
@@ -20,18 +20,18 @@ class Navigation extends React.Component {
 
         if (prevPage) {
             prevLink =
-                <Link to={`/sheet/${sheetId}${prevPage.href}`} className="button u-full-width">
+                <button onClick={RouterService.prev} className="u-full-width">
                     <i className="fa fa-angle-double-left"></i>&nbsp;
                     {t (prevPage.label) }
-                </Link>;
+                </button>;
         }
 
         if (nextPage) {
             nextLink =
-                <Link to={`/sheet/${sheetId}${nextPage.href}`} className="button u-full-width">
+                <button onClick={RouterService.next} className="u-full-width">
                     { t(nextPage.label) }&nbsp;
                     <i className="fa fa-angle-double-right"></i>
-                </Link>;
+                </button>;
         }
 
         return (
@@ -43,7 +43,7 @@ class Navigation extends React.Component {
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="four columns">
-                        <NavigationSelect className="u-full-width" currentPage={currentPage} sheetId={sheetId}/>
+                        <NavigationSelect className="u-full-width" currentPage={currentPage} />
                     </div>
                     <div className="one column">&nbsp;</div>
                     <div className="three columns">

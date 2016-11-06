@@ -1,4 +1,5 @@
 import service from 'server/service/sheetservice.js';
+import AuthenticationError from 'server/util/authenticationerror';
 
 /**
  * Route factory create function. Adds routes to server object
@@ -65,9 +66,16 @@ export default (server, logger) => {
     // DELETE SHEET
     server.delete('/sheet/:id', (req, res, next) => {
         const {id} = req.params;
+        const adminKey = req.header('X-Admin-Token');
 
         service.get(id)
             .then(sheet => {
+                // admin token delivered in header should match the one saved to the db
+                if (!adminKey || adminKey !== sheet.adminKey) {
+                    logger.error(`Admin token validation failed: X-Admin-Token ${adminKey} did not match ${sheet.adminKey}!`);
+                    return next(new AuthenticationError());
+                }
+
                 service.delete(sheet)
                     .then(() => res.json({ id }))
                     .fail(err => {

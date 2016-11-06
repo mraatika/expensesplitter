@@ -81,7 +81,10 @@
     "error.sheet.participants.required" : "Sheet participants array is required",
     "error.sheet.participants.type" : "Participants should be of type array",
 
+    "error.client.remove_sheet.admin_key": "Only an admin can delete a sheet.",
+
     "error.server.0": "Could not connect to the server.",
+    "error.server.403": "Missing required rights to modify a sheet.",
     "error.server.404": "Reqested sheet was not found. It has most likely been removed by the admin user.",
     "error.server.422": "Sheet is missing fields or contains invalid data.",
     "error.server.500": "Unexpected error happened on the server.",

@@ -1,8 +1,9 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import {t} from 'common/dictionary/dictionary.js';
-import Settings from './settings.jsx';
-import InputButtonSplit from '../common/inputbuttonsplit.jsx';
+import RouterService from 'client/router/routerservice';
+import Settings from 'client/components/home/settings.jsx';
+import InputButtonSplit from 'client/components/common/inputbuttonsplit.jsx';
 
 /**
  * @class SheetForm
@@ -44,7 +45,7 @@ class SheetForm extends React.Component {
     _handleFormSubmit(e) {
         e.preventDefault();
         this.props.saveSheet(this.props.sheet);
-        browserHistory.push(`/sheet/${this.props.sheet.id}/participants`);
+        RouterService.navigateTo('/participants', this.props.sheet.id, this.props.adminKey);
     }
 
     /**

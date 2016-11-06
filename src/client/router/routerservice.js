@@ -19,10 +19,10 @@ const _findRouteObject = pageFragment => {
 const navigateTowards = direction => {
     const location = window.location.href;
     const route = _findRouteObject(location.substring(location.lastIndexOf('/')));
-    const pageHref = route && route[direction] ? pages[route[direction]].href : null;
+    const pageFragment = route && route[direction] ? pages[route[direction]].href : null;
 
-    if (pageHref) {
-        browserHistory.push(URLUtils.formSheetUrlForPage(pageHref));
+    if (pageFragment) {
+        browserHistory.push(URLUtils.formSubpageURLFromLocation(pageFragment));
     }
 };
 
@@ -39,5 +39,15 @@ export default {
      */
     prev() {
         navigateTowards('prev');
+    },
+
+    /**
+     * Navigate to subpage
+     * @param  {string} fragment Sub route
+     * @param  {string} sheetId
+     * @param  {string} [adminKey]
+     */
+    navigateTo(fragment, sheetId, adminKey) {
+        browserHistory.push(URLUtils.formSubpageUrl(fragment, sheetId, adminKey));
     }
 };

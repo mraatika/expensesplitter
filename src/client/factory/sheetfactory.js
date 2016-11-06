@@ -9,13 +9,14 @@ import {t} from 'dictionary/dictionary.js';
  */
 export default function create(initialProps) {
     return {
-        id: shortid.generate(),
+        additionalInformation: '',
+        adminKey: shortid.generate(),
         createdOn: new Date(),
+        expenses: [],
+        id: shortid.generate(),
         lastSavedOn: null,
         name: (initialProps.name || '').trim(),
-        settings: { currencySymbol: t('app.locales.currency_symbol'), ...initialProps.settings },
         participants: [],
-        expenses: [],
-        additionalInformation: ''
+        settings: { currencySymbol: t('app.locales.currency_symbol'), ...initialProps.settings }
     };
 }

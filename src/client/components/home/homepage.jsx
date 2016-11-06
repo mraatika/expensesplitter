@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react';
 import {browserHistory, Link} from 'react-router';
 import {t} from 'common/dictionary/dictionary';
-import LoadSheetDialogContainer from 'containers/loadsheetdialogcontainer';
-import MessageContainer from '../common/messagecontainer.jsx';
-import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
-import SheetForm from './sheetform.jsx';
+import LoadSheetDialogContainer from 'client/containers/loadsheetdialogcontainer';
+import MessageContainer from 'client/components/common/messagecontainer.jsx';
+import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
+import SheetForm from 'client/components/home/sheetform.jsx';
 
 /**
  * @class Homepage
@@ -55,7 +55,8 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const {dirty, sheet} = this.props;
+        const {dirty, sheet, params} = this.props;
+        const {adminKey} = params;
 
         return (
             <section id="home-page">
@@ -76,6 +77,7 @@ class HomePage extends React.Component {
                     ref={c => this._sheetForm = c }
                     sheet={sheet}
                     dirty={dirty}
+                    adminKey={adminKey}
                     summaryButtonDisabled={!this.props.params.sheetId}
                     saveSheet={this.props.saveSheet}
                     updateSheet={this.props.updateSheet}
@@ -96,7 +98,7 @@ class HomePage extends React.Component {
                         <button
                             id="button-remove-sheet"
                             className="u-full-width"
-                            disabled={!sheet.lastSavedOn}
+                            disabled={!sheet.lastSavedOn || adminKey !== sheet.adminKey}
                             onClick={this._handleRemoveSheetClick.bind(this)}>
                             <i className="fa fa-trash-o fa-fw fa-lg" />
                             { t('home.button.remove') }

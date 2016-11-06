@@ -14,8 +14,7 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-
+function mapDispatchToProps(dispatch, ownProps) {
     return {
         /**
          * Create new sheet
@@ -40,7 +39,7 @@ function mapDispatchToProps(dispatch) {
          * Remove current sheet
          * @param  {Object} sheet
          */
-        removeSheet: sheet => dispatch(DataActions.removeSheet(sheet)),
+        removeSheet: sheet => dispatch(DataActions.removeSheet(sheet, ownProps.params.adminKey)),
 
         /**
          * Toggle load sheet dialog's display state

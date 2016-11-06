@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
-import {syncHistoryWithStore} from 'react-router-redux';
 import AppContainer from 'containers/appcontainer';
 import HomePageContainer from 'containers/homepagecontainer';
 import ParticipantsPageContainer from 'containers/participantspagecontainer';
@@ -14,24 +13,13 @@ import SummaryPageContainer from 'containers/summarypagecontainer';
  */
 class ExpenseSplitterRouter extends React.Component {
 
-    /**
-     * @constructor
-     * @param       {Object} props
-     * @return      {ExpenseSplitterRouter}
-     */
-    constructor(props) {
-        super(props);
-        // sync routing history with redux store
-        this.history = syncHistoryWithStore(browserHistory, this.props.store);
-    }
-
     render() {
         return (
-            <Router history={this.history}>
+            <Router history={browserHistory}>
                 <Route path="/" component={AppContainer}>
                     <IndexRoute component={HomePageContainer} />
 
-                    <Route path="/sheet/:sheetId">
+                    <Route path="/sheet/:sheetId(/admin/:adminKey)">
                         <IndexRoute component={HomePageContainer} />
                         <Route path="participants" component={ParticipantsPageContainer} />
                         <Route path="expenses" component={ExpensesPageContainer} />

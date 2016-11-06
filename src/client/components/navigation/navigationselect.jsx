@@ -1,8 +1,9 @@
 import React, {PropTypes} from 'react';
-import {browserHistory} from 'react-router';
-import pages from '../../constants/pages';
-import {defer, pick, map} from 'lodash';
+import {pick, map} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
+import RouterService from 'client/router/routerservice';
+import pages from 'client/constants/pages';
+import {URLUtils} from 'client/util/utils';
 
 /**
  * @class NavigationSelect
@@ -18,8 +19,7 @@ class NavigationSelect extends React.Component {
      */
     _onChange() {
         const link = this._select.options[this._select.selectedIndex].value;
-        // defer to allow the pending update to be completed
-        defer(() => browserHistory.push(`/sheet/${this.props.sheetId}${link}`));
+        RouterService.navigateTo(URLUtils.formSubpageURLFromLocation(link));
     }
 
     /**
@@ -50,8 +50,7 @@ class NavigationSelect extends React.Component {
 }
 
 NavigationSelect.propTypes = {
-    currentPage: PropTypes.object.isRequired,
-    sheetId: PropTypes.string.isRequired
+    currentPage: PropTypes.object.isRequired
 };
 
 export default NavigationSelect;

@@ -8,7 +8,7 @@ import app from 'server/server';
 
 chai.use(chaiHttp);
 
-describe('Routes', () => {
+describe.only('Routes', () => {
     let server;
 
     before((done) => {
@@ -203,14 +203,14 @@ describe('Routes', () => {
 
         describe('a sheet that exists', () => {
 
-            beforeEach(() => {
-                sheetService.get.returns(Q.resolve({ id: 1 }));
-                sheetService.delete.returns(Q.resolve({}));
-            });
-
             it('should return 200 ok', (done) => {
+                const adminKey = '123';
+                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
+                sheetService.delete.returns(Q.resolve());
+
                 chai.request(server)
                     .delete('/sheet/1')
+                    .set('X-Admin-Token', adminKey)
                     .end((err, res) => {
                         expect(err).to.be.null;
                         expect(res.statusCode).to.equal(200);
@@ -236,14 +236,43 @@ describe('Routes', () => {
         });
 
         describe('and failing', function () {
+            const adminKey = '123';
+
+            beforeEach(function () {
+                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
+            });
+
             it('should return an error when delete fails', (done) => {
-                sheetService.get.returns(Q.resolve({ id: '1' }));
+                const adminKey = '123';
+                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
                 sheetService.delete.returns(Q.reject({ statusCode: 500 }));
 
                 chai.request(server)
                     .delete('/sheet/1')
+                    .set('X-Admin-Token', adminKey)
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(500);
+                        done();
+                    });
+            });
+
+            it('should return a 403 error if admin keys dont\'t match', function (done) {
+                chai.request(server)
+                    .delete('/sheet/1')
+                    .set('X-Admin-Token', 'invalidkey')
+                    .end((err, res) => {
+                        expect(err).not.to.be.null;
+                        expect(res.statusCode).to.equal(403);
+                        done();
+                    });
+            });
+
+            it('should return a 403 error if admin key is missing', function (done) {
+                chai.request(server)
+                    .delete('/sheet/1')
+                    .end((err, res) => {
+                        expect(err).not.to.be.null;
+                        expect(res.statusCode).to.equal(403);
                         done();
                     });
             });

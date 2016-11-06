@@ -129,7 +129,6 @@ module.exports = {
             'react-notification-system',
             'react-redux',
             'react-router',
-            'react-router-redux',
             'react-swipeable',
             'redux',
             'redux-thunk',

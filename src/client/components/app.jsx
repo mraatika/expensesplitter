@@ -1,12 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router';
 import Swipeable from 'react-swipeable';
+import {Modal} from 'react-bootstrap';
 import NotificationSystem from 'react-notification-system';
 import {name as appName, version} from '../../../package.json';
-import LanguagesSection from 'components/language/languagessection.jsx';
-import {Modal} from 'react-bootstrap';
 import {t, setLanguage} from 'common/dictionary/dictionary';
-import RouterService from 'router/routerservice';
+import LanguagesSection from 'client/components/language/languagessection.jsx';
+import RouterService from 'client/router/routerservice';
+import {URLUtils} from 'client/util/utils';
 
 // import styles
 import 'font-awesome-sass-loader';
@@ -100,7 +101,7 @@ class App extends React.Component {
      */
     render() {
         const {isFetching} = this.props;
-        const {sheetId} = this.props.params;
+        const {sheetId, adminKey} = this.props.params;
 
         return (
             <Swipeable
@@ -110,7 +111,7 @@ class App extends React.Component {
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><Link to={'/' + (sheetId ? `sheet/${sheetId}` : '' )}>{ appName }</Link></h1>
+                        <h1><Link to={URLUtils.formSubpageUrl('/', sheetId, adminKey)}>{ appName }</Link></h1>
                     </header>
 
                     <Modal show={isFetching}>

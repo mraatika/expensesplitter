@@ -12,19 +12,23 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
     return {
         /**
          * Remove current sheet
          * @param  {Object} sheet
          */
-        removeSheet: sheet => dispatch(removeSheet(sheet)),
+        removeSheet: sheet => dispatch(removeSheet(sheet, ownProps.params.adminKey)),
         /**
          * Save sheet to server
          * @param  {Object} sheet
          */
         saveSheet: sheet => dispatch(saveSheet(sheet)),
 
+        /**
+         * Update current sheet
+         * @param  {Object} sheet
+         */
         updateSheet: (sheet, update) => dispatch(updateSheet(sheet, update))
     };
 }

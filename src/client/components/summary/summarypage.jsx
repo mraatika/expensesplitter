@@ -61,8 +61,9 @@ class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet} = this.props;
+        const {sheet, params} = this.props;
         const {participants, expenses, settings} = sheet;
+        const {adminKey} = params;
         const transactions = new TransactionsService(sheet).calculateTransactions();
         const sharesAndBalances = new ExpensesService(sheet).getAllBalancesAndShares();
 
@@ -144,6 +145,7 @@ class SheetSummaryPage extends React.Component {
                         <div className="six columns">
                             <button
                                 className={ 'button-danger u-full-width' }
+                                disabled={adminKey !== sheet.adminKey}
                                 onClick={this._handleRemoveSheetClick.bind(this)}>
                                 <i className="fa fa-fw fa-lg fa-trash-o"/>&nbsp;
                                 { t('sheet_remove.button') }

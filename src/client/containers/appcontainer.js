@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
+import {push} from 'react-router';
 import App from 'components/app.jsx';
 import {createSheet, fetchSheet, setSettings} from 'actions/dataactioncreators';
 

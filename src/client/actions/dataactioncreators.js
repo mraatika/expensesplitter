@@ -1,6 +1,7 @@
 import {isObject} from 'lodash';
-import Constants from '../constants/appconstants';
-import {InvalidArgumentsError} from '../util/errors.js';
+import {t} from 'common/dictionary/dictionary';
+import Constants from 'client/constants/appconstants';
+import {InvalidArgumentsError} from 'client/util/errors.js';
 
 /**
  *
@@ -136,17 +137,33 @@ export function updateSheet(sheet, update = {}) {
  * @param  {Object} sheet
  * @return {Function}
  */
-export function removeSheet(sheet) {
+export function removeSheet(sheet, adminKey) {
     if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
 
     return (dispatch, getState) => {
+
+        // check if admin key is valid
+        // if not then dispatch an error
+        if (!adminKey || adminKey !== sheet.adminKey) {
+            return dispatch({
+                type: Constants.ErrorEventTypes.REMOVE_SHEET,
+                error: {
+                    client: true,
+                    message: t('error.client.remove_sheet.admin_key')
+                }
+            });
+        }
+
         return dispatch({
             type: Constants.ActionTypes.REMOVE_SHEET,
             payload: {
                 request: {
                     method: 'DELETE',
                     url: `/sheet/${sheet.id}`,
-                    headers: { 'Accept-Language': getState().settings.language }
+                    headers: {
+                        'Accept-Language': getState().settings.language,
+                        'X-Admin-Token': adminKey
+                    }
                 }
             }
         });

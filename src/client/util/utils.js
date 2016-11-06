@@ -72,6 +72,20 @@ export const DateUtils = {
 };
 
 /**
+ * Find a key following a given fragment
+ * @private
+ * @param  {string} path
+ * @param  {string} fragment
+ * @return {string|null}
+ */
+const _findKeyFromPath = (path, fragment) => {
+    // always end with slash for making the regex more simple
+    if (path[path.length - 1] !== '/') path += '/';
+    const match = path.match(new RegExp(`\\/${fragment}\\/([\\w_-]+)\\/`));
+    return match ? match[1] : null;
+};
+
+/**
  * URL related utils
  * @type {Object}
  */
@@ -86,20 +100,43 @@ export const URLUtils = {
     },
 
     /**
-     * Form valid route for given page
-     * @param  {string} pageFragment Page name e.g. /participants
-     * @return {string} valid router route
+     * Form route for a subpage using given parameters
+     * @param  {string} fragment
+     * @param  {string} [sheetId]
+     * @param  {string} [adminKey]
+     * @return {string}
      */
-    formSheetUrlForPage(pageFragment) {
-        return `/sheet/${URLUtils.getCurrentSheetId()}${pageFragment}`;
+    formSubpageUrl(fragment, sheetId, adminKey) {
+        return `${sheetId ? `/sheet/${sheetId}` : ''}${adminKey ? `/admin/${adminKey}` : ''}${fragment}`;
     },
 
     /**
-     * Extract current sheet's id from the url path
-     * @return {string | null}
+     * Form valid route for given page
+     * @param  {string} pageFragment Page name e.g. /participants
+     * @param  {string} [path] Path to search from
+     * @return {string} valid router route
+     */
+    formSubpageURLFromLocation(pageFragment, path = window.location.href) {
+        const adminKey = URLUtils.getAdminKey(path);
+        const sheetId = URLUtils.getCurrentSheetId(path);
+        return URLUtils.formSubpageUrl(pageFragment, sheetId, adminKey);
+    },
+
+    /**
+     * Extract current sheet's id from the given path
+     * @param {string} [path]
+     * @return {string|null}
      */
     getCurrentSheetId(path = window.location.href) {
-        const match = path.match(/\/sheet\/([\w_-]+)\/?/);
-        return match ? match[1] : null;
+        return _findKeyFromPath(path, 'sheet');
+    },
+
+    /**
+     * Extract admin key from the given path
+     * @param  {string} [path]
+     * @return {string|null}
+     */
+    getAdminKey(path = window.location.href) {
+        return _findKeyFromPath(path, 'admin');
     }
 };

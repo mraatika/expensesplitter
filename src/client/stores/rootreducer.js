@@ -1,5 +1,4 @@
 import {combineReducers} from 'redux';
-import {routerReducer} from 'react-router-redux';
 import {sheetReducer} from 'stores/sheetreducer';
 import {sheetHistoryReducer} from 'stores/sheethistoryreducer';
 import {settingsReducer} from 'stores/settingsreducer';
@@ -11,6 +10,5 @@ export default combineReducers({
     notifications: notificationsReducer,
     sheetHistory: sheetHistoryReducer,
     settings: settingsReducer,
-    routing: routerReducer,
     ui: uiReducer
 });

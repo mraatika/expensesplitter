@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {t} from 'dictionary/dictionary';
+import {t} from '../../../../src/common/dictionary/dictionary';
 import proxyquire from 'proxyquire';
 
 describe('SheetForm', () => {
