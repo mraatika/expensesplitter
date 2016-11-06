@@ -26,7 +26,7 @@ export const t = (key) => {
  * @return {string}
  */
 export const tpl =(str, vars = {}, i10n = true) => {
-    return Object.keys(vars).reduce((memo, k) => memo.replace('${' + k + '}', vars[k]), i10n ? t(str) : str);
+    return Object.keys(vars).reduce((memo, k) => memo.replace(new RegExp('\\${' + k + '}', 'g'), vars[k]), i10n ? t(str) : str);
 };
 
 /**
