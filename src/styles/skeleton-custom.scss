@@ -46,6 +46,11 @@ button {
     background-color: $color-danger;
     border-color: $color-danger;
 
+    &[disabled] {
+        background-color: lighten($color-danger, 20%) !important;
+        color: #eee !important;
+    }
+
     &:hover,
     &:focus {
         color: #fff;
