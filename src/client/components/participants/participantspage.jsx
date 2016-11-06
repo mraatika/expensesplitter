@@ -21,25 +21,37 @@ class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const expensesService = new ExpensesService({ expenses: this.props.sheet.expenses });
-        const expensesParticipatedIn = expensesService.findAllExpensesOfParticipant(participant.id);
+        const expensesParticipatedIn = new ExpensesService(this.props.sheet)
+            .findAllExpensesOfParticipant(participant.id);
 
-        if (!expensesParticipatedIn.length) {
-            this._removeParticipant(participant);
+        if (expensesParticipatedIn.length) {
+            this._removeConfirmationDialog.open();
+            // bind function argument so it's called with participant
+            // after confirmation
+            this._participantRemovalConfirmed = this._participantRemovalConfirmed.bind(this, participant);
             return;
         }
 
-        // after confirmation promise is resolved
-        this._removeConfirmationDialog
-            .open()
-            .then(() => this._removeParticipant(participant, expensesParticipatedIn));
+        this._removeParticipant(participant);
+    }
+
+    /**
+     * Callback for removal confirmation. Bound to context and argument when removal button is clicked.
+     * @private
+     * @param   {Object} participant
+     */
+    _participantRemovalConfirmed(participant) {
+        const expensesParticipatedIn = new ExpensesService(this.props.sheet)
+            .findAllExpensesOfParticipant(participant.id);
+
+        this._removeParticipant(participant, expensesParticipatedIn);
     }
 
     /**
      * Remove the given participant from the current sheet
      * @private
-     * @param  {object} participant
-     * @return {undefined}
+     * @param  {Object} participant
+     * @param  {Array} [expenses]
      */
     _removeParticipant(participant, expenses = []) {
         this.props.removeParticipant(this.props.sheet, participant, expenses);
@@ -75,6 +87,7 @@ class ParticipantsPage extends React.Component {
 
                 <RemovalConfirmationDialog
                     ref={c => this._removeConfirmationDialog = c}
+                    onRemoveConfirmed={() => this._participantRemovalConfirmed()}
                     header={ t('common.confirm_removal') }
                     contentText={ t('participants.confirm_removal') }
                     okButtonLabel={ t('participants.remove_participant') }

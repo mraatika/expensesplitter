@@ -1,6 +1,4 @@
 import React, {PropTypes} from 'react';
-import {isFunction}  from 'lodash';
-import Q from 'kew';
 import {t} from 'common/dictionary/dictionary';
 import ModalDialog from '../common/modaldialog.jsx';
 
@@ -13,12 +11,9 @@ class RemovalConfirmationDialog extends React.Component {
 
     /**
      * Open the modal
-     * @return {Q} A Q promise object
      */
     open() {
-        this._promise = Q.defer();
         this._modal.open();
-        return this._promise;
     }
 
     /**
@@ -26,8 +21,6 @@ class RemovalConfirmationDialog extends React.Component {
      * @return {undefined}
      */
     close() {
-        // reject the promise object
-        this._promise.reject();
         this._modal.close();
     }
 
@@ -37,13 +30,8 @@ class RemovalConfirmationDialog extends React.Component {
      * @return {undefined} [description]
      */
     _onConfirmRemoval() {
-        if (isFunction(this.props.onRemoveConfirmed)) {
-            this.props.onRemoveConfirmed();
-        }
-        // resolve the promise object
-        this._promise.resolve();
-        // dont't use this.close for it will reject the promise
-        this._modal.close();
+        this.props.onRemoveConfirmed();
+        this.close();
     }
 
     /**

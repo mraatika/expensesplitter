@@ -121,11 +121,7 @@ module.exports = {
         vendor: [
             'axios',
             'classnames',
-            'kew',
-            'keymirror',
             'lodash',
-            'makestore',
-            'object-assign',
             'react',
             'react-addons-test-utils',
             'react-bootstrap',
