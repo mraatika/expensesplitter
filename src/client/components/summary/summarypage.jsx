@@ -27,6 +27,18 @@ class SheetSummaryPage extends React.Component {
         this.state = { urlCopied: false };
     }
 
+    componentDidMount() {
+        this.clipboard = new Clipboard('#copy-to-clipboard-button');
+
+        this.clipboard.on('success', () => {
+            this.setState({ urlCopied: true });
+        });
+    }
+
+    componentWillUnmount() {
+        this.clipboard.destroy();
+    }
+
     /**
      * Callback for remove sheet button. Open the sheet removal
      * confirmation dialog
@@ -47,14 +59,6 @@ class SheetSummaryPage extends React.Component {
         this._removeSheetConfirmationDialog.close();
         this.props.removeSheet(sheet);
         browserHistory.push('/');
-    }
-
-    componentDidMount() {
-        this.clipboard = new Clipboard('#copy-to-clipboard-button');
-
-        this.clipboard.on('success', () => {
-            this.setState({ urlCopied: true });
-        });
     }
 
     /**
