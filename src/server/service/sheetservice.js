@@ -1,5 +1,5 @@
 import Q from 'kew';
-import UnprocessableEntityError from 'server/validation/unprocessableentityerror';
+import UnprocessableEntityError from 'server/util/unprocessableentityerror';
 import dbConnector from 'server/util/dbconnector';
 import {validate} from 'common/validation/sheetvalidator';
 
