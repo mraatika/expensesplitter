@@ -2,8 +2,17 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import Constants from 'constants/appconstants';
 import {t, tpl} from 'dictionary/dictionary';
 
+const _notificationDefaults = (errorType, message) => {
+    return {
+        title: t(`errors.${errorType}.title`) + '!',
+        message,
+        level: 'error',
+        autoDismiss: 15
+    };
+};
+
 /**
- * Server error event notification object
+ * Create an error notification object from a server error
  * @private
  * @param  {string} errorType
  * @param {Object} error
@@ -21,12 +30,31 @@ function createServerErrorNotification(errorType, error) {
     }
 
     return {
-        title: t(`errors.${errorType}.title`) + '!',
-        message,
-        children: (<small>{tpl('error.server.status_code_info', { status })}</small>),
-        level: 'error',
-        autoDismiss: 15
+        ..._notificationDefaults(errorType, message),
+        children: (<small>{tpl('error.server.status_code_info', { status })}</small>)
     };
+}
+
+/**
+ * Create an error notification object from a client error
+ * @param  {string} errorType
+ * @param  {Object} error
+ * @return {Object}
+ */
+function createClientErrorNotification(errorType, error) {
+    return _notificationDefaults(errorType, error.message);
+}
+
+/**
+ * Create an error notification (server or client)
+ * @param  {Object} action
+ * @return {Object}
+ */
+function createErrorNotification(action) {
+    const {type, error} = action;
+    return error.client ?
+        createClientErrorNotification(type, error) :
+        createServerErrorNotification(type, error);
 }
 
 /**
@@ -40,7 +68,7 @@ export function notificationsReducer(state = [], action) {
     case Constants.ErrorEventTypes.LOAD_SHEET:
     case Constants.ErrorEventTypes.SAVE_SHEET:
     case Constants.ErrorEventTypes.REMOVE_SHEET:
-        return state.concat(createServerErrorNotification(action.type, action.error));
+        return state.concat(createErrorNotification(action));
     default:
         return state;
     }
