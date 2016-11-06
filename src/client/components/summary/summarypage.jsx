@@ -63,8 +63,8 @@ class SheetSummaryPage extends React.Component {
     render() {
         const {sheet} = this.props;
         const {participants, expenses, settings} = sheet;
-        const transactions = new TransactionsService().calculateTransactions(expenses, participants);
-        const sharesAndBalances = new ExpensesService().getAllBalancesAndShares(participants, expenses);
+        const transactions = new TransactionsService(sheet).calculateTransactions();
+        const sharesAndBalances = new ExpensesService(sheet).getAllBalancesAndShares();
 
         return (
             <div id="summary-page">

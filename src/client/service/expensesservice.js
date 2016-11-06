@@ -23,7 +23,9 @@ export default class ExpensesService {
      *     {number} balance
      *
      */
-    calculateBalances(expenses = this.sheet.expenses, participants = this.sheet.participants) {
+    calculateBalances() {
+        const {expenses, participants} = this.sheet;
+
         return chain(participants)
             .map(participant => {
                 return {
@@ -41,7 +43,8 @@ export default class ExpensesService {
      * @param {string} participantId
      * @returns {number}
      */
-    calculateParticipantBalance(participantId, expenses = this.sheet.expenses) {
+    calculateParticipantBalance(participantId) {
+        const {expenses} = this.sheet;
         const total = this.calculateParticipantShare(participantId, expenses);
         const paid = this.calculateParticipantTotalPaid(participantId, expenses);
 
@@ -54,7 +57,9 @@ export default class ExpensesService {
      * @param {string} participantId Participant's id
      * @returns {number} The sum of expenses
      */
-    calculateParticipantShare(participantId, expenses = this.sheet.expenses) {
+    calculateParticipantShare(participantId) {
+        const {expenses} = this.sheet;
+
         return reduce(expenses, (sum, expense) => {
             // expense's participants
             const participants = expense.participants || [],
@@ -74,10 +79,11 @@ export default class ExpensesService {
     /**
      * Returns the total sum paid
      * @param {string} participantId
-     * @param {array} expenses
      * @returns {number}
      */
-    calculateParticipantTotalPaid(participantId, expenses = this.sheet.expenses) {
+    calculateParticipantTotalPaid(participantId) {
+        const {expenses} = this.sheet;
+
         return reduce(expenses, (sum, expense) => {
             // expense's participants
             const payer = expense.payer;
@@ -96,10 +102,11 @@ export default class ExpensesService {
 
     /**
      * Return the total sum of all the expenses
-     * @param {array} expenses
      * @returns {number} The total sum
      */
-    getTotalSum(expenses = this.sheet.expenses) {
+    getTotalSum() {
+        const {expenses} = this.sheet;
+
         return reduce(expenses, (sum, expense) => {
             return sum + (+expense.price || 0);
         }, 0);
@@ -109,29 +116,32 @@ export default class ExpensesService {
      * Get expeneses of a participant
      *
      * @param {string} participantId Participant's id
-     * @return {array} An array of expenses
      */
-    findExpensesByParticipant(participantId, expenses = this.sheet.expenses) {
+    findExpensesByParticipant(participantId) {
+        const {expenses} = this.sheet;
+
         return filter(expenses, expense => expense.participants.indexOf(participantId) > -1);
     }
 
     /**
      * Find expenses paid by a participant
      * @param  {string} participantId
-     * @param  {array} expenses
      * @return {array} An array of expenses
      */
-    findExpensesPaidByParticipant(participantId, expenses = this.sheet.expenses) {
+    findExpensesPaidByParticipant(participantId) {
+        const {expenses} = this.sheet;
+
         return filter(expenses, expense => expense.payer === participantId);
     }
 
     /**
      * Find expenses paid or participated by a participant
      * @param  {string} participantId
-     * @param  {array} expenses
      * @return {array} An array of expenses
      */
-    findAllExpensesOfParticipant(participantId, expenses = this.sheet.expenses) {
+    findAllExpensesOfParticipant(participantId) {
+        const {expenses} = this.sheet;
+
         return filter(expenses, expense => {
             return expense.payer === participantId ||expense.participants.indexOf(participantId) > -1;
         });
@@ -143,7 +153,8 @@ export default class ExpensesService {
      * @param  {array} expenses
      * @return {array}
      */
-    getAllBalancesAndShares(participants = this.sheet.participants, expenses = this.sheet.expenses) {
+    getAllBalancesAndShares() {
+        const {expenses, participants} = this.sheet;
         const findParticipant = id => find(participants, p => p.id === id);
         const balances = this.calculateBalances(expenses, participants);
 

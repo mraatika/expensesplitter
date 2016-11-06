@@ -30,7 +30,7 @@ export default class TransactionsService {
      */
     calculateTransactions(expenses, participants) {
         const transactions = [];
-        let balances = filter(new ExpensesService().calculateBalances(expenses, participants), balance => balance.balance != 0);
+        let balances = filter(new ExpensesService({ expenses, participants }).calculateBalances(), balance => balance.balance != 0);
 
         // iterate until all accounts are even
         while (balances.length) {

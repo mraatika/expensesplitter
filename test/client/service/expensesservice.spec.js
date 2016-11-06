@@ -5,12 +5,10 @@ import ExpensesService from 'service/expensesservice';
  * @TODO: needs more tests
  */
 
-describe.only('Service: ExpensesService', function () {
-
-    let expensesService;
+describe('Service: ExpensesService', function () {
     const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' } ];
     const sheet = {
-        participants: participants,
+        participants,
         expenses: [
             {
                 name: 'expense1',
@@ -38,31 +36,48 @@ describe.only('Service: ExpensesService', function () {
             }
         ]
     };
+    describe('Calculating participant shares', function () {
+        let expensesService;
 
-    beforeEach(function () {
-        expensesService = new ExpensesService(sheet);
-    });
+        beforeEach(function () {
+            expensesService = new ExpensesService(sheet);
+        });
 
-    it('should count total sum of expenses', function () {
-        const total = sheet.expenses.reduce((memo, expense) => memo + expense.price, 0);
-        expect(expensesService.getTotalSum()).to.equal(total);
-    });
+        it('should count sum of all expenses', function () {
+            const total = sheet.expenses.reduce((memo, expense) => memo + expense.price, 0);
+            expect(expensesService.getTotalSum()).to.equal(total);
+        });
 
-    it('should return expenses where given participant is participant', function () {
-        const expensesForParticipant2 = expensesService.findExpensesByParticipant(participants[1].id);
-        expect(expensesForParticipant2.length).to.equal(2);
-    });
+        it('should find expenses if the participant is participated in', function () {
+            const expenses = expensesService.findExpensesByParticipant(participants[1].id);
+            expect(expenses.length).to.equal(2);
+            expect(expenses).contains(sheet.expenses[0]);
+            expect(expenses).contains(sheet.expenses[1]);
+        });
 
-    it('should calculate participant\'s share of the total sum', function () {
-        expect(expensesService.calculateParticipantShare(participants[1].id)).to.equal(1.5);
-    });
+        it('should find expenses the participant has paid', function () {
+            const expenses = expensesService.findAllExpensesOfParticipant(participants[0].id);
+            expect(expenses.length).to.equal(4);
+        });
 
-    it('should calculate total sum paid by a participant', function () {
-        expect(expensesService.calculateParticipantTotalPaid(participants[1].id)).to.equal(5);
-    });
+        it('should find expenses the participant has paid for or participated in', function () {
+            const expenses = expensesService.findExpensesPaidByParticipant(participants[0].id);
+            expect(expenses.length).to.equal(2);
+            expect(expenses).contains(sheet.expenses[0]);
+            expect(expenses).contains(sheet.expenses[3]);
+        });
 
-    it('should calculate participant\'s balance (share - total paid)', function () {
-        expect(expensesService.calculateParticipantBalance(participants[1].id)).to.equal(-3.5);
+        it('should calculate participant\'s share of the total sum', function () {
+            expect(expensesService.calculateParticipantShare(participants[1].id)).to.equal(1.5);
+        });
+
+        it('should calculate total sum paid by a participant', function () {
+            expect(expensesService.calculateParticipantTotalPaid(participants[1].id)).to.equal(5);
+        });
+
+        it('should calculate participant\'s balance (share - total paid)', function () {
+            expect(expensesService.calculateParticipantBalance(participants[1].id)).to.equal(-3.5);
+        });
     });
 
     describe('Calculating balances', function () {
@@ -70,6 +85,7 @@ describe.only('Service: ExpensesService', function () {
 
         it('should calculate balances from given expenses', function () {
             const sheet = {
+                participants,
                 expenses: [
                     {
                         name: 'expense1',
@@ -85,7 +101,9 @@ describe.only('Service: ExpensesService', function () {
                     }
                 ]
             };
-            expect(expensesService.calculateBalances(sheet.expenses, participants)).to.deep.equal([
+            const service = new ExpensesService(sheet);
+
+            expect(service.calculateBalances()).to.deep.equal([
                 { participant: '2', balance: -135 },
                 { participant: '3', balance: 30 },
                 { participant: '1', balance: 105 }
@@ -94,6 +112,7 @@ describe.only('Service: ExpensesService', function () {
 
         it('participant\'s balance should be 0 if not participated in any expenses', function () {
             const sheet = {
+                participants,
                 expenses: [
                     {
                         name: 'expense1',
@@ -109,7 +128,9 @@ describe.only('Service: ExpensesService', function () {
                     }
                 ]
             };
-            expect(expensesService.calculateBalances(sheet.expenses, participants)).to.deep.equal([
+            const service = new ExpensesService(sheet);
+
+            expect(service.calculateBalances()).to.deep.equal([
                 { participant: '1', balance: -100 },
                 { participant: '3', balance: 0 },
                 { participant: '2', balance: 100 }
