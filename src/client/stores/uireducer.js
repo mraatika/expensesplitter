@@ -12,6 +12,8 @@ export function uiReducer(state = {}, action) {
         return { ...state, ...{ showLoadSheetDialog: action.state }};
     case Constants.ActionTypes.TOGGLE_NEW_SHEET_MESSAGE:
         return { ...state, ...{ newSheetAdded: action.state }};
+    case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+        return { ...state, ...{ newSheetAdded: false }};
     default:
         return state;
     }

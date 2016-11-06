@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import {t} from 'common/dictionary/dictionary.js';
+import pages from 'client/constants/pages';
 import RouterService from 'client/router/routerservice';
 import Settings from 'client/components/home/settings.jsx';
 import InputButtonSplit from 'client/components/common/inputbuttonsplit.jsx';
@@ -44,8 +45,27 @@ class SheetForm extends React.Component {
      */
     _handleFormSubmit(e) {
         e.preventDefault();
+
         this.props.saveSheet(this.props.sheet);
-        RouterService.navigateTo('/participants', this.props.sheet.id, this.props.adminKey);
+
+        const {sheet} = this.props;
+        let targetHref;
+        let adminKey;
+
+        // if the sheet is already saved then move to participants page
+        if (sheet.lastSavedOn) {
+            targetHref = pages.PARTICIPANTS.href;
+            adminKey = this.props.adminKey;
+        // if the sheet was just created then stay on the home page
+        // just update url to admin url
+        } else {
+            targetHref = pages.HOME.href;
+            adminKey = sheet.adminKey;
+
+            this.props.toggleNewSheetAdded(true);
+        }
+
+        RouterService.navigateTo(targetHref, sheet.id, adminKey);
     }
 
     /**
@@ -152,6 +172,7 @@ SheetForm.propTypes = {
     sheet: PropTypes.object.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
+    toggleNewSheetAdded: PropTypes.func.isRequired,
     dirty: PropTypes.bool,
     summaryButtonDisabled: PropTypes.bool
 };

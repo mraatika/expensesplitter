@@ -1,6 +1,8 @@
 import React, {PropTypes} from 'react';
 import {browserHistory, Link} from 'react-router';
-import {t} from 'common/dictionary/dictionary';
+import {t, tpl} from 'common/dictionary/dictionary';
+import {URLUtils} from 'client/util/utils';
+import pages from 'client/constants/pages';
 import LoadSheetDialogContainer from 'client/containers/loadsheetdialogcontainer';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
 import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
@@ -57,6 +59,7 @@ class HomePage extends React.Component {
     render() {
         const {dirty, sheet, params} = this.props;
         const {adminKey} = params;
+        const adminURL = window.location.origin + URLUtils.formSubpageUrl(pages.HOME.href, sheet.id, sheet.adminKey);
 
         return (
             <section id="home-page">
@@ -68,9 +71,12 @@ class HomePage extends React.Component {
 
                 <MessageContainer
                     show={this.props.newSheetAdded}
+                    onClose={() => this.props.toggleNewSheetAdded(false)}
                     type="info">
-                    { t('home.prev_sheet_saved') + ' ' }
-                    <Link to={'/'} onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</Link>.
+                        <span dangerouslySetInnerHTML={{__html: sheet.lastSavedOn ? tpl('home.sheet_created', { adminURL }) :  t('home.prev_sheet_saved') }}></span>
+                        {
+                            sheet.lastSavedOn ? '' : <Link to={'/'} onClick={this._handleLoadSheetClick.bind(this)}>{ t('home.load_sheet_action') }</Link>
+                        }
                 </MessageContainer>
 
                 <SheetForm
@@ -81,6 +87,7 @@ class HomePage extends React.Component {
                     summaryButtonDisabled={!this.props.params.sheetId}
                     saveSheet={this.props.saveSheet}
                     updateSheet={this.props.updateSheet}
+                    toggleNewSheetAdded={this.props.toggleNewSheetAdded}
                 />
 
                 <div className="row">
