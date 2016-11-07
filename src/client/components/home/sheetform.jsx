@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react';
-import {browserHistory} from 'react-router';
 import {t} from 'common/dictionary/dictionary.js';
 import pages from 'client/constants/pages';
 import RouterService from 'client/router/routerservice';
