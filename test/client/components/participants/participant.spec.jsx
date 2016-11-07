@@ -1,64 +1,40 @@
+import React from 'react';
 import {expect} from 'chai';
 import sinon from 'sinon';
+import Participant from 'components/participants/participant.jsx';
+import TrashButton from 'client/components/common/trashbutton.jsx';
+import {componentRenderer} from '../../support/testhelper';
 
 describe('Component:Participant', function() {
-    const jsdom = require('mocha-jsdom');
 
-    let React;
-    let TestUtils;
-
-    let Participant;
-    let participantListItem;
-    let participantModel = {
+    const participantModel = {
         id: 'id1',
         name: 'Seppo'
     };
 
-    let page = {};
-
-    jsdom();
-
-    before(() => {
-        React = require('react');
-        TestUtils = require('react-testutils-additions');
-        Participant = require('components/participants/participant.jsx').default;
-    });
-
-    const renderListItem = (sheet, props) => {
-        var ListWrapper = React.createClass({
-            render: function() {
-                return (
-                    <ul><Participant participant={participantModel} sheet={sheet} {...props} /></ul>
-                );
-            }
-        });
-        var list = TestUtils.renderIntoDocument(<ListWrapper/>);
-        participantListItem = TestUtils.findRenderedComponentWithType(list, Participant);
-        page.removeButton = TestUtils.findRenderedDOMComponentWithClass(participantListItem, 'icon-button');
+    const defaultProps = {
+        participant: participantModel,
+        onRemoveClick: new Function()
     };
 
+    const renderComponent = componentRenderer(Participant, defaultProps);
 
-    describe('Rendering a participant list row', function () {
-        it('Renders participants name', function() {
-            renderListItem({});
-            // verify name label value
-            var label = TestUtils.findRenderedDOMComponentWithClass(participantListItem, 'participant-list-participant');
-            expect(label.textContent).to.equal(participantModel.name);
+    describe('Rendering', function () {
+        it('should render participant\'s name', function() {
+            const component = renderComponent();
+            const label = component.find('.participant-list-participant');
+            expect(label).to.contain.text(participantModel.name);
         });
     });
 
     describe('Removing a participant', function () {
-        var sheet = {
-            expenses: []
-        };
-
         it('should call given callback when remove button is clicked', function () {
             const spy = sinon.spy();
-            renderListItem(sheet, { onRemoveClick: spy });
-            // Simulate a click and verify that the action creator is called
-            TestUtils.Simulate.click(page.removeButton);
-            expect(spy.callCount).to.equal(1);
-            expect(spy.calledWithExactly(participantModel)).to.be.ok;
+            const component = renderComponent({ onRemoveClick: spy });
+            const button = component.find(TrashButton);
+            button.simulate('click');
+            expect(spy).to.have.been.calledOnce;
+            expect(spy).to.have.been.calledWithExactly(participantModel);
         });
     });
 });

@@ -1,13 +1,16 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-
-const proxyquire = require('proxyquire').noCallThru();
+import proxyquire from 'proxyquire';
 
 /**
  * @TODO: needs more tests
  */
 
 describe('Service: TransactionsService', function () {
+
+    proxyquire.noCallThru();
+    proxyquire.noPreserveCache();
+
     let transactionsService;
     const calculateBalancesStub = sinon.stub();
 

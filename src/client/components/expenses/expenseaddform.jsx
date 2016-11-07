@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react';
 import {delay, chain} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
-import MessageContainer from '../common/messagecontainer.jsx';
-import ValidatedInput from '../common/validatedinput.jsx';
+import MessageContainer from 'client/components/common/messagecontainer.jsx';
+import ValidatedInput from 'client/components/common/validatedinput.jsx';
 
 /**
  * @class ExpensesAddForm
@@ -97,8 +97,7 @@ class ExpenseAddForm extends React.Component {
         // if this component is still mounted
         if (!this._isMounted) return;
 
-        let errors = this.state.errors;
-        errors[property] = error || null;
+        const errors = { ...this.state.errors, [property]: error || null };
         this.setState({ 'errors': errors });
     }
 
@@ -183,8 +182,10 @@ class ExpenseAddForm extends React.Component {
                     closable={false}>
                     {errorTexts.map(error => {
                         return ([
-                            <span className="message-text">{error}</span>,
-                            <br/>
+                            <span>
+                                <span className="message-text">{error}</span>,
+                                <br/>
+                            </span>
                         ]);
                     })}
                 </MessageContainer>

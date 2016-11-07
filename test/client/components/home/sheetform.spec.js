@@ -1,116 +1,190 @@
+import React from 'react';
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {t} from '../../../../src/common/dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
+import pages from 'client/constants/pages';
+import {componentRenderer} from '../../support/testhelper';
 import proxyquire from 'proxyquire';
 
-describe('SheetForm', () => {
-    const jsdom = require('mocha-jsdom');
 
-    let React;
-    let TestUtils;
-    let SheetForm;
-    let ActionCreators;
-    let sheetForm;
-
-    const renderComponent = (sheet) => {
-        sheetForm = TestUtils.renderIntoDocument(<SheetForm currentSheet={sheet}/>);
-    };
+describe('Component:SheetForm', () => {
 
     proxyquire.noCallThru();
-    jsdom();
+    proxyquire.noPreserveCache();
 
-    before(() => {
-        React = require('react');
-        TestUtils = require('react-testutils-additions');
-        SheetForm = proxyquire('components/home/sheetform.jsx', {
-            '../../router/router.js': { navigateToSheetURL: sinon.spy() }
-        }).default;
+    const navigateSpy = sinon.spy();
 
-        ActionCreators = require('actions/dataactioncreators.js').default;
+    const SheetForm = proxyquire('components/home/sheetform.jsx', {
+        'client/router/routerservice': { navigateTo: navigateSpy }
+    }).default;
+
+    const defaultProps = {
+        saveSheet: sinon.spy(),
+        updateSheet: sinon.spy(),
+        toggleNewSheetAdded: sinon.spy()
+    };
+
+    const renderComponent = componentRenderer(SheetForm, defaultProps);
+
+    afterEach(() => {
+        navigateSpy.reset();
+        defaultProps.toggleNewSheetAdded.reset();
+        defaultProps.saveSheet.reset();
+        defaultProps.updateSheet.reset();
     });
 
     describe('State when there isn\'t current sheet', () => {
+        const sheet = { name: 'Camping Trip', settings: {}, lastSavedOn: null };
+        let component;
 
-        beforeEach(() => renderComponent());
+        beforeEach(() => component = renderComponent({sheet}));
 
         it('should display label for sheet input (text refers to adding a new sheet)', () => {
-            const label = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'for', 'sheet-name');
-            expect(label.textContent.indexOf(t('home.name_your_sheet'))).not.to.equal(-1);
+            const _component = renderComponent({ sheet: {...sheet, name: null }});
+            const label = _component.find('[htmlFor="sheet-name"]');
+            expect(label).to.contain.text(t('home.name_your_sheet'));
         });
 
         it('should display empty sheet name input', () => {
-            const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.value).not.to.be.ok;
-            expect(sheetForm.state.currentSheetName).not.to.be.ok;
+            const _component = renderComponent({ sheet: {...sheet, name: null }});
+            const input = _component.find('#sheet-name');
+            expect(input).not.to.have.value();
         });
 
         it('should display an enabled sheet name input', () => {
-            const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.disabled).to.equal(false);
+            const input = component.find('#sheet-name');
+            expect(input).not.to.be.disabled();
         });
 
         it('should find an add button and it should be enabled', () => {
-            const button = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'type', 'submit');
-            expect(button.textContent.indexOf(t('home.button.add'))).not.to.equal(-1);
-            expect(button.disabled).to.equal(false);
+            const button = component.find('button[type="submit"]');
+            expect(button).to.contain.text(t('home.button.add'));
+            expect(button).not.to.be.disabled();
         });
 
         it('should find a settings button and it should be enabled', () => {
-            const button = TestUtils.findRenderedDOMComponentWithClass(sheetForm, 'settings-button');
-            expect(button.disabled).not.to.be.ok;
-        });
-
-        it('should call createSheet method when continue button is pressed', () => {
-            const sheetName = 'Trip to Cancun';
-            const form = TestUtils.findRenderedDOMComponentWithTag(sheetForm, 'form');
-
-            sinon.spy(ActionCreators, 'createSheet');
-
-            const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            input.value = sheetName;
-
-            TestUtils.Simulate.change(input);
-
-            TestUtils.Simulate.submit(form);
-
-            expect(ActionCreators.createSheet.called).to.be.ok;
+            const button = component.find('.settings-button');
+            expect(button).not.to.be.disabled();
         });
 
         it('should show the settings section', () => {
-            expect(sheetForm.state.isSettingsActive).to.be.ok;
+            const _component = renderComponent({sheet, dirty: true });
+            expect(_component.state('isSettingsActive')).to.be.ok;
         });
     });
 
     describe('State when current sheet is defined', () => {
-        const sheet = { name: 'Camping Trip', settings: {} };
+        const sheet = { name: 'Camping Trip', settings: {}, lastSavedOn: new Date().toUTCString() };
+        let component;
 
         beforeEach(() => {
-            renderComponent(sheet);
+            component = renderComponent({sheet});
         });
 
         it('should display label for sheet input (text refers to editing current sheet)', () => {
-            const label = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'for', 'sheet-name');
-            expect(label.textContent.indexOf(t('lang.current_sheet'))).not.to.equal(-1);
+            const label = component.find('[htmlFor="sheet-name"]');
+            expect(label).to.contain.text(t('lang.current_sheet'));
         });
 
         it('should display disabled sheet name input with current sheet\'s name', () => {
-            const input = TestUtils.findRenderedDOMComponentWithId(sheetForm, 'sheet-name');
-            expect(input.value).to.equal(sheet.name);
-            expect(input.disabled).to.equal(true);
+            const input = component.find('#sheet-name');
+            expect(input).to.have.value(sheet.name);
+            expect(input).to.be.disabled();
         });
 
         it('should display edit and continue button enabled', () => {
-            const button = TestUtils.findRenderedDOMComponentWithAttributeValue(sheetForm, 'type', 'submit');
-            expect(button.disabled).to.equal(false);
+            const button = component.find('button[type="submit"]');
+            expect(button).not.to.be.disabled();
         });
 
         it('should find a settings button and it should be enabled', () => {
-            const button = TestUtils.findRenderedDOMComponentWithClass(sheetForm, 'settings-button');
-            expect(button.disabled).to.equal(false);
+            const button = component.find('.settings-button');
+            expect(button).not.to.be.disabled();
         });
 
         it('should display settings section hidden', () => {
-            expect(sheetForm.state.isSettingsActive).not.to.be.ok;
+            const _component = renderComponent({sheet, dirty:false });
+            expect(_component.state('isSettingsActive')).not.to.be.ok;
+        });
+    });
+
+    describe('Creating a new sheet', function () {
+        const sheet = { id: '1', name: '', settings: {}, lastSavedOn: null, adminKey: 'abc' };
+        let component;
+
+        beforeEach(() => component = renderComponent({sheet}));
+
+        it('should call update sheet when name changes', function () {
+            const input = component.find('#sheet-name');
+            const name = 'TestSheet';
+            input.simulate('change', { target: { value: name }});
+            expect(defaultProps.updateSheet).to.have.been.calledWithExactly(sheet, { name });
+        });
+
+        it('should call saveSheet method when continue button is pressed', () => {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(defaultProps.saveSheet).to.have.been.calledWith(sheet);
+        });
+
+        it('should navigate to home with admin key in url', function () {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(navigateSpy).to.have.been.calledWithExactly(pages.HOME.href, sheet.id, sheet.adminKey);
+        });
+
+        it('should toggle new sheet added message', function () {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(defaultProps.toggleNewSheetAdded).to.have.been.called;
+        });
+    });
+
+    describe('Updating a sheet', function () {
+        const sheet = { id: '1', name: '', settings: {}, lastSavedOn: new Date(), adminKey: 'abc' };
+        let component;
+
+        beforeEach(() => component = renderComponent({sheet}));
+
+        it('should call saveSheet method when continue button is pressed', () => {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(defaultProps.saveSheet).to.have.been.calledWith(sheet);
+        });
+
+        it('should navigate to participants page', function () {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(navigateSpy).to.have.been.calledWithExactly(pages.PARTICIPANTS.href, sheet.id, undefined);
+        });
+
+        it('should not toggle new sheet added message', function () {
+            component.simulate('submit', { preventDefault: new Function() });
+            expect(defaultProps.toggleNewSheetAdded).not.to.have.been.called;
+        });
+
+        it('should navigate to participants page with admin key when found in props', function () {
+            const _component = renderComponent({sheet, adminKey: sheet.adminKey });
+            _component.simulate('submit', { preventDefault: new Function() });
+            expect(navigateSpy).to.have.been.calledWithExactly(pages.PARTICIPANTS.href, sheet.id, sheet.adminKey);
+        });
+    });
+
+    describe('Moving to summary page', function () {
+        const sheet = { id: '1', name: '', settings: {}, lastSavedOn: new Date(), adminKey: 'abc' };
+        let component;
+
+        beforeEach(() => component = renderComponent({sheet}));
+
+        it('should save the current sheet', function () {
+            component.find('#sheet-summary-link').simulate('click');
+            expect(defaultProps.saveSheet).to.have.been.calledWith(sheet);
+        });
+
+        it('should navigate to summary page', function () {
+            component.find('#sheet-summary-link').simulate('click');
+            expect(navigateSpy).to.have.been.calledWithExactly(pages.SUMMARY.href, sheet.id, undefined);
+        });
+
+        it('should navigate to summary page with admin key when found in props', function () {
+            const _component = renderComponent({sheet, adminKey: sheet.adminKey });
+            _component.find('#sheet-summary-link').simulate('click');
+            expect(navigateSpy).to.have.been.calledWithExactly(pages.SUMMARY.href, sheet.id, sheet.adminKey);
         });
     });
 });

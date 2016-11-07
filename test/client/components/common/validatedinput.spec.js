@@ -1,211 +1,149 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
+import proxyquire from 'proxyquire';
+import {componentRenderer, componentMounter} from '../../support/testhelper';
 
-describe('ValidatedInput', () => {
-    const jsdom = require('mocha-jsdom');
+describe('Component:ValidatedInput', () => {
 
-    let ValidatedInput;
-    let React;
-    let TestUtils;
+    proxyquire.noPreserveCache();
 
-    jsdom();
+    const validatorStub = sinon.stub();
+    const ValidatedInput = proxyquire('components/common/validatedinput.jsx', {
+        'common/validation/validator' : {
+            validateProperty: validatorStub
+        }
+    }).default;
 
-    before(() => {
-        React = require('react');
-        TestUtils = require('react-testutils-additions');
-        ValidatedInput = require('components/common/validatedinput.jsx').default;
-    });
+    const defaultProps = { schema: { 'testfield': {} }, name: 'testfield' };
+
+    const renderComponent = componentRenderer(ValidatedInput, defaultProps);
+    const mountComponent = componentMounter(ValidatedInput, defaultProps);
 
     describe('Initialization', () => {
-        var consoleErrorStub;
 
-        beforeEach(() => {
-            consoleErrorStub = sinon.spy(console, 'error');
+        it('should pass type property to the actual input field', () => {
+            const component = renderComponent({ type: 'number'});
+            expect(component.find('input').prop('type')).to.equal('number');
         });
 
-        afterEach(() => {
-            console.error.restore();
-        });
-
-        it('should require a schema', () => {
-            React.createElement(ValidatedInput);
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Required prop `schema` was not specified in `ValidatedInput`.');
-        });
-
-        it('should require schema to be an object', () => {
-            React.createElement(ValidatedInput, { schema: 'schema'});
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Invalid prop `schema` of type `string` supplied to `ValidatedInput`, expected `object`.');
-        });
-
-        /*
-        @FIXME: not working (no calls to console.error) for some reason
-        it('should require a name property', () => {
-            React.createElement(ValidatedInput, { schema: {} });
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Required prop `name` was not specified in `ValidatedInput`.');
-        });
-        */
-
-        it('should require name property to be a string', () => {
-            React.createElement(ValidatedInput, { schema: {}, name: 123 });
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Invalid prop `name` of type `number` supplied to `ValidatedInput`, expected `string`.');
-        });
-
-        it('should have default success and fail properties', () => {
-            var field = React.createElement(ValidatedInput, { schema: {}, name: 'testfield' });
-            expect(field.props.success).not.to.be.undefined;
-            expect(field.props.fail).not.to.be.undefined;
-            expect(typeof field.props.success).to.equal('function');
-            expect(typeof field.props.fail).to.equal('function');
-        });
-
-        it('should require success property to be a function', () => {
-            React.createElement(ValidatedInput, { schema: {}, name: '', success: 1 });
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Invalid prop `success` of type `number` supplied to `ValidatedInput`, expected `function`.');
-        });
-
-        it('should require fail property to be a function', () => {
-            React.createElement(ValidatedInput, { schema: {}, name: '', fail: 1 });
-            expect(consoleErrorStub.firstCall.args[0]).to.equal('Warning: Failed propType: Invalid prop `fail` of type `number` supplied to `ValidatedInput`, expected `function`.');
-        });
-
-        it('should pass given attributes to the actual input field', () => {
-            let name = 'testfield';
-            let field = TestUtils.renderIntoDocument(<ValidatedInput schema={{ [name]: {}}} name={name} type="number" />);
-            expect(field.refs.inputField.type).to.equal('number');
+        it('should pass type property to the actual input field', () => {
+            const component = renderComponent({ step: '1'});
+            expect(component.find('input').prop('step')).to.equal('1');
         });
     });
 
     describe('Events', () => {
-        let page = {};
-        let renderField = (events, spy) => {
-            let name = 'testfield';
-            let validatedInput = TestUtils.renderIntoDocument(
-                <ValidatedInput
-                    schema={{[name]: {}}}
-                    name={name}
-                    success={spy}
-                    events={events}/>
-            );
-
-            page.input = validatedInput.refs.inputField;
-
-            return validatedInput;
-        };
-
-
         it('should bind change event to a success callback', () => {
-            let spy = sinon.spy();
-            let value = 'abc';
-            renderField({ change: true }, spy);
+            const spy = sinon.spy();
+            const value = 'abc';
+            const component = renderComponent({ events: { change: true }, success: spy });
+            const input = component.find('input');
 
-            page.input.value = value;
-            TestUtils.Simulate.change(page.input);
-            expect(spy.called).to.equal(true);
+            input.simulate('change', { target: { value }});
+
+            expect(spy).to.have.been.calledWithExactly('testfield', value);
         });
 
         it('should bind blur event to a success callback', () => {
             let spy = sinon.spy();
             let value = 'abc';
-            renderField({ blur: true }, spy);
+            const component = renderComponent({ events: { blur: true }, success: spy });
+            const input = component.find('input');
 
-            page.input.value = value;
-            TestUtils.Simulate.blur(page.input);
-            expect(spy.called).to.equal(true);
+            input.simulate('change', { target: { value }});
+
+            input.simulate('blur', { target: { value }});
+
+            expect(spy).to.have.been.calledWithExactly('testfield', value);
         });
 
         it('should bind all given events to a success callback', () => {
             let spy = sinon.spy();
             let value = 'abc';
-            renderField({ change: true, blur: true }, spy);
+            const component = renderComponent({ events: { change: true, blur: true }, success: spy });
+            const input = component.find('input');
 
-            page.input.value = value;
-            TestUtils.Simulate.blur(page.input);
-            TestUtils.Simulate.change(page.input);
-            expect(spy.callCount).to.equal(2);
-        });
+            input.simulate('change', { target: { value }});
+            input.simulate('blur', { target: { value }});
 
-        it('should call success callback with field\' s name and value', () => {
-            let spy = sinon.spy();
-            let value = 'abc';
-            let field = renderField({ blur: true }, spy);
-
-            page.input.value = value;
-            TestUtils.Simulate.blur(page.input);
-            expect(spy.calledWithExactly(field.props.name, value)).to.equal(true);
+            expect(spy).to.have.been.calledTwice;
         });
     });
 
     describe('Validation', function () {
-        var page = {};
-        var renderField = (successSpy, failSpy, props = {}, schema = {type: 'string', required: true}) => {
-            let propertySchema = { 'testfield': schema };
-            let validatedInput = TestUtils.renderIntoDocument(
-                <ValidatedInput
-                    {...props}
-                    type="number"
-                    schema={propertySchema}
-                    name={'testfield'}
-                    success={successSpy || (() => {})}
-                    fail={failSpy || (() => {})}
-                    events={{change: true}}/>
-            );
-
-            page.input = validatedInput.refs.inputField;
-
-            return validatedInput;
+        const schema = {type: 'string', required: true};
+        const propertySchema = { 'testfield': schema };
+        const successSpy = sinon.spy();
+        const failSpy = sinon.spy();
+        const defaultProps = {
+            type: 'number',
+            schema: propertySchema,
+            success: successSpy,
+            fail: failSpy,
+            events: { change:true }
         };
 
+        let component;
+
+        beforeEach(() => component = renderComponent(defaultProps));
+        afterEach(() => {
+            successSpy.reset();
+            failSpy.reset();
+        });
+
         it('should not call success callback when validation fails', () => {
-            let spy = sinon.spy();
-            renderField(spy);
-            page.input.value = '';
-            TestUtils.Simulate.change(page.input);
-            expect(spy.called).to.equal(false);
+            const input = component.find('input');
+            validatorStub.returns({ name: true });
+            input.simulate('change', { target: { value: '' }});
+            expect(successSpy).not.to.have.been.called;
         });
 
         it('should call fail callback when validation fails', () => {
-            let spy = sinon.spy();
-            let value = '';
-            let schema = {
-                type: 'string',
-                required: true
-            };
-            let field = renderField(null,spy, {}, schema);
-            page.input.value = value;
-            TestUtils.Simulate.change(page.input);
-            expect(spy.called).to.equal(true);
-            expect(spy.calledWithExactly(field.props.name, value, true)).to.equal(true);
+            const input = component.find('input');
+            const error = { name: true };
+            validatorStub.returns(error);
+            input.simulate('change', { target: { value: '' }});
+            expect(failSpy).to.have.been.calledWithExactly('testfield', '', error);
         });
 
         it('should mark field with an error class when validation fails', () => {
-            let value = '';
-            renderField();
-            page.input.value = value;
-            TestUtils.Simulate.change(page.input);
-            expect(page.input.className.indexOf('error')).not.to.equal(-1);
+            const _component = mountComponent(defaultProps);
+            const input = _component.find('input');
+            const error = { name: true };
+            validatorStub.returns(error);
+            input.simulate('change', { target: { value: '' }});
+            expect(input).to.have.className('error');
         });
 
         it('should keep class names passed in props along with the error class', () => {
-            let value = '';
-            let className = 'abc';
-            renderField(null, null, { className: className });
-            page.input.value = value;
-            TestUtils.Simulate.change(page.input);
-            expect(page.input.className.indexOf('error')).not.to.equal(-1);
-            expect(page.input.className.indexOf(className)).not.to.equal(-1);
+            const className = 'abc';
+            const _component = mountComponent({...defaultProps, className });
+            const input = _component.find('input');
+            const error = { name: true };
+
+            validatorStub.returns(error);
+            input.simulate('change', { target: { value: '' }});
+
+            expect(input).to.have.className('error');
+            expect(input).to.have.className(className);
         });
 
         it('should derive input node\'s validation related properties from the schema', () => {
-            var schema = {
-                type: 'number',
-                required: true,
-                min: 1,
-                max: 3
+            const schema = {
+                testfield: {
+                    type: 'number',
+                    required: true,
+                    min: 1,
+                    max: 3
+                }
             };
-            renderField(null, null, {}, schema);
-            expect(page.input.props.required).to.equal(schema.required);
-            expect(page.input.props.min).to.equal(schema.min);
-            expect(page.input.props.max).to.equal(schema.max);
+
+            const _component = renderComponent({...defaultProps, schema });
+            const input = _component.find('input');
+
+            expect(input).to.have.prop('required');
+            expect(input).to.have.prop('min', schema.min);
+            expect(input).to.have.prop('max', schema.max);
         });
     });
 });

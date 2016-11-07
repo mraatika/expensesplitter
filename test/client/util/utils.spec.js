@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {URLUtils} from 'util/utils';
 
-describe.only('Utility functions', function () {
+describe('Utility functions', function () {
 
     describe('URL utils', function () {
         describe('Getting a sheet id from the url', function () {

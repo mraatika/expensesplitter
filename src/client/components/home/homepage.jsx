@@ -93,6 +93,7 @@ class HomePage extends React.Component {
                 <div className="row">
                     <div className="four columns">
                         <button
+                            id="button-add-sheet"
                             onClick={this._onAddClick.bind(this)}
                             className="u-full-width button"
                             disabled={!sheet.lastSavedOn}>
@@ -143,6 +144,7 @@ HomePage.propTypes = {
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
     removeSheet: PropTypes.func.isRequired,
+    toggleLoadSheetDialog: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
     dirty: PropTypes.bool,
     newSheetAdded: PropTypes.bool

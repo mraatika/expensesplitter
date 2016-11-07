@@ -1,117 +1,126 @@
+import React from 'react';
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {t} from 'dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
+import ParticipantAddForm from 'components/participants/participantaddform.jsx';
+import MessageContainer from 'client/components/common/messagecontainer.jsx';
+import {componentRenderer, componentMounter} from '../../support/testhelper';
 
 describe('Component:ParticipantAddForm', function() {
-    const jsdom = require('mocha-jsdom');
-    const page = {};
 
-    let React;
-    let TestUtils;
-    let ParticipantAddForm;
-    let participants;
-    let participantAddForm;
+    const participants =  [
+        { name: 'Kake' },
+        { name: 'Make' },
+        { name: 'Pera' }
+    ];
 
-    jsdom();
+    const defaultProps = {
+        participants,
+        onFormSubmit: new Function()
+    };
 
-    before(() => {
-        React = require('react');
-        TestUtils = require('react-testutils-additions');
-        ParticipantAddForm = require('components/participants/participantaddform.jsx').default;
-    });
-
-    beforeEach(function () {
-        participants = [
-            { name: 'Kake' },
-            { name: 'Make' },
-            { name: 'Pera' }
-        ];
-
-        participantAddForm = TestUtils.renderIntoDocument(
-            <ParticipantAddForm participants={participants} onFormSubmit={sinon.spy()}/>
-        );
-
-        page.errorTextSpan = TestUtils.findRenderedDOMComponentWithClass(participantAddForm, 'danger');
-        page.nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-        page.form = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'form');
-    });
+    const renderComponent = componentRenderer(ParticipantAddForm, defaultProps);
+    const mountComponent = componentMounter(ParticipantAddForm, defaultProps);
 
     describe('Initial state', function () {
+        let component;
+
+        beforeEach(() => component = renderComponent());
+
         it('should not display error span by default', function() {
-            // verify name label value
-            expect(page.errorTextSpan.style.display).to.equal('none');
+            const error = component.find(MessageContainer);
+            expect(error).to.have.style('display', 'none');
         });
 
         it('should not display name input with error class', function () {
-            expect(page.nameField.className.indexOf('error')).to.equal(-1);
+            const field = component.find('#participant-name');
+            expect(field).not.to.have.className('error');
         });
 
         it('text input field should have placeholder containing a default value', function () {
-            var expectation = 'Participant ' + (participants.length + 1);
-            var nameField = TestUtils.findRenderedDOMComponentWithTag(participantAddForm, 'input');
-            expect(nameField.getAttribute('placeholder')).to.equal(expectation);
+            const expectation = `Participant ${participants.length + 1}`;
+            const field = component.find('#participant-name');
+            expect(field.prop('placeholder')).to.equal(expectation);
         });
     });
 
     describe('Creating participants', function () {
+        let component;
+        let onFormSubmitSpy = sinon.spy();
+
+        beforeEach(() => component = mountComponent({ onFormSubmit: onFormSubmitSpy }));
+        afterEach(() => onFormSubmitSpy.reset());
+
         it('should call props.onFormSubmit when add button is clicked', function () {
-            var participant = { name: 'Seppo' };
+            const participant = { name: 'Seppo' };
 
-            page.nameField.value = participant.name;
-            TestUtils.Simulate.change(page.nameField);
+            component.find('#participant-name').simulate('change', { target: { value: participant.name }});
 
-            TestUtils.Simulate.submit(page.form);
+            component.simulate('submit', { preventDefault: new Function() });
 
-            expect(participantAddForm.props.onFormSubmit.calledWith(participant)).to.be.ok;
+            expect(onFormSubmitSpy).to.have.been.calledWith(participant);
         });
 
         it('should use placeholder as name when the field is left empty', function () {
-            var placeHolder = page.nameField.getAttribute('placeholder');
-            var expected = { name: placeHolder };
+            const placeHolder = `Participant ${participants.length + 1}`;
+            const expected = { name: placeHolder };
 
-            TestUtils.Simulate.submit(page.form);
+            component.simulate('submit', { preventDefault: new Function() });
 
-            expect(participantAddForm.props.onFormSubmit.calledWith(expected)).to.be.ok;
+            expect(onFormSubmitSpy).to.have.been.calledWith(expected);
         });
 
         it('should set initial state after successfull create', function () {
-            var participant = { name: 'Jake' };
+            const participant = { name: 'Jake' };
 
-            page.nameField.value = participant.name;
-            TestUtils.Simulate.change(page.nameField);
+            component.find('#participant-name').simulate('change', { target: { value: participant.name }});
 
-            TestUtils.Simulate.submit(page.form);
+            component.simulate('submit', { preventDefault: new Function() });
 
-            expect(page.nameField.getAttribute('placeholder')).to.equal('Participant ' + (participantAddForm.props.participants.length + 1));
-            expect(page.errorTextSpan.style.display).to.equal('none');
-            expect(page.nameField.className.indexOf('error')).to.equal(-1);
+            expect(component.find(MessageContainer)).to.have.style('display', 'none');
+            expect(component.find('#participant-name')).not.to.have.className('error');
         });
     });
 
     describe('Errors', function () {
+        let component;
+        let onFormSubmitSpy = sinon.spy();
+
+        beforeEach(() => component = renderComponent({ onFormSubmit: onFormSubmitSpy }));
+        afterEach(() => onFormSubmitSpy.reset());
+
         it('should display an error text when trying to add participant with same name twice', function () {
-            var name = participants[0].name;
+            const name = participants[0].name;
+            const expectedErrorText = t('error.participant.name.duplicate');
 
-            page.nameField.value = name;
-            TestUtils.Simulate.change(page.nameField);
+            component.find('#participant-name').simulate('change', { target: { value: name }});
 
-            TestUtils.Simulate.submit(page.form);
+            component.simulate('submit', { preventDefault: new Function() });
 
-            var expectedErrorText = t('error.participant.name.duplicate');
+            expect(component.find(MessageContainer).dive()).to.have.style('display', 'block');
+            expect(component.find(MessageContainer).dive()).to.contain.text(`${expectedErrorText} ${name}`);
+        });
 
-            expect(page.errorTextSpan.className.indexOf('hidden')).to.equal(-1);
-            expect(page.errorTextSpan.textContent).to.equal(expectedErrorText + ' ' + name);
+        it('should not call submit callback if invalid', function () {
+            const name = participants[0].name;
+
+            component.find('#participant-name').simulate('change', { target: { value: name }});
+
+            component.simulate('submit', { preventDefault: new Function() });
+
+            expect(onFormSubmitSpy).not.to.have.been.called;
         });
 
         it('should add an error class to the name input', function () {
-            var name = participants[0].name;
+            const _component = mountComponent();
+            const name = participants[0].name;
+            const field = _component.find('#participant-name');
 
-            page.nameField.value = name;
-            TestUtils.Simulate.change(page.nameField);
+            field.simulate('change', { target: { value: name }});
 
-            TestUtils.Simulate.submit(page.form);
+            _component.simulate('submit', { preventDefault: new Function() });
 
-            expect(page.nameField.className.indexOf('error')).not.to.equal(-1);
+            expect(field).to.have.className('error');
         });
     });
 });

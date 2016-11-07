@@ -73,8 +73,8 @@ class SheetForm extends React.Component {
      * @private
      * @return {undefined}
      */
-    _handleCurrentSheetNameChange() {
-        this.props.updateSheet(this.props.sheet, { name: this.sheetNameInput.value });
+    _handleCurrentSheetNameChange(e) {
+        this.props.updateSheet(this.props.sheet, { name: e.target.value });
     }
 
     /**
@@ -92,7 +92,7 @@ class SheetForm extends React.Component {
      */
     _onSummaryButtonClick() {
         this.props.saveSheet(this.props.sheet);
-        browserHistory.push(`/sheet/${this.props.sheet.id}/summary`);
+        RouterService.navigateTo(pages.SUMMARY.href, this.props.sheet.id, this.props.adminKey);
     }
 
     /**
@@ -157,6 +157,7 @@ class SheetForm extends React.Component {
 
                 <button
                     type="button"
+                    id="sheet-summary-link"
                     className="u-full-width"
                     disabled={this.props.summaryButtonDisabled}
                     onClick={this._onSummaryButtonClick.bind(this)}>

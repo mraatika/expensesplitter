@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import TrashButton from '../common/trashbutton.jsx';
+import TrashButton from 'client/components/common/trashbutton.jsx';
 
 class Participant extends React.Component {
     render() {

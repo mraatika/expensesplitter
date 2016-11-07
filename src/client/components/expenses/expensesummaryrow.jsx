@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
-import ExpensesService from 'service/expensesservice';
-import {t} from 'dictionary/dictionary';
-import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
+import ExpensesService from 'client/service/expensesservice';
+import {t} from 'common/dictionary/dictionary';
+import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
 
 /**
  * @class ExpenseSummaryRow

@@ -1,69 +1,42 @@
+import React from 'react';
 import {expect} from 'chai';
-import _ from 'lodash';
+import {range} from 'lodash';
 import sinon from 'sinon';
-import {t} from 'dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
+import MessageContainer from 'client/components/common/messagecontainer.jsx';
+import {componentRenderer, componentMounter} from '../../support/testhelper';
+import ExpenseAddForm from 'components/expenses/expenseaddform.jsx';
 
 describe('Component:ExpenseAddForm', function() {
-    const jsdom = require('mocha-jsdom');
 
-    let React;
-    let ReactDOM;
-    let TestUtils;
-    let ExpenseAddForm;
-
-    var expenseAddForm;
-    var page = {};
-    var participants = [
-        {id: 1, name: 'Seppo'},
-        {id: 2, name: 'Kake'},
-        {id: 3, name: 'Jorma'}
-    ];
-
-    var renderComponent = function(props) {
-        props = Object.assign({
-            participants,
-            expenses: [],
-            onSubmit: sinon.spy()
-        }, props);
-
-        expenseAddForm = TestUtils.renderIntoDocument(
-            <ExpenseAddForm {...props} />
-        );
-
-        page.nameField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-name');
-        page.priceField = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-price');
-        page.participantsSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-participants');
-        page.payerSelect = TestUtils.findRenderedDOMComponentWithId(expenseAddForm, 'expense-payer');
-        page.errorText = TestUtils.findRenderedDOMComponentWithClass(expenseAddForm, 'danger');
-        page.submitButton = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'button');
-        page.expenseForm = TestUtils.findRenderedDOMComponentWithTag(expenseAddForm, 'form');
+    const defaultProps = {
+        participants: [
+            {id: 1, name: 'Seppo'},
+            {id: 2, name: 'Kake'},
+            {id: 3, name: 'Jorma'}
+        ],
+        expenses: [],
+        onSubmit: new Function()
     };
 
-    jsdom();
-
-    before(() => {
-        React = require('react');
-        ReactDOM = require('react-dom');
-        TestUtils = require('react-testutils-additions');
-        ExpenseAddForm = require('components/expenses/expenseaddform.jsx').default;
-    });
-
-    beforeEach(function () {
-        renderComponent();
-    });
+    const renderComponent = componentRenderer(ExpenseAddForm, defaultProps);
+    const mountComponent = componentMounter(ExpenseAddForm, defaultProps);
 
     describe('Rendering', function () {
         it('should have default values set', function () {
-            expect(page.nameField.value).to.equal('');
-            expect(page.priceField.value).to.equal('');
-            expect(page.participantsSelect.value).to.equal('' + participants[0].id);
-            expect(page.payerSelect.value).to.equal('' + participants[0].id);
+            const component = renderComponent();
+            const {participants} = defaultProps;
+            expect(component.find('#expense-name')).to.have.value('');
+            expect(component.find('#expense-price')).to.have.value('');
+            expect(component.find('#expense-participants').prop('value')).to.be.a('array');
+            expect(component.find('#expense-payer')).to.have.value('' + participants[0].id);
         });
 
         it('should display an error when current sheet doesn\'t contain any participants', function () {
-            renderComponent({ participants: [] });
-            expect(page.errorText.textContent).to.equal(t('expenseaddform.error.participants'));
-            expect(page.submitButton.disabled).to.be.ok;
+            const component = renderComponent({ participants: [] });
+            const message = component.find(MessageContainer);
+            expect(message.dive()).to.contain.text(t('expenseaddform.error.participants'));
+            expect(component.find('button[type="submit"]')).to.be.disabled();
         });
     });
 
@@ -71,59 +44,73 @@ describe('Component:ExpenseAddForm', function() {
 
         describe('name', function () {
             it('should require a name', function (done) {
-                page.nameField.value = '';
+                const component = mountComponent();
+                const field = component.find('#expense-name');
+                const message = component.find(MessageContainer);
 
-                TestUtils.Simulate.change(page.nameField);
+                field.simulate('change', { target: { value: '' }});
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).to.equal(t('error.expense.name.required'));
-                    expect(page.nameField.className.indexOf('error')).not.to.equal(-1);
+                    expect(message).to.contain.text(t('error.expense.name.required'));
+                    expect(field).to.have.className('error');
                     done();
-                }, 105);
+                }, 200);
             });
 
             it('should require name to contain less than 100 characters', function (done) {
-                var str = _.range(0, 100).join('');
-                page.nameField.value = str;
-                TestUtils.Simulate.change(page.nameField);
+                const component = mountComponent();
+                const field = component.find('#expense-name');
+                const message = component.find(MessageContainer);
+
+                field.simulate('change', {target: { value: range(0, 100).join('') }});
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).to.equal(t('error.expense.name.maxLength'));
+                    expect(message).to.contain.text(t('error.expense.name.maxLength'));
+                    expect(field).to.have.className('error');
                     done();
-                }, 105);
+                }, 200);
             });
         });
 
         describe('price', function () {
             it('should require a price', function (done) {
-                page.priceField.value = '';
-                TestUtils.Simulate.change(page.priceField);
+                const component = mountComponent();
+                const field = component.find('#expense-price');
+                const message = component.find(MessageContainer);
+
+                field.simulate('change');
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).to.equal(t('error.expense.price.required'));
-                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
+                    expect(message).to.contain.text(t('error.expense.price.required'));
+                    expect(field).to.have.className('error');
                     done();
                 }, 105);
             });
 
             it('should require price to be greater than 0', function (done) {
-                page.priceField.value = 0;
-                TestUtils.Simulate.change(page.priceField, { target: { value: 0 }});
+                const component = mountComponent();
+                const field = component.find('#expense-price');
+                const message = component.find(MessageContainer);
+
+                field.simulate('change', { target: { value: 0 }});
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).to.equal(t('error.expense.price.min'));
-                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
+                    expect(message).to.contain.text(t('error.expense.price.min'));
+                    expect(field).to.have.className('error');
                     done();
                 }, 105);
             });
 
             it('should require price less than 1000000', function (done) {
-                page.priceField.value = 1000001;
-                TestUtils.Simulate.change(page.priceField);
+                const component = mountComponent();
+                const field = component.find('#expense-price');
+                const message = component.find(MessageContainer);
+
+                field.simulate('change', { target: { value: 1000001 }});
 
                 setTimeout(() => {
-                    expect(page.errorText.textContent).to.equal(t('error.expense.price.max'));
-                    expect(page.priceField.className.indexOf('error')).not.to.equal(-1);
+                    expect(message).to.contain.text(t('error.expense.price.max'));
+                    expect(field).to.have.className('error');
                     done();
                 }, 105);
             });
@@ -131,94 +118,99 @@ describe('Component:ExpenseAddForm', function() {
     });
 
     describe('Selecting a default payer', function () {
-        var expenseModel = {
+        const expenseModel = {
             name: 'Beer',
             price: 150,
             participants: [ 2 ],
             payer: 2
         };
 
-        var participantOptions = participants.map(function(p) {
+        const participantOptions = defaultProps.participants.map(function(p) {
             return { value: p.id, selected: p.id === expenseModel.payer };
         });
 
         it('should keep current payer as default', function () {
-            expenseAddForm.setState({ expense: expenseModel });
+            const {participants} = defaultProps;
+            const spy = sinon.spy();
+            const component = mountComponent({ onSubmit: spy });
+            const field = component.find('#expense-payer');
 
-            TestUtils.Simulate.submit(page.expenseForm);
-            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
+            component.setState({ expense: expenseModel });
 
-            expect(page.payerSelect.value).to.equal('' + participants[1].id);
-            expect(expenseAddForm.state.expense.payer).to.equal(participants[1].id);
+            component.simulate('submit');
+            expect(spy).to.have.been.calledWith(expenseModel);
+
+            expect(field).to.have.value('' + participants[1].id);
+            expect(component.state('expense').payer).to.equal(participants[1].id);
 
             // this time without changing the payer select
-            TestUtils.Simulate.change(page.nameField, { target: { value: expenseModel.name }});
-            TestUtils.Simulate.change(page.priceField, { target: { value: expenseModel.price }});
-            TestUtils.Simulate.change(page.participantsSelect, { target: { options: participantOptions }});
-            TestUtils.Simulate.submit(page.expenseForm);
+            component.find('#expense-name').simulate('change', { target: { value: expenseModel.name }});
+            component.find('#expense-price').simulate('change', { target: { value: expenseModel.price }});
+            component.find('#expense-participants').simulate('change', { target: { options: participantOptions }});
+            component.simulate('submit');
 
-            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
-            expect(page.payerSelect.value).to.equal('' + participants[1].id);
-            expect(expenseAddForm.state.expense.payer).to.equal(participants[1].id);
+            expect(spy).to.have.been.calledWith(expenseModel);
+            expect(component.find('#expense-payer')).to.have.value('' + participants[1].id);
+            expect(component.state('expense').payer).to.equal(participants[1].id);
         });
     });
 
     describe('Selecting default participants', function () {
-        var expenseModel = {
+        const spy = sinon.spy();
+        const expenseModel = {
             name: 'Beer',
             price: 150,
             participants: [ 1, 2 ],
             payer: 2
         };
 
-        var participantOptions = participants.map(function(p) {
-            return { value: p.id, selected: false };
-        });
-
         it('should keep current participants as default', function () {
-            expenseAddForm.setState({ expense: expenseModel });
+            const component = mountComponent({ onSubmit: spy });
+            component.setState({ expense: expenseModel });
 
-            TestUtils.Simulate.submit(page.expenseForm);
-            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
+            component.simulate('submit');
+            expect(spy).to.have.been.calledWith(expenseModel);
 
-            //expect(page.participants.value).to.equal('' + participants[1].id);
-            expect(expenseAddForm.state.expense.participants).to.deep.equal([ 1, 2 ]);
+            expect(component.find('#expense-participants').prop('value')).to.deep.equal([ 1,2 ]);
+            expect(component.state('expense').participants).to.deep.equal([ 1, 2 ]);
 
-            // this time without changing the payer select
-            TestUtils.Simulate.change(page.nameField, { target: { value: expenseModel.name }});
-            TestUtils.Simulate.change(page.priceField, { target: { value: expenseModel.price }});
-            TestUtils.Simulate.change(page.payerSelect, { target: { 'options': participantOptions, selectedIndex: 1 }});
-            TestUtils.Simulate.submit(page.expenseForm);
+            // this time without changing the participants selection
+            component.find('#expense-name').simulate('change', { target: { value: expenseModel.name }});
+            component.find('#expense-price').simulate('change', { target: { value: expenseModel.price }});
+            component.simulate('submit');
 
-            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
+            expect(spy.calledWith(expenseModel)).to.be.ok;
         });
     });
 
     describe('form submit', function () {
-        var expenseModel = {
+        const expenseModel = {
             name: 'Beer',
             price: '1000',
-            participants: ['1', '2', '3'],
-            payer: '1'
+            participants: [1, 2, 3],
+            payer: 1
         };
 
-        it('should call ActionCreators.addExpense with expense model when submitting a valid form', function () {
-            page.nameField.value = expenseModel.name;
-            TestUtils.Simulate.change(page.nameField);
-            page.priceField.value = expenseModel.price;
-            TestUtils.Simulate.change(page.priceField);
-            page.payerSelect.selectedIndex = 0;
-            TestUtils.Simulate.change(page.payerSelect);
-            page.participantsSelect.options[0].selected = true;
-            page.participantsSelect.options[1].selected = true;
-            page.participantsSelect.options[2].selected = true;
-            TestUtils.Simulate.change(page.participantsSelect);
+        it('should call ActionCreators.addExpense with expense model when submitting a valid form', function (done) {
+            const spy = sinon.spy();
+            const component = mountComponent({ onSubmit: spy });
+            const message = component.find(MessageContainer);
+            const participantOptions = defaultProps.participants.map(function(p) {
+                return { value: p.id, selected: true };
+            });
 
-            expect(page.errorText.style.display).to.equal('none');
-            expect(page.submitButton.disabled).not.to.be.ok;
-            TestUtils.Simulate.submit(page.expenseForm);
+            component.find('#expense-name').simulate('change', { target: { value: expenseModel.name }});
+            component.find('#expense-price').simulate('change', { target: { value: expenseModel.price }});
+            component.find('#expense-participants').simulate('change', { target: { options: participantOptions }});
+            component.find('#expense-payer').simulate('change', { target: { options: participantOptions, selectedIndex: 0 }});
 
-            expect(expenseAddForm.props.onSubmit.calledWith(expenseModel)).to.be.ok;
+            setTimeout(() => {
+                expect(message).to.have.style('display', 'none');
+                expect(component.find('button[type="submit"]')).not.to.be.disabled();
+                component.simulate('submit');
+                expect(spy).to.have.been.calledWith(expenseModel);
+                done();
+            }, 105);
         });
     });
 });

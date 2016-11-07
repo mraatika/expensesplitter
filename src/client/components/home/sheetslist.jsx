@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
-import {t} from 'dictionary/dictionary';
-import Sheet from 'components/home/sheet.jsx';
+import {t} from 'common/dictionary/dictionary';
+import Sheet from 'client/components/home/sheet.jsx';
 
 /**
  * @class SheetsList

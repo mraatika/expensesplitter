@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {NumberUtils} from '../../util/utils.js';
+import {NumberUtils} from 'client/util/utils';
 
 /**
  * @class Transaction

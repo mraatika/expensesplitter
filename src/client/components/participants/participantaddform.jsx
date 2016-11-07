@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {find} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
-import MessageContainer from '../common/messagecontainer.jsx';
+import MessageContainer from 'client/components/common/messagecontainer.jsx';
 
 class ParticipantAddForm extends React.Component {
 
@@ -23,8 +23,8 @@ class ParticipantAddForm extends React.Component {
         }
     }
 
-    _handleParticipantNameChange() {
-        this.setState({ participantName: this._participantInput.value });
+    _handleParticipantNameChange(e) {
+        this.setState({ participantName: e.target.value });
     }
 
     _handleFormSubmit(e) {
