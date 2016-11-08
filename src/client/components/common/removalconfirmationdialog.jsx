@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {t} from 'common/dictionary/dictionary';
-import ModalDialog from '../common/modaldialog.jsx';
+import ModalDialog from 'client/components/common/modaldialog.jsx';
 
 /**
  * @class RemovalConfirmationDialog

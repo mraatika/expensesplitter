@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {t} from 'common/dictionary/dictionary.js';
+import {t} from 'common/dictionary/dictionary';
 import pages from 'client/constants/pages';
 import RouterService from 'client/router/routerservice';
 import Settings from 'client/components/home/settings.jsx';

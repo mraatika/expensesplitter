@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react';
 import {sortByAll} from 'lodash';
-import ExpensesService from '../../service/expensesservice';
+import ExpensesService from 'client/service/expensesservice';
 import {t} from 'common/dictionary/dictionary';
-import Share from './share.jsx';
-import ShareSummaryRow from './sharesummaryrow.jsx';
+import Share from 'client/components/shares/share.jsx';
+import ShareSummaryRow from 'client/components/shares/sharesummaryrow.jsx';
 
 /**
  * @class SharesTable

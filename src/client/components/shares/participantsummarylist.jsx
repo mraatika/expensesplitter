@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
-import ExpensesService from '../../service/expensesservice';
-import ParticipantSummaryListItem from './participantsummarylistitem.jsx';
+import ExpensesService from 'client/service/expensesservice';
+import ParticipantSummaryListItem from 'client/components/shares/participantsummarylistitem.jsx';
 
 /**
  * @class ParticipantsShareSummary

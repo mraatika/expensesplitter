@@ -1,4 +1,4 @@
-import LocalStorageAdapter from 'util/localstorageadapter';
+import LocalStorageAdapter from 'client/util/localstorageadapter';
 
 /**
  * Export create function for creating localstorage adapter

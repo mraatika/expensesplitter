@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
-import Expense from './expense.jsx';
-import ExpenseSummaryRow from './expensesummaryrow.jsx';
+import Expense from 'client/components/expenses/expense.jsx';
+import ExpenseSummaryRow from 'client/components/expenses/expensesummaryrow.jsx';
 import {t} from 'common/dictionary/dictionary';
 
 /**

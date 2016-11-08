@@ -1,4 +1,4 @@
-import service from 'server/service/sheetservice.js';
+import service from 'server/service/sheetservice';
 import AuthenticationError from 'server/util/authenticationerror';
 
 /**

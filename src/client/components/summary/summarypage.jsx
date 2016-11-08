@@ -1,18 +1,18 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import Clipboard from 'clipboard';
-import {t} from 'dictionary/dictionary';
-import TransactionsService from 'service/transactionsservice';
-import ParticipantSummaryList from 'components/shares/participantsummarylist.jsx';
-import TransactionsList from 'components/transactions/transactionslist.jsx';
-import SharesTable from 'components/shares/sharestable.jsx';
-import pages from 'constants/pages';
-import Navigation from 'components/navigation/navigation.jsx';
-import {DateUtils, URLUtils} from 'util/utils.js';
-import SaveButton from 'components/common/savebutton.jsx';
-import InputButtonSplit from 'components/common/inputbuttonsplit.jsx';
-import RemovalConfirmationDialog from 'components/common/removalconfirmationdialog.jsx';
-import ExpensesService from 'service/expensesservice';
+import {t} from 'common/dictionary/dictionary';
+import TransactionsService from 'client/service/transactionsservice';
+import ParticipantSummaryList from 'client/components/shares/participantsummarylist.jsx';
+import TransactionsList from 'client/components/transactions/transactionslist.jsx';
+import SharesTable from 'client/components/shares/sharestable.jsx';
+import pages from 'client/constants/pages';
+import Navigation from 'client/components/navigation/navigation.jsx';
+import {DateUtils, URLUtils} from 'client/util/utils';
+import SaveButton from 'client/components/common/savebutton.jsx';
+import InputButtonSplit from 'client/components/common/inputbuttonsplit.jsx';
+import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
+import ExpensesService from 'client/service/expensesservice';
 
 
 /**

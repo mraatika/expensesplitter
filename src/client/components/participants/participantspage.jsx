@@ -1,11 +1,11 @@
 import React, {PropTypes} from 'react';
-import pages from '../../constants/pages';
-import ParticipantList from './participantlist.jsx';
-import ParticipantAddForm from './participantaddform.jsx';
-import Navigation from '../navigation/navigation.jsx';
+import pages from 'client/constants/pages';
+import ParticipantList from 'client/components/participants/participantlist.jsx';
+import ParticipantAddForm from 'client/components/participants/participantaddform.jsx';
+import Navigation from 'client/components/navigation/navigation.jsx';
 import {t} from 'common/dictionary/dictionary';
-import RemovalConfirmationDialog from '../common/removalconfirmationdialog.jsx';
-import ExpensesService from '../../service/expensesservice';
+import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
+import ExpensesService from 'client/service/expensesservice';
 
 /**
  * @class ParticipantsPage

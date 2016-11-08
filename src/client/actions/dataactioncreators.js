@@ -1,7 +1,7 @@
 import {isObject} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import Constants from 'client/constants/appconstants';
-import {InvalidArgumentsError} from 'client/util/errors.js';
+import {InvalidArgumentsError} from 'client/util/errors';
 
 /**
  *

@@ -1,7 +1,7 @@
-import HomePage from 'components/home/homepage.jsx';
 import {connect} from 'react-redux';
-import * as DataActions from 'actions/dataactioncreators';
-import * as UiActions from 'actions/uiactioncreators';
+import HomePage from 'client/components/home/homepage.jsx';
+import * as DataActions from 'client/actions/dataactioncreators';
+import * as UiActions from 'client/actions/uiactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, dirty} = state.sheet;

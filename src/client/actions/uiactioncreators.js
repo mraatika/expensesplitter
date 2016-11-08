@@ -1,4 +1,4 @@
-import Constants from 'constants/appconstants';
+import Constants from 'client/constants/appconstants';
 
 /**
  *

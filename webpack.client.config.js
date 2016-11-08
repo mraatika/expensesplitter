@@ -195,8 +195,7 @@ module.exports = {
     },
 
     resolve: {
-        root: [path.resolve('./src')],
-        modulesDirectories: ['src/common', 'node_modules', 'src/client', 'src']
+        root: [path.resolve('./src')]
     },
 
     debug: !isProd,

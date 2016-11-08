@@ -3,7 +3,7 @@ import axiosMiddleware from 'redux-axios-middleware';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import axios from 'axios';
-import rootReducer from 'stores/rootreducer';
+import rootReducer from 'client/stores/rootreducer';
 
 const client = axios.create({
     baseURL:'http://localhost:4932/api',

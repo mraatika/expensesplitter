@@ -1,6 +1,6 @@
 import immutable from 'object-path-immutable';
 import {reduce} from 'lodash';
-import Constants from 'constants/appconstants';
+import Constants from 'client/constants/appconstants';
 
 /**
  * Update state property if value changes

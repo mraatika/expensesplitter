@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import {DateUtils} from 'client/util/utils';
-import {t} from 'common/dictionary/dictionary.js';
+import {t} from 'common/dictionary/dictionary';
 import TrashButton from 'client/components/common/trashbutton.jsx';
 
 /**

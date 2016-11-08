@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
-import SummaryPage from 'components/summary/summarypage.jsx';
-import {removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
+import SummaryPage from 'client/components/summary/summarypage.jsx';
+import {removeSheet, saveSheet, updateSheet} from 'client/actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, dirty} = state.sheet;

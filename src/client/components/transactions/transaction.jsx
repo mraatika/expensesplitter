@@ -1,6 +1,6 @@
 import React from 'react';
 import {find} from 'lodash';
-import {NumberUtils} from '../../util/utils.js';
+import {NumberUtils} from 'client/util/utils';
 
 /**
  * @class Transaction

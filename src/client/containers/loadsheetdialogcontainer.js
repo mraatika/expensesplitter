@@ -1,8 +1,8 @@
-import LoadSheetDialog from 'components/home/loadsheetdialog.jsx';
 import {connect} from 'react-redux';
 import {toArray} from 'lodash';
-import {clearHistory, removeSheetHistoryEntry} from 'actions/dataactioncreators';
-import {toggleLoadSheetDialog} from 'actions/uiactioncreators';
+import LoadSheetDialog from 'client/components/home/loadsheetdialog.jsx';
+import {clearHistory, removeSheetHistoryEntry} from 'client/actions/dataactioncreators';
+import {toggleLoadSheetDialog} from 'client/actions/uiactioncreators';
 
 function mapStateToProps(state) {
 

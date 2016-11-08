@@ -1,8 +1,8 @@
 import {without} from 'lodash';
 import {connect} from 'react-redux';
-import expenseFactory from 'factory/expensefactory';
-import ExpensesPage from 'components/expenses/expensespage.jsx';
-import {updateSheet} from 'actions/dataactioncreators';
+import expenseFactory from 'client/factory/expensefactory';
+import ExpensesPage from 'client/components/expenses/expensespage.jsx';
+import {updateSheet} from 'client/actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;

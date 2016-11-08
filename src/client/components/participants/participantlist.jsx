@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {sortBy, map} from 'lodash';
-import Participant from './participant.jsx';
+import Participant from 'client/components/participants/participant.jsx';
 import {t} from 'common/dictionary/dictionary';
 
 /**

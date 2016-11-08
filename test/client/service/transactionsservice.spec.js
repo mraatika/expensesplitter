@@ -16,7 +16,7 @@ describe('Service: TransactionsService', function () {
 
     before(function () {
         const TransactionsService = proxyquire('service/transactionsservice', {
-            './expensesservice': function() {
+            'client/service/expensesservice': function() {
                 return { calculateBalances: calculateBalancesStub };
             }
         }).default;

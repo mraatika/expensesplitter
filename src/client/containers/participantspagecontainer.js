@@ -1,8 +1,8 @@
 import {without} from 'lodash';
 import {connect} from 'react-redux';
-import participantFactory from 'factory/participantfactory';
-import ParticipantsPage from 'components/participants/participantspage.jsx';
-import {updateSheet} from 'actions/dataactioncreators';
+import participantFactory from 'client/factory/participantfactory';
+import ParticipantsPage from 'client/components/participants/participantspage.jsx';
+import {updateSheet} from 'client/actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;

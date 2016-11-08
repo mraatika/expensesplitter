@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
-import AppContainer from 'containers/appcontainer';
-import HomePageContainer from 'containers/homepagecontainer';
-import ParticipantsPageContainer from 'containers/participantspagecontainer';
-import ExpensesPageContainer from 'containers/expensespagecontainer';
-import SummaryPageContainer from 'containers/summarypagecontainer';
+import AppContainer from 'client/containers/appcontainer';
+import HomePageContainer from 'client/containers/homepagecontainer';
+import ParticipantsPageContainer from 'client/containers/participantspagecontainer';
+import ExpensesPageContainer from 'client/containers/expensespagecontainer';
+import SummaryPageContainer from 'client/containers/summarypagecontainer';
 
 /**
  * @class ExpenseSplitterRouter

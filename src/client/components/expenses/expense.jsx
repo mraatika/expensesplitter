@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {find} from 'lodash';
-import TrashButton from 'components/common/trashbutton.jsx';
-import {NumberUtils} from 'util/utils';
+import TrashButton from 'client/components/common/trashbutton.jsx';
+import {NumberUtils} from 'client/util/utils';
 
 /**
  * @class Expense

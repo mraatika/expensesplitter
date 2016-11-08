@@ -1,5 +1,5 @@
 import React from 'react';
-import Transaction from './transaction.jsx';
+import Transaction from 'client/components/transactions/transaction.jsx';
 import {t} from 'common/dictionary/dictionary';
 
 /**

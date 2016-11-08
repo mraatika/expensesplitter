@@ -1,7 +1,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import {Provider} from 'react-redux';
-import ExpenseSplitterRouter from 'router/expensesplitterrouter.jsx';
-import sheetStore from 'stores/store';
+import ExpenseSplitterRouter from 'client/router/expensesplitterrouter.jsx';
+import sheetStore from 'client/stores/store';
 
 /**
  * @class Root

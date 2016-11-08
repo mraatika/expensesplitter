@@ -1,6 +1,6 @@
-import ExpensesService from './expensesservice';
-import {NumberUtils} from '../util/utils';
 import {filter, reject} from 'lodash';
+import ExpensesService from 'client/service/expensesservice';
+import {NumberUtils} from 'client/util/utils';
 
 /**
  *  Calculates the transaction amount

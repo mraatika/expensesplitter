@@ -1,7 +1,7 @@
 import {browserHistory} from 'react-router';
 import {find} from 'lodash';
-import pages from '../constants/pages';
-import {URLUtils} from '../util/utils';
+import pages from 'client/constants/pages';
+import {URLUtils} from 'client/util/utils';
 
 /**
  * Find page config object based on route's page section

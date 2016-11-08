@@ -1,8 +1,8 @@
 import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import {t} from 'common/dictionary/dictionary';
-import SheetsList from './sheetslist.jsx';
-import ModalDialog from '../common/modaldialog.jsx';
+import SheetsList from 'client/components/home/sheetslist.jsx';
+import ModalDialog from 'client/components/common/modaldialog.jsx';
 
 /**
  * @class LoadSheetDialog

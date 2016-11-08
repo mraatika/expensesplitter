@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react';
-import pages from '../../constants/pages';
+import pages from 'client/constants/pages';
 import {t} from 'common/dictionary/dictionary';
-import Navigation from '../navigation/navigation.jsx';
-import ExpenseAddForm from './expenseaddform.jsx';
-import ExpenseList from './expenselist.jsx';
-import SharesTable from 'components/shares/sharestable.jsx';
+import Navigation from 'client/components/navigation/navigation.jsx';
+import ExpenseAddForm from 'client/components/expenses/expenseaddform.jsx';
+import ExpenseList from 'client/components/expenses/expenselist.jsx';
+import SharesTable from 'client/components/shares/sharestable.jsx';
 
 /**
  * @class ExpensesPage
