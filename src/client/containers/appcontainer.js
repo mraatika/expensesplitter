@@ -4,7 +4,8 @@ import App from 'components/app.jsx';
 import {createSheet, fetchSheet, setSettings} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
-    const {sheet, isFetching, dirty} = state.sheet;
+    const {sheet, dirty} = state.sheet;
+    const {isFetching} = state.ui;
 
     return {
         sheet,

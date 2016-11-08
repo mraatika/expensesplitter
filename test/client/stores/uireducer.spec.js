@@ -7,7 +7,7 @@ describe('Reducer:UiReducer', function () {
     describe('initial state', function () {
         it('should return an empty object', function () {
             expect(reducer(undefined, {})).to.be.an('object');
-            expect(Object.keys(reducer(undefined, {})).length).to.equal(0);
+            expect(reducer(undefined, {})).to.be.empty;
         });
     });
 
@@ -59,6 +59,42 @@ describe('Reducer:UiReducer', function () {
 
         it('should close it when sheet is successfully loaded', function () {
             expect(reducer({ newSheetAdded: true }, loadSheetEvent).newSheetAdded).not.to.be.ok;
+        });
+    });
+
+    describe('Toggling loading dialog', function () {
+        const loadSheetAction = { type: Constants.ActionTypes.LOAD_SHEET };
+        const loadSheetEvent = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS };
+        const loadSheetError = { type: Constants.ErrorEventTypes.LOAD_SHEET };
+
+        it('should set isFetching true when beginning to fetch', function () {
+            expect(reducer({}, loadSheetAction).isFetching).to.be.ok;
+        });
+
+        it('should set isFetching false after successfull fetch', function () {
+            expect(reducer({ isFetching: true }, loadSheetEvent).isFetching).not.to.be.ok;
+        });
+
+        it('should set isFetching false when fetch fails', function () {
+            expect(reducer({ isFetching: true }, loadSheetError).isFetching).not.to.be.ok;
+        });
+    });
+
+    describe('Toggling sheet save status', function () {
+        const saveSheetAction = { type: Constants.ActionTypes.SAVE_SHEET };
+        const saveSheetEvent = { type: Constants.EventTypes.SAVE_SHEET_SUCCESS };
+        const saveSheetError = { type: Constants.ErrorEventTypes.SAVE_SHEET };
+
+        it('should set isFetching true when beginning to save', function () {
+            expect(reducer({}, saveSheetAction).isSavingToServer).to.be.ok;
+        });
+
+        it('should set isFetching false when save was successfull', function () {
+            expect(reducer({ isSavingToServer: true }, saveSheetEvent).isSavingToServer).not.to.be.ok;
+        });
+
+        it('should set isFetching false when save fails', function () {
+            expect(reducer({ isSavingToServer: true }, saveSheetError).isSavingToServer).not.to.be.ok;
         });
     });
 });

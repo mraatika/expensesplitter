@@ -7,11 +7,8 @@ import sheetFactory from 'client/factory/sheetfactory';
  */
 const initialState = {
     sheet: {},
-    isFetching: false,
-    dirty: false,
-    isSavingToServer: false
+    dirty: false
 };
-
 
 /**
  * Sheet related reducers
@@ -24,16 +21,11 @@ export function sheetReducer(state = initialState, action) {
     switch(action.type) {
 
     // ACTIONS
-
-    case Constants.ActionTypes.LOAD_SHEET:
-        return { ...state, isFetching: true };
     case Constants.ActionTypes.CREATE_SHEET:
         {
             const sheet = sheetFactory(action.sheet);
             return { ...state, sheet, dirty: true };
         }
-    case Constants.ActionTypes.SAVE_SHEET:
-        return { ...state, isSavingToServer: true };
     case Constants.ActionTypes.UPDATE_SHEET:
         {
             const sheet = {...state.sheet, ...action.update};
@@ -45,7 +37,6 @@ export function sheetReducer(state = initialState, action) {
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
         return {
             ...state,
-            isFetching: false,
             sheet: action.payload.data.sheet,
             dirty: false
         };
@@ -53,15 +44,12 @@ export function sheetReducer(state = initialState, action) {
         return {
             ...state,
             sheet: action.payload.data.sheet,
-            dirty: false,
-            isSavingToServer: false
+            dirty: false
         };
 
     // ERRORS
-    case Constants.ErrorEventTypes.LOAD_SHEET:
-        return { ...state,  isFetching: false };
     case Constants.ErrorEventTypes.SAVE_SHEET:
-        return { ...state,  dirty: true, isSavingToServer: false  };
+        return { ...state,  dirty: true };
     default:
         return state;
     }

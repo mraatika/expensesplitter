@@ -3,7 +3,9 @@ import SummaryPage from 'components/summary/summarypage.jsx';
 import {removeSheet, saveSheet, updateSheet} from 'actions/dataactioncreators';
 
 function mapStateToProps(state) {
-    const {sheet, dirty, isSavingToServer} = state.sheet;
+    const {sheet, dirty} = state.sheet;
+    const {isSavingToServer} = state.ui;
+
     return {
         sheet,
         dirty,
