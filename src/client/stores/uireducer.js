@@ -33,6 +33,8 @@ export function uiReducer(state = {}, action) {
         return updateProperty(state, 'showLoadSheetDialog', action.state);
     case Constants.ActionTypes.TOGGLE_NEW_SHEET_MESSAGE:
         return updateProperty(state, 'newSheetAdded', action.state);
+    case Constants.ActionTypes.TOGGLE_SETTINGS_SECTION:
+        return updateProperty(state, 'showSettings', action.state);
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
         return reduce(['newSheetAdded', 'showLoadSheetDialog', 'isFetching'], (memo, name) => {
             return updateProperty(memo, name, false);

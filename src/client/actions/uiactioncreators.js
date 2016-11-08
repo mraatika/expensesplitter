@@ -32,3 +32,15 @@ export function toggleNewSheetAdded(state) {
         state
     };
 }
+
+/**
+ * Toggle settings section's display state
+ * @param  {boolean} state Show or not to show
+ * @return {Object}
+ */
+export function toggleSettingsSection(state) {
+    return {
+        type: Constants.ActionTypes.TOGGLE_SETTINGS_SECTION,
+        state
+    };
+}

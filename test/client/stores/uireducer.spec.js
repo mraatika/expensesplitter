@@ -97,4 +97,12 @@ describe('Reducer:UiReducer', function () {
             expect(reducer({ isSavingToServer: true }, saveSheetError).isSavingToServer).not.to.be.ok;
         });
     });
+
+    describe('Toggling settings section', function () {
+        const toggleAction = { type: Constants.ActionTypes.TOGGLE_SETTINGS_SECTION, state: true };
+
+        it('should set showSettings', function () {
+            expect(reducer({}, toggleAction).showSettings).to.be.ok;
+        });
+    });
 });

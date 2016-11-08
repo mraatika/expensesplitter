@@ -5,11 +5,13 @@ import * as UiActions from 'actions/uiactioncreators';
 
 function mapStateToProps(state) {
     const {sheet, dirty} = state.sheet;
+    const {newSheetAdded, showSettings} = state.ui;
 
     return {
         sheet,
         dirty,
-        newSheetAdded: state.ui.newSheetAdded,
+        newSheetAdded,
+        showSettings: showSettings === undefined ? dirty : showSettings,
         settings: state.settings
     };
 }
@@ -51,7 +53,13 @@ function mapDispatchToProps(dispatch, ownProps) {
          * Toggle new sheet message's display state
          * @param  {boolean} state
          */
-        toggleNewSheetAdded: state => dispatch(UiActions.toggleNewSheetAdded(state))
+        toggleNewSheetAdded: state => dispatch(UiActions.toggleNewSheetAdded(state)),
+
+        /**
+         * Toggle settings section
+         * @param  {boolean} state
+         */
+        toggleSettingsSection: state => dispatch(UiActions.toggleSettingsSection(state))
     };
 }
 

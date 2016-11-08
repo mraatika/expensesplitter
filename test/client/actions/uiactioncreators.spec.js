@@ -18,4 +18,12 @@ describe('Actions: UIActionCreators', function () {
             expect(res.state).to.be.ok;
         });
     });
+
+    describe('toggle settings section', function () {
+        it('should dispatch event with state', function () {
+            const res = actions.toggleSettingsSection(true);
+            expect(res.type).to.equal(Constants.ActionTypes.TOGGLE_SETTINGS_SECTION);
+            expect(res.state).to.be.ok;
+        });
+    });
 });

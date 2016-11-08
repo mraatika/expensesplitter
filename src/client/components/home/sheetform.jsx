@@ -11,31 +11,6 @@ import InputButtonSplit from 'client/components/common/inputbuttonsplit.jsx';
  * @extends {ReactComponent}
  */
 class SheetForm extends React.Component {
-
-    /**
-     * @constructor
-     * @param  {object} props
-     * @return {SheetForm}
-     */
-    constructor(props) {
-        super(props);
-        this.state = this._getDefaultState(props);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.state = this._getDefaultState(nextProps);
-    }
-
-    /**
-     * Form default (initial) state
-     * @private
-     * @param  {object} props
-     * @return {object}
-     */
-    _getDefaultState(props) {
-        return { isSettingsActive: props.dirty };
-    }
-
     /**
      * Callback for form submit
      * @private
@@ -82,7 +57,7 @@ class SheetForm extends React.Component {
      * @return {undefined}
      */
     _handleSettingsClick() {
-        this.setState({ isSettingsActive: !this.state.isSettingsActive });
+        this.props.toggleSettingsSection(!this.props.showSettings);
     }
 
     /**
@@ -122,7 +97,7 @@ class SheetForm extends React.Component {
                                 disabled={sheet.lastSavedOn}
                                 onChange={this._handleCurrentSheetNameChange.bind(this)} />
                             <button
-                                className={'settings-button' + (this.state.isSettingsActive ? ' active' : '')}
+                                className={'settings-button' + (this.props.showSettings ? ' active' : '')}
                                 type="button"
                                 aria-label={ t('settings.toggle_settings') }
                                 onClick={this._handleSettingsClick.bind(this)}>
@@ -135,7 +110,7 @@ class SheetForm extends React.Component {
                 <Settings
                     ref={c => this._settings = c}
                     sheet={sheet}
-                    show={this.state.isSettingsActive}
+                    show={this.props.showSettings}
                     updateSheet={this.props.updateSheet}
                 />
 
@@ -173,6 +148,7 @@ SheetForm.propTypes = {
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
     toggleNewSheetAdded: PropTypes.func.isRequired,
+    toggleSettingsSection: PropTypes.func.isRequired,
     dirty: PropTypes.bool,
     summaryButtonDisabled: PropTypes.bool
 };

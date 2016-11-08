@@ -84,10 +84,12 @@ class HomePage extends React.Component {
                     sheet={sheet}
                     dirty={dirty}
                     adminKey={adminKey}
+                    showSettings={this.props.showSettings}
                     summaryButtonDisabled={!this.props.params.sheetId}
                     saveSheet={this.props.saveSheet}
                     updateSheet={this.props.updateSheet}
                     toggleNewSheetAdded={this.props.toggleNewSheetAdded}
+                    toggleSettingsSection={this.props.toggleSettingsSection}
                 />
 
                 <div className="row">

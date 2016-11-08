@@ -5,7 +5,7 @@ import {t} from 'common/dictionary/dictionary';
 import pages from 'client/constants/pages';
 import {componentRenderer} from '../../support/testhelper';
 import proxyquire from 'proxyquire';
-
+import Settings from 'client/components/home/settings.jsx';
 
 describe('Component:SheetForm', () => {
 
@@ -21,7 +21,8 @@ describe('Component:SheetForm', () => {
     const defaultProps = {
         saveSheet: sinon.spy(),
         updateSheet: sinon.spy(),
-        toggleNewSheetAdded: sinon.spy()
+        toggleNewSheetAdded: sinon.spy(),
+        toggleSettingsSection: sinon.spy()
     };
 
     const renderComponent = componentRenderer(SheetForm, defaultProps);
@@ -31,6 +32,7 @@ describe('Component:SheetForm', () => {
         defaultProps.toggleNewSheetAdded.reset();
         defaultProps.saveSheet.reset();
         defaultProps.updateSheet.reset();
+        defaultProps.toggleSettingsSection.reset();
     });
 
     describe('State when there isn\'t current sheet', () => {
@@ -66,11 +68,6 @@ describe('Component:SheetForm', () => {
             const button = component.find('.settings-button');
             expect(button).not.to.be.disabled();
         });
-
-        it('should show the settings section', () => {
-            const _component = renderComponent({sheet, dirty: true });
-            expect(_component.state('isSettingsActive')).to.be.ok;
-        });
     });
 
     describe('State when current sheet is defined', () => {
@@ -100,11 +97,6 @@ describe('Component:SheetForm', () => {
         it('should find a settings button and it should be enabled', () => {
             const button = component.find('.settings-button');
             expect(button).not.to.be.disabled();
-        });
-
-        it('should display settings section hidden', () => {
-            const _component = renderComponent({sheet, dirty:false });
-            expect(_component.state('isSettingsActive')).not.to.be.ok;
         });
     });
 
@@ -185,6 +177,44 @@ describe('Component:SheetForm', () => {
             const _component = renderComponent({sheet, adminKey: sheet.adminKey });
             _component.find('#sheet-summary-link').simulate('click');
             expect(navigateSpy).to.have.been.calledWithExactly(pages.SUMMARY.href, sheet.id, sheet.adminKey);
+        });
+    });
+
+    describe('Toggling the settings section', function () {
+        const sheet = { id: '1', name: '', settings: {} };
+
+        describe('show', function () {
+            it('should dispatch a toggle event when button is clicked', function () {
+                const component = renderComponent({sheet, showSettings: false });
+                const button = component.find('.settings-button');
+
+                button.simulate('click');
+
+                expect(defaultProps.toggleSettingsSection).to.have.been.calledWith(true);
+            });
+
+            it('should show the settings section', () => {
+                const _component = renderComponent({sheet, showSettings: true });
+                const settings = _component.find(Settings);
+                expect(settings.dive()).to.have.style('display', 'block');
+            });
+        });
+
+        describe('hide', function () {
+            it('should dispatch a toggle event when button is clicked', function () {
+                const component = renderComponent({sheet, showSettings: true });
+                const button = component.find('.settings-button');
+
+                button.simulate('click');
+
+                expect(defaultProps.toggleSettingsSection).to.have.been.calledWith(false);
+            });
+
+            it('should hide the settings section', () => {
+                const _component = renderComponent({sheet, showSettings: false });
+                const settings = _component.find(Settings);
+                expect(settings.dive()).to.have.style('display', 'none');
+            });
         });
     });
 });
