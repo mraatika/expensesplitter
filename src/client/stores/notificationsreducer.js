@@ -1,6 +1,6 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
-import Constants from 'constants/appconstants';
-import {t, tpl} from 'dictionary/dictionary';
+import Constants from 'client/constants/appconstants';
+import {t, tpl} from 'common/dictionary/dictionary';
 
 const _notificationDefaults = (errorType, message) => {
     return {
