@@ -1,13 +1,13 @@
-import {cid} from '../util/utils';
+import {cid} from 'client/util/utils';
 
 /**
  * Create participant
  * @param  {Object} props
  * @return {Object}
  */
-export default function create(props) {
+export default function create(props = {}) {
     return {
         id: cid(),
-        name: props.name || ''
+        name: (props.name || '').trim()
     };
 }

@@ -1,5 +1,4 @@
-import {extend} from 'lodash';
-import {cid} from 'util/utils';
+import {cid} from 'client/util/utils';
 
 const defaults = {
     name: '',
@@ -14,7 +13,6 @@ const defaults = {
  * @return {Object}
  */
 export default function create(props) {
-    return extend({}, defaults, {
-        id: cid()
-    }, props);
+    // set an id for rendering react lists (need to have unique ids)
+    return { ...defaults, ...props, id: cid() };
 }

@@ -1,6 +1,6 @@
 import immutable from 'object-path-immutable';
 import Constants from 'client/constants/appconstants';
-import SheetHistoryFactory from 'client/factory/sheethistoryfactory';
+import sheetHistoryFactory from 'client/factory/sheethistoryfactory';
 import storageFactory from 'client/factory/storagefactory';
 
 // create local storage
@@ -13,7 +13,7 @@ const storage = storageFactory(Constants.SHEET_STORE_NAME);
  * @return {Object}
  */
 const addEntry = (state, sheet) => {
-    const record = SheetHistoryFactory.create(sheet);
+    const record = sheetHistoryFactory(sheet);
     const newState = immutable.set(state, sheet.id, record);
     storage.setAll(newState);
     return newState;

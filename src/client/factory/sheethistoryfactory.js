@@ -1,22 +1,9 @@
-import {pick} from 'lodash';
-
 /**
- * Factory for creating sheet history models from sheet model
- * @type {Object}
+ * Create history enry model
+ * @param  {Object} sheet
+ * @return {Object}
  */
-const SheetHistoryFactory = {
-    /**
-     * Create history model
-     * @param  {Object} sheet
-     * @return {Object}
-     */
-    create: function(sheet) {
-        return pick(sheet, [
-            'id',
-            'name',
-            'createdOn'
-        ]);
-    }
-};
-
-export default SheetHistoryFactory;
+export default function create(sheet) {
+    const {id, name, createdOn} = sheet;
+    return { id, name, createdOn };
+}

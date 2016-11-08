@@ -7,7 +7,9 @@ import {t} from 'common/dictionary/dictionary';
  * @param  {Object} initialProps
  * @return {Object}
  */
-export default function create(initialProps) {
+export default function create(props = {}) {
+    const {name, settings} = props;
+
     return {
         additionalInformation: '',
         adminKey: shortid.generate(),
@@ -15,8 +17,8 @@ export default function create(initialProps) {
         expenses: [],
         id: shortid.generate(),
         lastSavedOn: null,
-        name: (initialProps.name || '').trim(),
+        name: (name || '').trim(),
         participants: [],
-        settings: { currencySymbol: t('app.locales.currency_symbol'), ...initialProps.settings }
+        settings: { currencySymbol: t('app.locales.currency_symbol'), ...settings }
     };
 }
