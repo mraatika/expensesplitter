@@ -1,8 +1,7 @@
-import Constants from 'constants/appconstants';
-import storageFactory from 'factory/storagefactory';
+import Constants from 'client/constants/appconstants';
+import storageFactory from 'client/factory/storagefactory';
 
 const storage = storageFactory(Constants.SETTINGS_STORE_NAME, { language: Constants.Languages.EN });
-const initialState = storage.getAll();
 
 /**
  * Sheet history reducers
@@ -10,7 +9,7 @@ const initialState = storage.getAll();
  * @param  {Object} action
  * @return {Object} Modified state
  */
-export function settingsReducer(state = initialState, action) {
+export function settingsReducer(state = storage.getAll(), action) {
     switch(action.type) {
     case Constants.ActionTypes.SET_SETTINGS:
         {
