@@ -1,5 +1,5 @@
 import shortid from 'shortid';
-import {t} from 'dictionary/dictionary.js';
+import {t} from 'common/dictionary/dictionary';
 
 
 /**

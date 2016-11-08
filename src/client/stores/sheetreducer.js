@@ -1,5 +1,5 @@
-import Constants from 'constants/appconstants';
-import sheetFactory from 'factory/sheetfactory';
+import Constants from 'client/constants/appconstants';
+import sheetFactory from 'client/factory/sheetfactory';
 
 /**
  * Store's initial state
