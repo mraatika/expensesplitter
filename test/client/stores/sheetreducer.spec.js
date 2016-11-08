@@ -106,9 +106,14 @@ describe('Reducer:SheetReducer', function () {
             expect(reducer({}, action).dirty).to.be.ok;
         });
 
-        it('should not return the same object', function () {
-            const initialState = { sheet: {}, dirty: true };
+        it('should not return the same object if value changes', function () {
+            const initialState = { sheet: {}, dirty: false };
             expect(reducer(initialState, action)).not.to.equal(initialState);
+        });
+
+        it('should return the same object if value does not change', function () {
+            const initialState = { sheet: {}, dirty: true };
+            expect(reducer(initialState, action)).to.equal(initialState);
         });
     });
 });

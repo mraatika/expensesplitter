@@ -1,3 +1,4 @@
+import {some} from 'lodash';
 import Constants from 'client/constants/appconstants';
 import sheetFactory from 'client/factory/sheetfactory';
 
@@ -11,6 +12,18 @@ const initialState = {
 };
 
 /**
+ * Update state property if value changes
+ * @param  {Object} state
+ * @param  {string} name
+ * @param  {*} value
+ * @return {Object}
+ */
+const updateProperties = (state, properties) => {
+    const isChanged = some(properties, (v, k) => state[k] !== v);
+    return !isChanged ? state : {...state, ...properties};
+};
+
+/**
  * Sheet related reducers
  * @param  {Object} state
  * @param  {Object} action
@@ -19,37 +32,18 @@ const initialState = {
 export function sheetReducer(state = initialState, action) {
 
     switch(action.type) {
-
     // ACTIONS
     case Constants.ActionTypes.CREATE_SHEET:
-        {
-            const sheet = sheetFactory(action.sheet);
-            return { ...state, sheet, dirty: true };
-        }
+        return updateProperties(state, { dirty: true, sheet: sheetFactory(action.sheet)});
     case Constants.ActionTypes.UPDATE_SHEET:
-        {
-            const sheet = {...state.sheet, ...action.update};
-            return { ...state, sheet, dirty: true };
-        }
-
+        return updateProperties(state, { dirty: true, sheet: { ...state.sheet, ...action.update }});
     // EVENTS
-
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
-        return {
-            ...state,
-            sheet: action.payload.data.sheet,
-            dirty: false
-        };
     case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-        return {
-            ...state,
-            sheet: action.payload.data.sheet,
-            dirty: false
-        };
-
+        return updateProperties(state, { dirty: false, sheet: action.payload.data.sheet });
     // ERRORS
     case Constants.ErrorEventTypes.SAVE_SHEET:
-        return { ...state,  dirty: true };
+        return updateProperties(state, { dirty: true });
     default:
         return state;
     }
