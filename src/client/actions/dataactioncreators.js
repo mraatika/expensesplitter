@@ -16,20 +16,6 @@ import {InvalidArgumentsError} from 'client/util/errors.js';
  */
 
 /**
- * Create sheet action
- * @param {Object} sheet
- * @return {Object}
- */
-export function createSheet(sheet) {
-    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
-
-    return {
-        type: Constants.ActionTypes.CREATE_SHEET,
-        sheet
-    };
-}
-
-/**
  * Set application settings
  * @param {Object} settings
  * @return {Object}
@@ -68,11 +54,26 @@ export function removeSheetHistoryEntry(entry) {
 }
 
 /**
+ * Create sheet action
+ * @param {Object} sheet
+ * @return {Object}
+ */
+export function createSheet(sheet) {
+    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet is missing or invalid!');
+
+    return {
+        type: Constants.ActionTypes.CREATE_SHEET,
+        sheet
+    };
+}
+
+/**
  * Fetch sheet from the server
  * @param {string} sheetId
  * @return {Function}
  */
 export function fetchSheet(sheetId) {
+    if (!sheetId || typeof sheetId != 'string') throw new InvalidArgumentsError('sheet id is missing or invalid!');
 
     return (dispatch, getState) => {
         return dispatch({
@@ -106,7 +107,7 @@ export function saveSheet(sheet) {
             payload: {
                 request: {
                     method: isNew ? 'POST' : 'PUT',
-                    url: `/sheet/${isNew ? '' : sheet.id}`,
+                    url: `/sheet${isNew ? '' : `/${sheet.id}`}`,
                     data: { sheet },
                     headers: { 'Accept-Language': getState().settings.language }
                 }
@@ -123,7 +124,7 @@ export function saveSheet(sheet) {
  * @return {Object}
  */
 export function updateSheet(sheet, update = {}) {
-    if (!sheet) throw new InvalidArgumentsError('sheet missing or invalid!');
+    if (!isObject(sheet)) throw new InvalidArgumentsError('sheet missing or invalid!');
 
     return {
         type: Constants.ActionTypes.UPDATE_SHEET,
