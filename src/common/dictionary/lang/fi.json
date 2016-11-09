@@ -85,6 +85,7 @@
     "error.client.remove_sheet.admin_key": "Laskelman voi poistaa ainoastaan admin-oikeuksilla.",
 
     "error.server.0": "Yhteyttä palvelimeen ei saatu.",
+    "error.server.401": "Autentikaatio epäonnistui.",
     "error.server.403": "Tarvittavat oikeudet laskelman muokkaamiseen puuttuvat.",
     "error.server.404": "Haettua laskelmaa ei löytynyt. Luultavasti laskelma on poistettu admin-käyttäjän toimesta.",
     "error.server.422": "Laskelman tiedot ovat puutteelliset tai virheelliset.",
