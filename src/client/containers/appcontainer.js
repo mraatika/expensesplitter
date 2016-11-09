@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {push} from 'react-router';
+import {browserHistory} from 'react-router';
 import App from 'client/components/app.jsx';
 import {createSheet, fetchSheet, setSettings} from 'client/actions/dataactioncreators';
 
@@ -25,9 +25,9 @@ function mapDispatchToProps(dispatch) {
         fetchSheet: sheetId => dispatch(fetchSheet(sheetId))
             .then((response) => {
                 // even if request fails with a server error then handler is called
-                if (response.error) dispatch(push('/'));
+                if (response.error) browserHistory.push('/');
             })
-            .catch(() => dispatch(push('/'))),
+            .catch(() => browserHistory.push('/')),
         /**
          * Create new sheet
          * @param  {Object} sheet Sheet's properties
