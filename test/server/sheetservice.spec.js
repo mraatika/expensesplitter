@@ -10,9 +10,10 @@ let sheetService;
 
 describe('SheetService', () => {
     // nock http interceptors
-    const scope = nock(`${config.url}:${config.port}`);
-    const idlessUrl = new RegExp(`/${config.db_name}`);
-    const get = id => scope.get(new RegExp(`/${config.db_name}/${id}`));
+    const {protocol, username, password, host, port, db_name} = config;
+    const scope = nock(`${protocol}${username}:${password}@${host}:${port}`);
+    const idlessUrl = new RegExp(`/${db_name}`);
+    const get = id => scope.get(new RegExp(`/${db_name}/${id}`));
     const create = () => scope.put(idlessUrl);
     const update = () => scope.post(idlessUrl);
     const del = () => scope.delete(idlessUrl);

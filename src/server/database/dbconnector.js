@@ -7,8 +7,9 @@ import nano from 'nano';
  */
 export const connect = () => {
     // configuration for current environment
-    const dbConfig = config[process.env.NODE_ENV || 'dev'];
-    return nano(dbConfig.url + ':' + dbConfig.port).use(dbConfig.db_name);
+    const conf = config[process.env.NODE_ENV || 'dev'];
+    const {protocol, username, password, host, port, db_name} = conf;
+    return nano(`${protocol}${username}:${password}@${host}:${port}`).use(db_name);
 };
 
 export const connection = connect();
