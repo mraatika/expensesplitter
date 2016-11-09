@@ -1,5 +1,6 @@
 /bower_components/
 /build/
 /node_modules/
+/src/server/conf/db.conf.json
 *.sublime-workspace
 *.log

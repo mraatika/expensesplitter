@@ -8,7 +8,7 @@ import app from 'server/server';
 
 chai.use(chaiHttp);
 
-describe.only('Routes', () => {
+describe('Routes', () => {
     let server;
 
     before((done) => {
