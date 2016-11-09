@@ -1,14 +1,13 @@
 import chai, {expect} from 'chai';
 import sinon from 'sinon';
 import chaiHttp from 'chai-http';
-//import {test as serverConf} from 'server/conf/server.conf.json';
 import sheetService from 'server/service/sheetservice.js';
 import Q from 'kew';
 import app from 'server/server';
 
 chai.use(chaiHttp);
 
-describe.only('Routes', () => {
+describe('Routes', () => {
     let server;
 
     before((done) => {

@@ -4,7 +4,7 @@ import {connection} from 'server/database/dbconnector';
 import sinon from 'sinon';
 import {authenticate, resetAuthorization} from 'server/database/dbauthorization';
 
-describe.only('Authorization', function () {
+describe('Authorization', function () {
     let authStub;
 
     beforeEach(() => { authStub = sinon.stub(connection, 'auth');  resetAuthorization(); });

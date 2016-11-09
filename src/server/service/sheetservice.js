@@ -1,6 +1,6 @@
 import Q from 'kew';
 import UnprocessableEntityError from 'server/util/unprocessableentityerror';
-import dbConnector from 'server/util/dbconnector';
+import {connection} from 'server/database/dbconnector';
 import {validate} from 'common/validation/sheetvalidator';
 
 /**
@@ -32,9 +32,8 @@ const SheetService = {
      */
     get: sheetId => {
         const q = Q.defer();
-        const db = dbConnector.getDbConnection();
 
-        db.get(sheetId, q.makeNodeResolver());
+        connection.get(sheetId, q.makeNodeResolver());
 
         return q.promise;
     },
@@ -47,7 +46,6 @@ const SheetService = {
      */
     add: sheet => {
         const q = Q.defer();
-        const db = dbConnector.getDbConnection();
         const addObject = Object.assign(sheet, {
             lastSavedOn: new Date().toISOString()
         });
@@ -59,7 +57,7 @@ const SheetService = {
             return q.promise;
         }
 
-        db.insert(addObject, addObject.id, err => {
+        connection.insert(addObject, addObject.id, err => {
             if (err) return q.reject(err);
 
             SheetService.get(addObject.id)
@@ -78,7 +76,6 @@ const SheetService = {
      * @return {Q.promise}
      */
     update: (sheet, q = Q.defer()) => {
-        const db = dbConnector.getDbConnection();
         const updateObject = Object.assign(sheet, {
             lastSavedOn: new Date().toISOString()
         });
@@ -90,7 +87,7 @@ const SheetService = {
             return q.promise;
         }
 
-        db.insert(updateObject, err => {
+        connection.insert(updateObject, err => {
             // reject if error is not 409 (conflict)
             if (err && err.statusCode != 409) { return q.reject(err); }
 
@@ -118,9 +115,8 @@ const SheetService = {
      */
     delete: sheet => {
         const q = Q.defer();
-        const db = dbConnector.getDbConnection();
 
-        db.destroy(sheet._id, sheet._rev, q.makeNodeResolver());
+        connection.destroy(sheet._id, sheet._rev, q.makeNodeResolver());
 
         return q.promise;
     }
