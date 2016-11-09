@@ -20,9 +20,11 @@ describe('SheetService', () => {
 
 
     before(function () {
-        sheetService = proxyquire('server/service/sheetservice', {
+        const SheetService = proxyquire('server/service/sheetservice', {
             'common/validation/sheetvalidator': validationStub
         }).default;
+
+        sheetService = new SheetService();
     });
 
     describe('GET:', function () {

@@ -1,17 +1,34 @@
 import chai, {expect} from 'chai';
 import sinon from 'sinon';
-import chaiHttp from 'chai-http';
-import sheetService from 'server/service/sheetservice.js';
+import SheetService from 'server/service/sheetservice';
 import Q from 'kew';
-import app from 'server/server';
+import proxyquire from 'proxyquire';
 
-chai.use(chaiHttp);
+const SheetServiceMock = function(){};
+
+SheetServiceMock.prototype.get = sinon.stub();
+SheetServiceMock.prototype.add = sinon.stub();
+SheetServiceMock.prototype.update = sinon.stub();
+SheetServiceMock.prototype.delete = sinon.stub();
 
 describe('Routes', () => {
     let server;
 
+    proxyquire.noCallThru();
+
     before((done) => {
+        proxyquire('server/routes', {
+            'server/service/sheetservice': SheetServiceMock
+        }).default;
+
+        /*const app = proxyquire('server/server', {
+            'server/database/dbauthorization': {
+                authenticate: () => Q.resolve()
+            }
+        }).default;*/
+        const app = require('server/server').default;
         server = app.start();
+
         done();
     });
 
@@ -19,14 +36,10 @@ describe('Routes', () => {
         beforeEach(() => {
 
             // response configuration
-            sinon.stub(sheetService, 'get')
+            SheetServiceMock.prototype.get
                 .withArgs('1').returns(Q.resolve({ id: '1' }))
                 .withArgs('2').returns(Q.reject({ statusCode: 404 }))
                 .withArgs('3').returns(Q.reject({ statusCode: 500 }));
-        });
-
-        afterEach(() => {
-            sheetService.get.restore();
         });
 
         describe('an non existing page', () => {
@@ -87,13 +100,9 @@ describe('Routes', () => {
         const failSheet = { a: 2, _rev: '2-1', id: 2 };
 
         beforeEach(() => {
-            sinon.stub(sheetService, 'add')
+            SheetServiceMock.prototype.add
                 .withArgs(okSheet).returns(Q.resolve(okSheet))
                 .withArgs(failSheet).returns(Q.reject({ statusCode: 422 }));
-        });
-
-        afterEach(() => {
-            sheetService.add.restore();
         });
 
         describe('and succeeding', () => {
@@ -130,13 +139,8 @@ describe('Routes', () => {
         const failSheet = { a: 2, _rev: '2-1', id: 2 };
 
         beforeEach(() => {
-            sinon.stub(sheetService, 'get').returns(Q.resolve(okSheet));
-            sinon.stub(sheetService, 'update').returns(Q.resolve(okSheet));
-        });
-
-        afterEach(() => {
-            sheetService.get.restore();
-            sheetService.update.restore();
+            SheetServiceMock.prototype.get.returns(Q.resolve(okSheet));
+            SheetServiceMock.prototype.update.returns(Q.resolve(okSheet));
         });
 
         describe('an existing sheet', () => {
@@ -149,7 +153,7 @@ describe('Routes', () => {
                     .end((err, res) => {
                         expect(err).to.be.null;
                         expect(res.statusCode).to.equal(200);
-                        expect(sheetService.update.calledWith(okSheet)).to.be.true;
+                        expect(SheetService.prototype.update).to.have.been.calledWith(okSheet);
                         done();
                     });
             });
@@ -158,7 +162,7 @@ describe('Routes', () => {
         describe('a non existing sheet', function () {
 
             it('should return a 404 error', (done) => {
-                sheetService.get.returns(Q.reject({ statusCode: 404 }));
+                SheetServiceMock.prototype.get.returns(Q.reject({ statusCode: 404 }));
 
                 chai.request(server)
                     .put('/sheet/2')
@@ -174,7 +178,7 @@ describe('Routes', () => {
         describe('a non valid sheet', function () {
 
             it('should return a 400 error', (done) => {
-                sheetService.update.returns(Q.reject({ statusCode: 400 }));
+                SheetServiceMock.prototype.get.returns(Q.reject({ statusCode: 400 }));
 
                 chai.request(server)
                     .put('/sheet/2')
@@ -190,22 +194,12 @@ describe('Routes', () => {
 
     describe('Deleting ', () => {
 
-        beforeEach(() => {
-            sinon.stub(sheetService, 'get');
-            sinon.stub(sheetService, 'delete');
-        });
-
-        afterEach(() => {
-            sheetService.get.restore();
-            sheetService.delete.restore();
-        });
-
         describe('a sheet that exists', () => {
 
             it('should return 200 ok', (done) => {
                 const adminKey = '123';
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
-                sheetService.delete.returns(Q.resolve());
+                SheetServiceMock.prototype.get.returns(Q.resolve({ id: '1', adminKey }));
+                SheetServiceMock.prototype.delete.returns(Q.resolve());
 
                 chai.request(server)
                     .delete('/sheet/1')
@@ -213,8 +207,8 @@ describe('Routes', () => {
                     .end((err, res) => {
                         expect(err).to.be.null;
                         expect(res.statusCode).to.equal(200);
-                        expect(sheetService.get.called).to.be.true;
-                        expect(sheetService.get.calledWith('1')).to.be.true;
+                        expect(SheetServiceMock.prototype.get.called).to.be.true;
+                        expect(SheetServiceMock.prototype.get.calledWith('1')).to.be.true;
                         done();
                     });
             });
@@ -223,7 +217,7 @@ describe('Routes', () => {
         describe('a non existing sheet', () => {
 
             it('should return 404 when sheet is not found', (done) => {
-                sheetService.get.returns(Q.reject({ statusCode: 404 }));
+                SheetServiceMock.prototype.get.returns(Q.reject({ statusCode: 404 }));
 
                 chai.request(server)
                     .delete('/sheet/1')
@@ -238,13 +232,13 @@ describe('Routes', () => {
             const adminKey = '123';
 
             beforeEach(function () {
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
+                SheetServiceMock.prototype.get.returns(Q.resolve({ id: '1', adminKey }));
             });
 
             it('should return an error when delete fails', (done) => {
                 const adminKey = '123';
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
-                sheetService.delete.returns(Q.reject({ statusCode: 500 }));
+                SheetServiceMock.prototype.get.returns(Q.resolve({ id: '1', adminKey }));
+                SheetServiceMock.prototype.delete.returns(Q.reject({ statusCode: 500 }));
 
                 chai.request(server)
                     .delete('/sheet/1')

@@ -1,5 +1,4 @@
-import {connection} from 'server/database/dbconnector';
-import Q from 'kew';
+import {connect} from 'server/database/dbconnector';
 
 let authCookie;
 
@@ -11,14 +10,16 @@ let authCookie;
  * @param   {string} password
  * @return  {Q|undefined}
  */
-function _validate(q, username, password) {
+function _isValid(username, password) {
     if (!username || (typeof username != 'string')) {
-        return q.reject('ERROR: Username missing or invalid!');
+        return false;
     }
 
     if (!password || typeof password != 'string') {
-        return q.reject('ERROR: Password missing or invalid!');
+        return false;
     }
+
+    return true;
 }
 
 /**
@@ -29,6 +30,8 @@ export const resetAuthorization = () => {
     authCookie = null;
 };
 
+export const getCookie = () => authCookie;
+
 /**
  * Get a authorization cookie from the couch server
  * @public
@@ -37,29 +40,24 @@ export const resetAuthorization = () => {
  * @return {Promise}
  */
 export const authenticate = (username, password) => {
-    const q = Q.defer();
 
-    // check that username and password are valid
-    if (_validate(q, username, password)) return q.promise;
-
-    // resolve with cookie if already authenticated
-    if (authCookie) {
-        q.resolve(authCookie);
-        return q.promise;
-    }
-
-    // resolve with cookie if already authenticated
-    connection.auth(username, password, (err, body, headers) => {
-        if (err) {
-            q.reject(err);
-            return;
+    return new Promise((resolve, reject) => {
+        // check that username and password are valid
+        if (!_isValid(username, password)) {
+            return reject(new Error('Username or password invalid!'));
         }
 
-        // save the cookie
-        authCookie = headers['set-cookie'];
+        // resolve with cookie if already authenticated
+        if (authCookie) return resolve(authCookie);
 
-        q.resolve(authCookie);
+        // resolve with cookie if already authenticated
+        connect(username, password).auth(username, password, (err, body, headers) => {
+            if (err) return reject(err);
+
+            // save the cookie
+            authCookie = headers['set-cookie'];
+
+            resolve(authCookie);
+        });
     });
-
-    return q.promise;
 };

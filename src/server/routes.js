@@ -1,4 +1,4 @@
-import service from 'server/service/sheetservice';
+import SheetService from 'server/service/sheetservice';
 import AuthenticationError from 'server/util/authenticationerror';
 
 /**
@@ -14,7 +14,7 @@ export default (server, logger) => {
 
         logger.info(`Requested a resource with id ${id}`);
 
-        service.get(id)
+        new SheetService().get(id)
             .then(sheet => {
                 res.json({ sheet });
             })
@@ -30,7 +30,7 @@ export default (server, logger) => {
 
         logger.info('Adding resource', sheet);
 
-        service.add(sheet)
+        new SheetService().add(sheet)
             .then(savedSheet => {
                 logger.info(`Saved new sheet with id ${savedSheet.id}`);
                 res.json({ sheet: savedSheet });
@@ -46,6 +46,7 @@ export default (server, logger) => {
     server.put('/sheet/:id', (req, res, next) => {
         const {id} = req.params;
         const {sheet} = req.body;
+        const service = new SheetService();
 
         // check that the sheet is found in the database
         service.get(id)
@@ -67,6 +68,7 @@ export default (server, logger) => {
     server.delete('/sheet/:id', (req, res, next) => {
         const {id} = req.params;
         const adminKey = req.header('X-Admin-Token');
+        const service = new SheetService();
 
         service.get(id)
             .then(sheet => {
