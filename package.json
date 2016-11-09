@@ -55,7 +55,7 @@
     "build-server": "rm -rf ./build/client && env NODE_PATH=./src/ NODE_ENV=dev babel ./src/server/ -d ./build/server --copy-files -s",
     "build-client": "rm -rf ./build/client && env NODE_ENV=dev webpack --config webpack.client.config.js --progress --colors",
     "test": "npm run test-common && npm run test-server && npm run test-client",
-    "test-server": "env NODE_PATH=./src:./src/client NODE_ENV=test ./node_modules/.bin/mocha 'test/server/**/*.spec.js' --compilers js:babel-register || exit 0",
+    "test-server": "env NODE_PATH=./src:./src/client NODE_ENV=test ./node_modules/.bin/mocha 'test/server/**/*.spec.js' --require ./test/server/support/testsetup.js --compilers js:babel-register || exit 0",
     "test-client": "env NODE_PATH=./src/client/:./src/ NODE_ENV=test ./node_modules/.bin/mocha 'test/client/**/*.spec.{js,jsx}' --require ./test/client/support/testsetup.js --watch --recursive --compilers 'jsx:test/client/support/jsxcompiler, .:babel-register' || exit 0",
     "test-common": "env NODE_PATH=./src NODE_ENV=test ./node_modules/.bin/mocha 'test/common/**/*.spec.js' --recursive --compilers .:babel-register || exit 0",
     "test-debug": "node debug --harmony ./node_modules/.bin/mocha --runInBand"
