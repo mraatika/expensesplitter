@@ -85,6 +85,7 @@
     "error.client.remove_sheet.admin_key": "Only an admin can delete a sheet.",
 
     "error.server.0": "Could not connect to the server.",
+    "error.server.401": "Authorization failed.",
     "error.server.403": "Missing required rights to modify a sheet.",
     "error.server.404": "Reqested sheet was not found. It has most likely been removed by the admin user.",
     "error.server.422": "Sheet is missing fields or contains invalid data.",
