@@ -61,7 +61,7 @@ export default class SheetService {
             this.connection.insert(addObject, addObject.id, err => {
                 if (err) return reject(err);
 
-                SheetService.get(addObject.id)
+                this.get(addObject.id)
                     .then(savedSheet => resolve(savedSheet))
                     .catch(err => reject(err));
             });
@@ -84,7 +84,7 @@ export default class SheetService {
 
             if (validationError) return reject(validationError);
 
-            SheetService.get(sheet.id)
+            this.get(sheet.id)
                 .then(savedSheet => {
                     // update revision to overwrite any changes and ignore conflicts
                     updateObject._rev = savedSheet._rev;
