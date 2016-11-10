@@ -12,12 +12,6 @@ describe('SheetService', () => {
     // nock http interceptors
     const {protocol, username, password, host, port, db_name} = config;
     const scope = nock(`${protocol}${username}:${password}@${host}:${port}`);
-    const idlessUrl = new RegExp(`/${db_name}`);
-    const get = id => scope.get(new RegExp(`/${db_name}/${id}`));
-    const create = () => scope.put(idlessUrl);
-    const update = () => scope.post(idlessUrl);
-    const del = () => scope.delete(idlessUrl);
-
 
     before(function () {
         const SheetService = proxyquire('server/service/sheetservice', {
@@ -31,7 +25,8 @@ describe('SheetService', () => {
         it('should get an existing entry from the db', function (done) {
             const response = { _id: '1', id: '1', _rev: '1-1' };
 
-            get(response.id)
+            scope
+                .get(`/${db_name}/${response.id}`)
                 .reply(200, response);
 
             sheetService.get('1')
@@ -46,11 +41,12 @@ describe('SheetService', () => {
         it('should return a 404 error when querying for a nonexisting enty', function (done) {
             const id = '1';
 
-            get(id)
+            scope
+                .get(`/${db_name}/${id}`)
                 .reply(404);
 
             sheetService.get(id)
-                .fail(err => {
+                .catch(err => {
                     try {
                         expect(err.statusCode).to.equal(404);
                         done();
@@ -67,10 +63,12 @@ describe('SheetService', () => {
 
             validationStub.validate.returns({});
 
-            create()
+            scope
+                .put(`/${db_name}/${entry.id}`)
                 .reply(200);
 
-            get(entry.id)
+            scope
+                .get(`/${db_name}/${entry.id}`)
                 .reply(200, response);
 
             sheetService.add(entry)
@@ -81,7 +79,7 @@ describe('SheetService', () => {
                         done();
                     } catch (e) { done(e); }
                 })
-                .fail(e => console.log(e));
+                .catch(e => console.log(e));
         });
 
         it('should reject the promise if request fails', function (done) {
@@ -89,11 +87,12 @@ describe('SheetService', () => {
 
             validationStub.validate.returns({});
 
-            create()
+            scope
+                .put(`/${db_name}/${entry.id}`)
                 .reply(500);
 
             sheetService.add(entry)
-                .fail(err => {
+                .catch(err => {
                     try {
                         expect(err.statusCode).to.equal(500);
                         done();
@@ -107,7 +106,7 @@ describe('SheetService', () => {
             validationStub.validate.returns({ name: true });
 
             sheetService.add(entry)
-                .fail(err => {
+                .catch(err => {
                     try {
                         expect(err.statusCode).to.equal(422);
                         expect(err.message).not.to.be.undefined;
@@ -125,10 +124,12 @@ describe('SheetService', () => {
 
             validationStub.validate.returns({});
 
-            update()
-                .reply(200);
+            scope
+                .get(`/${db_name}/${original.id}`)
+                .reply(200, original);
 
-            get(original.id)
+            scope
+                .post(`/${db_name}`)
                 .reply(200, updated);
 
             sheetService.update(updated)
@@ -136,6 +137,7 @@ describe('SheetService', () => {
                     try {
                         expect(val.id).to.equal(updated.id);
                         expect(val.prop).to.equal(updated.prop);
+                        expect(val._rev).to.equal(original._rev);
                         done();
                     } catch (e) { done(e); }
                 });
@@ -146,11 +148,16 @@ describe('SheetService', () => {
 
             validationStub.validate.returns({});
 
-            update()
+            scope
+                .get(`/${db_name}/${original.id}`)
+                .reply(200, original);
+
+            scope
+                .post(`/${db_name}`)
                 .reply(500);
 
             sheetService.update(original)
-                .fail(err => {
+                .catch(err => {
                     try {
                         expect(err.statusCode).to.equal(500);
                         done();
@@ -164,20 +171,14 @@ describe('SheetService', () => {
 
             validationStub.validate.returns({});
 
-            // first insert conflicts
-            update()
-                .reply(409);
-
             // first get returns the original document
-            get(entryupdate.id)
+            scope
+                .get(`/${db_name}/${dbentry.id}`)
                 .reply(200, dbentry);
 
             // second insert is fine
-            update()
-                .reply(200);
-
-            // second get returns the changed document
-            get(dbentry.id)
+            scope
+                .post(`/${db_name}`)
                 .reply(200, entryupdate);
 
             sheetService.update(entryupdate)
@@ -186,35 +187,31 @@ describe('SheetService', () => {
                         expect(val.prop).to.equal(entryupdate.prop);
                         done();
                     } catch (e) { done(e); }
-                });
+                })
+                .catch(err => done(err));
         });
     });
 
     describe('DELETE:', function () {
 
         it('should resolve the promise when succeeded', function (done) {
-            const spy = sinon.spy();
 
-            del()
+            scope
+                .delete(`/${db_name}`)
                 .reply(200);
 
             sheetService.delete('1')
-                .then(spy)
-                .fin(() => {
-                    try {
-                        expect(spy.called).to.be.ok;
-                        done();
-                    } catch(e) { done(e); }
-                });
+                .then(done);
         });
 
         it('should reject the promise when the request fails', function (done) {
 
-            del('1')
+            scope
+                .delete(`/${db_name}`)
                 .reply(500);
 
             sheetService.delete('1')
-                .fail(err => {
+                .catch(err => {
                     try {
                         expect(err.statusCode).to.equal(500);
                         done();

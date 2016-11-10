@@ -18,7 +18,7 @@ export default (server, logger) => {
             .then(sheet => {
                 res.json({ sheet });
             })
-            .fail(err => {
+            .catch(err => {
                 logger.error(`Fetching of sheet (id: ${id}) failed with error ${err}`);
                 next(err);
             });
@@ -35,8 +35,7 @@ export default (server, logger) => {
                 logger.info(`Saved new sheet with id ${savedSheet.id}`);
                 res.json({ sheet: savedSheet });
             })
-            .fail(err => {
-                console.log('Add failed!', err);
+            .catch(err => {
                 logger.error(`Add (id: ${sheet.id}) failed with error ${err}`);
                 next(err);
             });
@@ -56,12 +55,12 @@ export default (server, logger) => {
                         logger.info(`Updated sheet with id ${id}`);
                         res.json({ sheet: savedSheet });
                     })
-                    .fail(err => {
+                    .catch(err => {
                         logger.error(`Update (id: ${id}) failed with error: ${err}`);
                         next(err);
                     });
             })
-            .fail(next);
+            .catch(next);
     });
 
     // DELETE SHEET
@@ -80,11 +79,11 @@ export default (server, logger) => {
 
                 service.delete(sheet)
                     .then(() => res.json({ id }))
-                    .fail(err => {
+                    .catch(err => {
                         logger.error(`Delete (id: ${id}) failed with error: ${err}`);
                         next(err);
                     });
             })
-            .fail(next);
+            .catch(next);
     });
 };
