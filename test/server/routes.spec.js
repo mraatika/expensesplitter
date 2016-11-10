@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import chaiHttp from 'chai-http';
 //import {test as serverConf} from 'server/conf/server.conf.json';
 import sheetService from 'server/service/sheetservice.js';
-import Q from 'kew';
 import app from 'server/server';
 
 chai.use(chaiHttp);
@@ -16,14 +15,16 @@ describe('Routes', () => {
         done();
     });
 
+    after(() => server.close());
+
     describe('Fetching', () => {
         beforeEach(() => {
 
             // response configuration
             sinon.stub(sheetService, 'get')
-                .withArgs('1').returns(Q.resolve({ id: '1' }))
-                .withArgs('2').returns(Q.reject({ statusCode: 404 }))
-                .withArgs('3').returns(Q.reject({ statusCode: 500 }));
+                .withArgs('1').resolves({ id: '1' })
+                .withArgs('2').rejects({ statusCode: 404 })
+                .withArgs('3').rejects({ statusCode: 500 });
         });
 
         afterEach(() => {
@@ -89,8 +90,8 @@ describe('Routes', () => {
 
         beforeEach(() => {
             sinon.stub(sheetService, 'add')
-                .withArgs(okSheet).returns(Q.resolve(okSheet))
-                .withArgs(failSheet).returns(Q.reject({ statusCode: 422 }));
+                .withArgs(okSheet).resolves(okSheet)
+                .withArgs(failSheet).rejects({ statusCode: 422 });
         });
 
         afterEach(() => {
@@ -131,8 +132,8 @@ describe('Routes', () => {
         const failSheet = { a: 2, _rev: '2-1', id: 2 };
 
         beforeEach(() => {
-            sinon.stub(sheetService, 'get').returns(Q.resolve(okSheet));
-            sinon.stub(sheetService, 'update').returns(Q.resolve(okSheet));
+            sinon.stub(sheetService, 'get').resolves(okSheet);
+            sinon.stub(sheetService, 'update').resolves(okSheet);
         });
 
         afterEach(() => {
@@ -159,7 +160,7 @@ describe('Routes', () => {
         describe('a non existing sheet', function () {
 
             it('should return a 404 error', (done) => {
-                sheetService.get.returns(Q.reject({ statusCode: 404 }));
+                sheetService.get.rejects({ statusCode: 404 });
 
                 chai.request(server)
                     .put('/sheet/2')
@@ -175,7 +176,7 @@ describe('Routes', () => {
         describe('a non valid sheet', function () {
 
             it('should return a 400 error', (done) => {
-                sheetService.update.returns(Q.reject({ statusCode: 400 }));
+                sheetService.update.rejects({ statusCode: 400 });
 
                 chai.request(server)
                     .put('/sheet/2')
@@ -205,8 +206,8 @@ describe('Routes', () => {
 
             it('should return 200 ok', (done) => {
                 const adminKey = '123';
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
-                sheetService.delete.returns(Q.resolve());
+                sheetService.get.resolves({ id: '1', adminKey });
+                sheetService.delete.resolves();
 
                 chai.request(server)
                     .delete('/sheet/1')
@@ -224,7 +225,7 @@ describe('Routes', () => {
         describe('a non existing sheet', () => {
 
             it('should return 404 when sheet is not found', (done) => {
-                sheetService.get.returns(Q.reject({ statusCode: 404 }));
+                sheetService.get.rejects({ statusCode: 404 });
 
                 chai.request(server)
                     .delete('/sheet/1')
@@ -239,13 +240,13 @@ describe('Routes', () => {
             const adminKey = '123';
 
             beforeEach(function () {
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
+                sheetService.get.resolves({ id: '1', adminKey });
             });
 
             it('should return an error when delete fails', (done) => {
                 const adminKey = '123';
-                sheetService.get.returns(Q.resolve({ id: '1', adminKey }));
-                sheetService.delete.returns(Q.reject({ statusCode: 500 }));
+                sheetService.get.resolves({ id: '1', adminKey });
+                sheetService.delete.rejects({ statusCode: 500 });
 
                 chai.request(server)
                     .delete('/sheet/1')

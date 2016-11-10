@@ -1,4 +1,3 @@
-import Q from 'kew';
 import UnprocessableEntityError from 'server/util/unprocessableentityerror';
 import dbConnector from 'server/util/dbconnector';
 import {validate} from 'common/validation/sheetvalidator';
@@ -28,101 +27,94 @@ const SheetService = {
      * Get a sheet from db by sheet id
      * @async
      * @param  {string} sheetId
-     * @return {Q.promise}
+     * @return {Promise}
      */
     get: sheetId => {
-        const q = Q.defer();
         const db = dbConnector.getDbConnection();
 
-        db.get(sheetId, q.makeNodeResolver());
-
-        return q.promise;
+        return new Promise((resolve, reject) => {
+            db.get(sheetId, (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            });
+        });
     },
 
     /**
      * Add a sheet to the db
      * @async
      * @param {Object} sheet
-     * @return {Q.promise}
+     * @return {Promise}
      */
     add: sheet => {
-        const q = Q.defer();
         const db = dbConnector.getDbConnection();
         const addObject = Object.assign(sheet, {
             lastSavedOn: new Date().toISOString()
         });
 
-        const validationError = validateSheet(sheet);
+        return new Promise((resolve, reject) => {
+            const validationError = validateSheet(sheet);
 
-        if (validationError) {
-            q.reject(validationError);
-            return q.promise;
-        }
+            if (validationError) return reject(validationError);
 
-        db.insert(addObject, addObject.id, err => {
-            if (err) return q.reject(err);
+            db.insert(addObject, addObject.id, err => {
+                if (err) return reject(err);
 
-            SheetService.get(addObject.id)
-                .then(savedSheet => q.resolve(savedSheet))
-                .fail(err => q.resolve(err));
+                SheetService.get(addObject.id)
+                    .then(savedSheet => resolve(savedSheet))
+                    .catch(err => reject(err));
+            });
         });
-
-        return q.promise;
     },
 
     /**
      * Update an existing sheet in the db
      * @async
      * @param  {Object} sheet
-     * @param  {Promise} [q] Used if called recursively
-     * @return {Q.promise}
+     * @return {Promise}
      */
-    update: (sheet, q = Q.defer()) => {
+    update: (sheet) => {
         const db = dbConnector.getDbConnection();
         const updateObject = Object.assign(sheet, {
             lastSavedOn: new Date().toISOString()
         });
 
-        const validationError = validateSheet(sheet);
+        return new Promise((resolve, reject) => {
+            const validationError = validateSheet(sheet);
 
-        if (validationError) {
-            q.reject(validationError);
-            return q.promise;
-        }
+            if (validationError) return reject(validationError);
 
-        db.insert(updateObject, err => {
-            // reject if error is not 409 (conflict)
-            if (err && err.statusCode != 409) { return q.reject(err); }
-
-            // get changed sheet
             SheetService.get(sheet.id)
                 .then(savedSheet => {
-                    // if ok then resolve with the sheet
-                    if (!err) { return q.resolve(savedSheet); }
-                    // in case there was a conflict then
-                    // update _rev and try again
+                    // update revision to overwrite any changes and ignore conflicts
                     updateObject._rev = savedSheet._rev;
-                    SheetService.update(updateObject, q);
-                })
-                .fail(err => q.reject(err));
-        });
 
-        return q.promise;
+                    db.insert(updateObject, err => {
+                        // reject if error is not 409 (conflict)
+                        if (err) return reject(err);
+                        resolve(updateObject);
+                    });
+                })
+                .catch(err => reject(err));
+
+        });
     },
 
     /**
      * Delete sheet from database
      * @async
      * @param  {string} sheetId
-     * @return {Q.promise}
+     * @return {Promise}
      */
     delete: sheet => {
-        const q = Q.defer();
         const db = dbConnector.getDbConnection();
 
-        db.destroy(sheet._id, sheet._rev, q.makeNodeResolver());
-
-        return q.promise;
+        return new Promise((resolve, reject) => {
+            db.destroy(sheet._id, sheet._rev, (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            });
+        });
     }
 };
 
