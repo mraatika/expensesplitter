@@ -22,10 +22,14 @@ describe('Routes', () => {
             'server/service/sheetservice': SheetServiceMock
         }).default;
 
-        const app = proxyquire('server/server', {
+        const authorizationMiddleware = proxyquire('server/middleware/authorizationmiddleware', {
             'server/database/dbauthorization': {
                 authenticate: () => Promise.resolve()
-            },
+            }
+        }).default;
+
+        const app = proxyquire('server/server', {
+            'server/middleware/authorizationmiddleware': authorizationMiddleware,
             'server/routes': routes
         }).default;
 

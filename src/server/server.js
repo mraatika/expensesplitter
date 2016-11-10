@@ -6,8 +6,8 @@ import routes  from 'server/routes';
 import LoggerFactory from 'server/factory/loggerfactory';
 import serverConf from 'server/conf/server.conf.json';
 import dbConf from 'server/conf/db.conf.json';
-import {errorHandler} from 'server/util/errorhandler';
-import {authenticate} from 'server/database/dbauthorization';
+import errorHandler from 'server/middleware/errorhandler';
+import authenticate from 'server/middleware/authorizationmiddleware';
 
 // get correct configuration for the current environment
 const conf = {
@@ -21,11 +21,7 @@ const app = express();
 const logger = LoggerFactory.create('process', { name: 'expensesplitter-server' });
 
 // authenticate
-app.use((req, res, next) => {
-    authenticate(conf.db.username, conf.db.password)
-        .then(() => next())
-        .catch(err => next(err));
-});
+app.use(authenticate());
 // use access logger
 app.use(LoggerFactory.create('access'));
 // use body parser to parse json

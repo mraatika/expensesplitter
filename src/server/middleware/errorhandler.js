@@ -4,7 +4,7 @@ import {t, setLanguage} from 'common/dictionary/dictionary';
  * Handler for handling server errors
  * @return {Function}
  */
-export const errorHandler = (logger) => {
+export default function(logger) {
     // all params should be defined so that the function is
     // registered as an error handler
     //
@@ -16,7 +16,7 @@ export const errorHandler = (logger) => {
      * @param  {Object} res  Response object
      * @param  {Function} next
      */
-    return (err, req, res, next) => {
+    return function errorHandler(err, req, res, next) {
         let statusCode = err.statusCode;
         let message = t(`error.server.${statusCode}`);
 
