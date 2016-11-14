@@ -8,7 +8,7 @@ export default function(logger) {
     // all params should be defined so that the function is
     // registered as an error handler
     //
-    /* eslint no-unused-vars: false */
+    /* eslint-disable no-unused-vars */
     /**
      * Actual handler function
      * @param  {Objecct} err Error received
@@ -35,4 +35,4 @@ export default function(logger) {
             .status(statusCode)
             .json({ message });
     };
-};
+}
