@@ -9,7 +9,8 @@ describe('SheetValidator', function () {
         name: 'testsheet',
         participants: [],
         expenses: [],
-        settings: {}
+        settings: {},
+        adminKey: '123'
     };
 
     describe('Validating sheet', function () {
