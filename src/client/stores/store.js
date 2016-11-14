@@ -1,7 +1,6 @@
 import {createStore, applyMiddleware} from 'redux';
 import axiosMiddleware from 'redux-axios-middleware';
 import thunkMiddleware from 'redux-thunk';
-import createLogger from 'redux-logger';
 import axios from 'axios';
 import rootReducer from 'client/stores/rootreducer';
 
@@ -10,6 +9,14 @@ const client = axios.create({
     responseType: 'json',
     timeout: 10000
 });
+
+const middleware = [
+    thunkMiddleware,
+    axiosMiddleware(client)
+];
+
+// only use logging on development
+if (process.env.NODE_ENV !== 'prod') middleware.push(require('redux-logger')());
 
 /**
  * Applcation state store factory
@@ -20,11 +27,7 @@ const sheetStore = function sheetStore(preloadedState) {
     return createStore(
         rootReducer,
         preloadedState,
-        applyMiddleware(
-            thunkMiddleware,
-            axiosMiddleware(client),
-            createLogger()
-        )
+        applyMiddleware(...middleware)
     );
 };
 
