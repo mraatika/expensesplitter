@@ -10,9 +10,9 @@ var env = process.env.NODE_ENV || 'dev';
 var isProd = env === 'prod';
 
 var PATHS = {
-    app: '/src/client',
-    src: '/src',
-    build: './build/client'
+    app: path.join(__dirname, 'src', 'client'),
+    src: path.join(__dirname, 'src'),
+    build: path.join(__dirname, 'build', 'client')
 };
 
 /**
@@ -21,7 +21,10 @@ var PATHS = {
  */
 var uglifyOptions = {
     mangle: false,
-    compress: { warnings: false },
+    compress: {
+        warnings: false,
+        screw_ie8: true
+    },
     output: { comments: false }
 };
 
@@ -31,8 +34,8 @@ var uglifyOptions = {
  */
 var commonsChunkOptions = {
     name: 'vendor',
-    filename: 'vendor.js',
-    minChunks: Infinity
+    filename: 'vendor.[hash].js',
+    minChunks: 2
 };
 
 /**
@@ -40,8 +43,8 @@ var commonsChunkOptions = {
  * @type {Object}
  */
 var htmlOptions = {
-    template: __dirname + '/src/index.html',
-    title: packageJSON.name
+    template: path.join(PATHS.src, 'index.html'),
+    title: 'ExpenseSplitter'
 };
 
 /**
@@ -49,7 +52,7 @@ var htmlOptions = {
  * @type {Object}
  */
 var devServerOptions = {
-    contentBase: path.resolve(__dirname, PATHS.build),
+    contentBase: PATHS.build,
     historyApiFallback: {
         rewrites: [
             { from: /^\/$/, to: '/' }
@@ -72,7 +75,7 @@ var devServerOptions = {
  * @type {Object}
  */
 var extractTextPluginOptions = {
-    file: 'main.css',
+    file: 'main.[hash].css',
     settings: {
         allChunks: true
     }
@@ -88,6 +91,12 @@ var eslintOptions = {
     failOnError: true
 };
 
+var definePluginOptions = {
+    'process.env':{
+        'NODE_ENV': JSON.stringify(env)
+    }
+};
+
 /**
  * Plugins array. CommonsChunk and HtmlWebpackPlugin runs on dev and prod builds. Optimization
  * plugins are only used in prod mode
@@ -96,7 +105,8 @@ var eslintOptions = {
 var plugins = [
     new webpack.optimize.CommonsChunkPlugin(commonsChunkOptions),
     new HtmlWebpackPlugin(htmlOptions),
-    new ExtractTextPlugin(extractTextPluginOptions.file, extractTextPluginOptions.settings)
+    new ExtractTextPlugin(extractTextPluginOptions.file, extractTextPluginOptions.settings),
+    new webpack.DefinePlugin(definePluginOptions)
 ];
 
 // plugins used only when building a production version
@@ -110,20 +120,16 @@ if (isProd) {
 } else {
     plugins = plugins.concat([
         new webpack.HotModuleReplacementPlugin()
-        //new webpack.NoErrorsPlugin()
     ]);
-
 }
 
 module.exports = {
     entry: {
-        app: __dirname + PATHS.app + '/index.jsx',
+        app: path.join(PATHS.app, 'index.jsx'),
         vendor: [
             'axios',
             'classnames',
-            'lodash',
             'react',
-            'react-addons-test-utils',
             'react-bootstrap',
             'react-dom',
             'react-notification-system',
@@ -132,14 +138,13 @@ module.exports = {
             'react-swipeable',
             'redux',
             'redux-thunk',
-            'redux-logger',
             'shortid'
         ]
     },
 
     output: {
-        path: path.resolve(__dirname, PATHS.build),
-        filename: 'app.js',
+        path: PATHS.build,
+        filename: '[name].[hash].js',
         publicPath: '/'
     },
 
@@ -149,7 +154,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
-                include: __dirname + '/src'
+                include: PATHS.src
             }
         ],
 
@@ -157,7 +162,7 @@ module.exports = {
             {
                 test: /\.jsx?/,
                 loaders: ['babel?cacheDirectory'],
-                include: __dirname + '/src'
+                include: PATHS.src
             },
             {
                 test: /\.json$/,
@@ -165,17 +170,8 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style?sourceMap', 'css?sourceMap!resolve-url!sass?sourceMap')
-            },/*
-            {
-                test: /\.scss$/,
-                loaders: [
-                    'style?sourceMap',
-                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap',
-                    'resolve-url',
-                    'sass?sourceMap'
-                ]
-            },*/
+                loader: ExtractTextPlugin.extract('style?sourceMap', 'css?sourceMap!resolve-url!sass?sourceMap&name=[name].[hash].[ext]')
+            },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loaders: [
@@ -195,7 +191,7 @@ module.exports = {
     },
 
     resolve: {
-        root: [path.resolve('./src')]
+        root: [PATHS.src]
     },
 
     debug: !isProd,
