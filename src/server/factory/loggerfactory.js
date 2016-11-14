@@ -16,7 +16,7 @@ const _defaults = {
          * Log file path
          * @type {string}
          */
-        path: `./expensesplitter.access.${process.env.NODE_ENV}.log`,
+        path: `./expensesplitter.access.${process.env.NODE_ENV || 'dev'}.log`,
 
         /**
          * Log format
