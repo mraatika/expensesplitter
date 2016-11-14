@@ -93,7 +93,8 @@ var eslintOptions = {
 
 var definePluginOptions = {
     'process.env':{
-        'NODE_ENV': JSON.stringify(env)
+        'NODE_ENV': JSON.stringify(env),
+        'APP_VERSION': JSON.stringify(packageJSON.version)
     }
 };
 

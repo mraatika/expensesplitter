@@ -3,7 +3,6 @@ import {Link} from 'react-router';
 import Swipeable from 'react-swipeable';
 import {Modal} from 'react-bootstrap';
 import NotificationSystem from 'react-notification-system';
-import {name as appName, version} from '../../../package.json';
 import {t, setLanguage} from 'common/dictionary/dictionary';
 import LanguagesSection from 'client/components/language/languagessection.jsx';
 import RouterService from 'client/router/routerservice';
@@ -111,7 +110,7 @@ class App extends React.Component {
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><Link to={URLUtils.formSubpageUrl('/', sheetId, adminKey)}>{ appName }</Link></h1>
+                        <h1><Link to={URLUtils.formSubpageUrl('/', sheetId, adminKey)}>{ t('app.name') }</Link></h1>
                     </header>
 
                     <Modal show={isFetching}>
@@ -133,7 +132,7 @@ class App extends React.Component {
                         <div className="u-pull-left">
                             <LanguagesSection setLanguage={this.props.setLanguage} />
                         </div>
-                        <small className="u-pull-right">{ `${appName} v${version}` }</small>
+                        <small className="u-pull-right">{ `${t('app.name')} v${process.env.APP_VERSION}` }</small>
                     </footer>
                 </div>
             </Swipeable>
