@@ -1,4 +1,4 @@
-import {chain, isEmpty, toArray} from 'lodash';
+import {map, compact, isEmpty, toArray} from 'lodash';
 import * as Schema from 'common/validation/schema';
 import * as validator from 'common/validation/validator';
 
@@ -10,14 +10,10 @@ import * as validator from 'common/validation/validator';
  * @return {Array} An array of error message strings
  */
 const validateArray = (arr, schema) => {
-    const errors = chain(arr)
-        .map((subject) => {
-            const errors = validator.validate(subject, schema);
-            return !isEmpty(errors) ? { id: subject.id, errors: errors } : false;
-        })
-        .compact()
-        .map(e => `${e.id}: ${toArray(e.errors).join(', ')}`)
-        .value();
+    let errors = compact(map(arr, (subject) => {
+        const errors = validator.validate(subject, schema);
+        return !isEmpty(errors) ? `${subject.id}: ${toArray(errors).join(', ')}` : false;
+    }));
 
     return errors.length ? errors : [];
 };

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {chain, omit} from 'lodash';
+import {omit} from 'lodash';
 import {validateProperty} from 'common/validation/validator';
 
 /**
@@ -51,10 +51,15 @@ class ValidatedInput extends React.Component {
             // from selected options
             if (this.props.multiple) {
                 const options = target.options;
-                return chain(options)
-                    .filter(option => !!option.selected)
-                    .pluck('value')
-                    .value();
+                const selected = [];
+
+                for (let i in options) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+
+                return selected;
             }
 
             return target

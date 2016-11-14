@@ -1,4 +1,4 @@
-import {chain, reduce, filter, find} from 'lodash';
+import {map, sortBy, reduce, filter, find} from 'lodash';
 
 /**
  * @class ExpensesService
@@ -25,16 +25,14 @@ export default class ExpensesService {
      */
     calculateBalances() {
         const {expenses, participants} = this.sheet;
+        const balances = map(participants, participant => {
+            return {
+                participant: participant.id,
+                balance: this.calculateParticipantBalance(participant.id, expenses)
+            };
+        });
 
-        return chain(participants)
-            .map(participant => {
-                return {
-                    participant: participant.id,
-                    balance: this.calculateParticipantBalance(participant.id, expenses)
-                };
-            })
-            .sortBy(balance => balance.balance)
-            .value();
+        return sortBy(balances, balance => balance.balance);
     }
 
     /**
@@ -158,17 +156,15 @@ export default class ExpensesService {
         const findParticipant = id => find(participants, p => p.id === id);
         const balances = this.calculateBalances(expenses, participants);
 
-        return chain(balances)
-                .map(balance => {
-                    return {
-                        participantId: balance.participant,
-                        participantName: findParticipant(balance.participant).name,
-                        balance: balance.balance,
-                        amount: this.calculateParticipantShare(
-                            balance.participant, expenses
-                        )
-                    };
-                })
-                .value();
+        return map(balances, balance => {
+            return {
+                participantId: balance.participant,
+                participantName: findParticipant(balance.participant).name,
+                balance: balance.balance,
+                amount: this.calculateParticipantShare(
+                    balance.participant, expenses
+                )
+            };
+        });
     }
 }

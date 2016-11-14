@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {delay, chain} from 'lodash';
+import {delay, defaults} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
@@ -46,28 +46,21 @@ class ExpenseAddForm extends React.Component {
     _formState(properties) {
         const errors = {};
         const props = properties || this.props;
-        let participants = [];
-        let payer;
+        const {participants} = props;
+        const defaultExpenseProps = {
+            name: '',
+            price: '',
+            participants: props.participants,
+            payer: participants.length ? participants[0].id : undefined
+        };
 
         if (!props.participants.length) {
             errors.noParticipants = t('expenseaddform.error.participants');
-        } else {
-            payer = props.participants[0].id;
-        }
-
-        // if previous state is available then keep payer and participant values
-        if (this.state) {
-            payer = this.state.expense.payer;
-            participants = this.state.expense.participants;
         }
 
         return {
-            expense: {
-                name: '',
-                price: '',
-                participants,
-                payer
-            },
+            // if previous state is available then keep payer and participant values
+            expense: defaults({}, (this.state || {}).expense, defaultExpenseProps),
             errors: errors
         };
     }
@@ -136,10 +129,13 @@ class ExpenseAddForm extends React.Component {
      */
     _handleParticipantsChange(e) {
         var options = e.target.options;
-        var selected = chain(options)
-            .filter(option => !!option.selected)
-            .pluck('value')
-            .value();
+        const selected = {};
+
+        for (let key in options) {
+            if (options[key].selected) {
+                selected[key] = options[key];
+            }
+        }
 
         this._onExpensePropertyChange('participants', selected);
     }
@@ -168,11 +164,12 @@ class ExpenseAddForm extends React.Component {
     }
 
     render() {
-        const expense = this.state.expense;
-        const errorTexts = chain(this.state.errors)
-            .values()
-            .compact()
-            .value();
+        const {expense, errors} = this.state;
+        const errorTexts = [];
+
+        for (let key in errors) {
+            if (errors[key]) errorTexts.push(errors[key]);
+        }
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>
