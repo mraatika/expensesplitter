@@ -87,12 +87,14 @@ class App extends React.Component {
      * @param   {Event} e
      * @return  {string}
      */
-    _promptCloseIfDirty(/*e*/) {
-        /*if (this.props.dirty) {
-            const message = t('app.close_prompt_message');
-            e.returnValue = message;
-            return message;
-        }*/
+    _promptCloseIfDirty(e) {
+        if (process.env.NODE_ENV == 'prod') {
+            if (this.props.dirty) {
+                const message = t('app.close_prompt_message');
+                e.returnValue = message;
+                return message;
+            }
+        }
     }
 
     /**
