@@ -7,7 +7,7 @@ var packageJSON = require('./package.json');
 var path = require('path');
 
 var env = process.env.NODE_ENV || 'dev';
-var isProd = env === 'prod';
+var isProd = env === 'production';
 
 var PATHS = {
     app: path.join(__dirname, 'src', 'client'),

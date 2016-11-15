@@ -54,7 +54,7 @@
     "start-client": "env NODE_ENV=dev webpack-dev-server --config webpack.client.config.js",
     "start-server": "env NODE_ENV=dev NODE_PATH=./src/ babel-watch ./src/server/index.js -w",
     "build-dev": "env NODE_ENV=dev npm run build-server && env NODE_ENV=dev npm run build-client",
-    "build-prod": "env NODE_ENV=prod npm run build-server && env NODE_ENV=prod npm run build-client",
+    "build-prod": "env NODE_ENV=production npm run build-server && env NODE_ENV=production npm run build-client",
     "build-server": "rm -rf ./build/server && webpack --config webpack.server.config.js --progress --colors",
     "build-client": "rm -rf ./build/client && webpack --config webpack.client.config.js --progress --colors",
     "test": "npm run test-common && npm run test-server && npm run test-client",

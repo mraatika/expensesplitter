@@ -2,5 +2,6 @@
 /build/
 /node_modules/
 /src/server/conf/db.conf.json
+/conf/
 *.sublime-workspace
 *.log

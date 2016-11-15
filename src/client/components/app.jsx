@@ -88,7 +88,7 @@ class App extends React.Component {
      * @return  {string}
      */
     _promptCloseIfDirty(e) {
-        if (process.env.NODE_ENV == 'prod') {
+        if (process.env.NODE_ENV == 'production') {
             if (this.props.dirty) {
                 const message = t('app.close_prompt_message');
                 e.returnValue = message;
