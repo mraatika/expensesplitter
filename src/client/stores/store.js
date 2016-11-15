@@ -5,7 +5,7 @@ import axios from 'axios';
 import rootReducer from 'client/stores/rootreducer';
 
 const client = axios.create({
-    baseURL:'http://localhost:4932/api',
+    baseURL: process.env.API_URL,
     responseType: 'json',
     timeout: 10000
 });
@@ -16,7 +16,7 @@ const middleware = [
 ];
 
 // only use logging on development
-if (process.env.NODE_ENV !== 'prod') middleware.push(require('redux-logger')());
+if (process.env.NODE_ENV !== 'production') middleware.push(require('redux-logger')());
 
 /**
  * Applcation state store factory

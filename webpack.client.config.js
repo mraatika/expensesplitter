@@ -9,6 +9,8 @@ var path = require('path');
 var env = process.env.NODE_ENV || 'dev';
 var isProd = env === 'production';
 
+var conf = require('./conf/client.conf.json')[env];
+
 var PATHS = {
     app: path.join(__dirname, 'src', 'client'),
     src: path.join(__dirname, 'src'),
@@ -94,7 +96,8 @@ var eslintOptions = {
 var definePluginOptions = {
     'process.env':{
         'NODE_ENV': JSON.stringify(env),
-        'APP_VERSION': JSON.stringify(packageJSON.version)
+        'APP_VERSION': JSON.stringify(packageJSON.version),
+        'API_URL': JSON.stringify(conf.apiURL)
     }
 };
 
