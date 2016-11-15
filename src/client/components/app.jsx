@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import Swipeable from 'react-swipeable';
-import {Modal} from 'react-bootstrap';
+import Modal from 'react-bootstrap/lib/Modal';
 import NotificationSystem from 'react-notification-system';
 import {t, setLanguage} from 'common/dictionary/dictionary';
 import LanguagesSection from 'client/components/language/languagessection.jsx';

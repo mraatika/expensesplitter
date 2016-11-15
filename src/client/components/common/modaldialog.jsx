@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {t} from 'common/dictionary/dictionary';
 import {isFunction} from 'lodash';
-import {Modal} from 'react-bootstrap';
+import Modal from 'react-bootstrap/lib/Modal';
 
 /**
  * @class ModalDialog

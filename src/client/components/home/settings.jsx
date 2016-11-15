@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {Panel} from 'react-bootstrap';
+import Panel from 'react-bootstrap/lib/Panel';
 import {extend} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import CollapsiblePanelHeader from 'client/components/common/collapsiblepanelheader.jsx';
