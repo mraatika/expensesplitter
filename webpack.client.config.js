@@ -22,7 +22,7 @@ var PATHS = {
  * @type {Object}
  */
 var uglifyOptions = {
-    mangle: false,
+    mangle: true,
     compress: {
         warnings: false,
         screw_ie8: true
