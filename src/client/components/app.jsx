@@ -54,6 +54,9 @@ class App extends React.Component {
         const nextSheetId = nextProps.params.sheetId;
         const propId = this.props.sheet.id;
 
+        // change the language used if changed
+        if (nextProps.language && nextProps.language !== this.props.language) setLanguage(nextProps.language);
+
         // replace active sheet with a new sheet when navigated to root url without the id in url params
         if (!nextSheetId) {
             if (currentSheetId)  this.props.createSheet({});
@@ -72,9 +75,6 @@ class App extends React.Component {
             this.props.fetchSheet(nextSheetId);
             return;
         }
-
-        // change the language used if changed
-        if (nextProps.language && nextProps.language !== this.props.language) setLanguage(nextProps.language);
     }
 
     componentWillUnmount() {
