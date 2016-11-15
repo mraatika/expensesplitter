@@ -24,7 +24,8 @@ describe('Routes', () => {
 
         const authorizationMiddleware = proxyquire('server/middleware/authorizationmiddleware', {
             'server/database/dbauthorization': {
-                authenticate: () => Promise.resolve()
+                authenticate: () => Promise.resolve(),
+                resetAuthorization: () => {}
             }
         }).default;
 
