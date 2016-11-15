@@ -30,6 +30,10 @@ export const resetAuthorization = () => {
     authCookie = null;
 };
 
+/**
+ * Get auth cookie
+ * @return {string}
+ */
 export const getCookie = () => authCookie;
 
 /**
