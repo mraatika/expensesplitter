@@ -8,6 +8,7 @@ import serverConf from 'server/conf/server.conf.json';
 import dbConf from 'server/conf/db.conf.json';
 import errorHandler from 'server/middleware/errorhandler';
 import authenticate from 'server/middleware/authorizationmiddleware';
+import i18nMiddleware from 'server/middleware/i18nmiddleware';
 
 // get correct configuration for the current environment
 const conf = {
@@ -20,6 +21,8 @@ const app = express();
 // create logger for logging custom messages
 const logger = LoggerFactory.create('process', { name: 'expensesplitter-server' });
 
+// set the language used for translations
+app.use(i18nMiddleware());
 // authenticate
 app.use(authenticate());
 // use access logger

@@ -1,4 +1,4 @@
-import {t, setLanguage} from 'common/dictionary/dictionary';
+import {t} from 'common/dictionary/dictionary';
 
 /**
  * Handler for handling server errors
@@ -18,12 +18,9 @@ export default function(logger) {
      */
     return function errorHandler(err, req, res, next) {
         let statusCode = err.statusCode;
-        let message = t(`error.server.${statusCode}`);
+        let message = err.translatedMessage || t(`error.server.${statusCode}`);
 
         logger.error('An error happened with a request', err);
-
-        // use translation language from the request header
-        setLanguage(req.header('Accept-Language') || 'en');
 
         // if connection to the db is down then return 503
         if (err.code === 'ECONNREFUSED') statusCode = 503;
