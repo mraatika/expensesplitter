@@ -1,9 +1,9 @@
 import {expect} from 'chai';
-import {validate} from 'common/validation/sheetvalidator';
-import {t} from 'common/dictionary/dictionary';
+import {validate, findExpensesOfRemovedParticipants, validateExpensesOfRemovedParticipants} from 'common/validation/sheetvalidator';
+import {t, tpl} from 'common/dictionary/dictionary';
 import Schema from 'common/validation/schema';
 
-describe('SheetValidator', function () {
+describe('Validation: SheetValidator', function () {
     const validSheet = {
         id: '1',
         name: 'testsheet',
@@ -131,6 +131,123 @@ describe('SheetValidator', function () {
 
             expect(result.expenses.indexOf(`${expenses[0].id}:`)).not.to.equal(-1);
             expect(result.expenses.indexOf(`${expenses[1].id}:`)).not.to.equal(-1);
+        });
+    });
+
+    describe('Checking expenses for removed participants', function () {
+        it('should return an empty array if expenses is empty', function () {
+            const res = findExpensesOfRemovedParticipants([{ id: 1 }], []);
+            expect(res).to.be.an('array');
+            expect(res).to.be.emtpy;
+        });
+
+        it('should return an empty array if expenses is missing', function () {
+            const res = findExpensesOfRemovedParticipants([{ id: 1 }]);
+            expect(res).to.be.an('array');
+            expect(res).to.be.emtpy;
+        });
+
+        it('should return an empty array if participants is empty', function () {
+            const res = findExpensesOfRemovedParticipants([], [{ participants: [1, 2] }]);
+            expect(res).to.be.an('array');
+            expect(res).to.be.emtpy;
+        });
+
+        it('should return an empty array if participants is not defined', function () {
+            const res = findExpensesOfRemovedParticipants(undefined, [{ participants: [1, 2] }]);
+            expect(res).to.be.an('array');
+            expect(res).to.be.emtpy;
+        });
+
+        it('should return expense if a participant is removed', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [{ id: 1, participants: [1, 2], payer: 1 }];
+
+            expect(findExpensesOfRemovedParticipants(participants, expenses)[0]).to.deep.equal(expenses[0]);
+        });
+
+        it('should return all the expenses removed participant is participated in', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [
+                { id: 1, participants: [1, 2], payer: 1 },
+                { id: 2, participants: [1, 2], payer: 1 },
+                { id: 3, participants: [1, 2], payer: 1 }
+            ];
+            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            expect(res).to.have.lengthOf(3);
+        });
+
+        it('should return expense if it\'s payer is removed', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [{ id: 1, participants: [1], payer: 2 }];
+
+            expect(findExpensesOfRemovedParticipants(participants, expenses)[0]).to.deep.equal(expenses[0]);
+        });
+
+        it('should return all the expenses the removed participant is payer of', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [
+                { id: 1, participants: [1], payer: 2 },
+                { id: 2, participants: [1], payer: 2 },
+                { id: 3, participants: [1], payer: 2 }
+            ];
+            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            expect(res).to.have.lengthOf(3);
+        });
+
+        it('should return expense once if the removed participant has payed it and also participated in it', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [{ id: 1, participants: [1, 2], payer: 2 }];
+            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            expect(res).to.have.lengthOf(1);
+        });
+
+        it('should return expenses of all removed participants', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }, { id: 3, removed: true }];
+            const expenses = [
+                { id: 1, participants: [1], payer: 1 },
+                { id: 2, participants: [1], payer: 2 },
+                { id: 3, participants: [2], payer: 1 },
+                { id: 4, participants: [2], payer: 3 },
+                { id: 5, participants: [3], payer: 1 },
+                { id: 6, participants: [3], payer: 2 }
+            ];
+
+            expect(findExpensesOfRemovedParticipants(participants, expenses)).to.have.lengthOf(expenses.length - 1);
+        });
+
+        it('should not take removed expenses into account', function () {
+            const participants = [{ id: 1 }, { id: 2, removed: true }];
+            const expenses = [
+                { id: 1, participants: [2], payer: 1, removed: true },
+                { id: 2, participants: [1], payer: 2, removed: true }
+            ];
+
+            expect(findExpensesOfRemovedParticipants(participants, expenses)).to.be.empty;
+        });
+    });
+
+    describe('Validating expenses of removed participants', function () {
+        it('should return undefined if none is found', function () {
+            const participants = [{ id: 1 }, { id: 2 }];
+            const expenses = [{ id: 1, participants: [1, 2], payer: 2 }];
+            expect(validateExpensesOfRemovedParticipants({participants, expenses})).to.be.undefined;
+        });
+
+        it('should return an error message for the removed expense', function () {
+            const sheetName = 'TestSheet';
+            const participantName = 'TestParticipant';
+            const participants = [{ id: 1 }, { id: 2, removed: true, name: participantName }];
+            const expenses = [
+                { id: 1, participants: [1, 2], payer: 2, name: 'TestExpense1' },
+                { id: 2, participants: [1], payer: 2, name: 'TestExpense2' }
+            ];
+            const errorMsg = tpl('error.server.contains_removed_participant', {
+                sheetName,
+                expenseNames: expenses.map(e=>e.name).join(', ')
+            });
+
+            expect(validateExpensesOfRemovedParticipants({name: sheetName, participants, expenses})).to.equal(errorMsg);
         });
     });
 });

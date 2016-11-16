@@ -1,6 +1,8 @@
 import UnprocessableEntityError from 'server/util/unprocessableentityerror';
+import ConflictError from 'server/util/conflicterror';
 import {connect} from 'server/database/dbconnector';
-import {validate} from 'common/validation/sheetvalidator';
+import {validate, validateExpensesOfRemovedParticipants} from 'common/validation/sheetvalidator';
+import mergeSheets from 'server/util/mergesheets';
 
 /**
  * Validate sheet
@@ -75,10 +77,6 @@ export default class SheetService {
      * @return {Promise}
      */
     update(sheet) {
-        const updateObject = Object.assign(sheet, {
-            lastSavedOn: new Date().toISOString()
-        });
-
         return new Promise((resolve, reject) => {
             const validationError = validateSheet(sheet);
 
@@ -87,14 +85,21 @@ export default class SheetService {
             this.get(sheet.id)
                 .then(savedSheet => {
                     // update revision to overwrite any changes and ignore conflicts
-                    updateObject._rev = savedSheet._rev;
+                    let updateObject = {...sheet, lastSavedOn: new Date().toISOString(), _rev: savedSheet._rev };
+                    // merge sheets to resolve removals
+                    updateObject = mergeSheets(savedSheet, updateObject);
+
+                    // check that there are no expenses of removed participants
+                    const result = validateExpensesOfRemovedParticipants(updateObject);
+
+                    if (result) {
+                        return reject(new ConflictError(result));
+                    }
 
                     this.connection.insert(updateObject, err => {
-                        // reject if error is not 409 (conflict)
                         if (err) return reject(err);
                         resolve(updateObject);
                     });
-
                 })
                 .catch(err => reject(err));
         });

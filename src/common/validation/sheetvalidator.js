@@ -1,6 +1,7 @@
-import {map, compact, isEmpty, toArray} from 'lodash';
+import {map, compact, isEmpty, toArray, indexBy} from 'lodash';
 import * as Schema from 'common/validation/schema';
 import * as validator from 'common/validation/validator';
+import {tpl} from 'common/dictionary/dictionary';
 
 /**
  * Validate an array of objects and form an error message
@@ -58,4 +59,55 @@ export const validate = (sheet) => {
     }
 
     return errors;
+};
+
+/**
+ * Find all expenses whose participant or payer is marked as removed
+ * @param  {Array} participants
+ * @param  {Array} expenses
+ * @return {Array} Removed expenses
+ */
+export const findExpensesOfRemovedParticipants = (participants = [], expenses = []) => {
+    const pMap = indexBy(participants, 'id');
+    const removed = [];
+
+    if (!participants.length) return removed;
+
+    for (const i in expenses) {
+        const expense = expenses[i];
+
+        if (expense.removed) continue;
+
+        if (pMap[expenses[i].payer].removed) {
+            removed.push(expense);
+            continue;
+        }
+
+        for (const j in expense.participants) {
+            const id = expense.participants[j];
+
+            if (pMap[id].removed) {
+                removed.push(expense);
+            }
+        }
+    }
+
+    return removed;
+};
+
+/**
+ * Check if participant or a payer of an expense is removed
+ * @param  {Object} sheet
+ * @return {string|undefined} error message or undefined if the sheet is valid
+ */
+export const validateExpensesOfRemovedParticipants = (sheet) => {
+    const {participants, expenses} = sheet;
+    const expensesOfRemovedParticipants = findExpensesOfRemovedParticipants(participants, expenses);
+
+    if (!expensesOfRemovedParticipants.length) return;
+
+    return tpl('error.server.contains_removed_participant', {
+        sheetName: sheet.name,
+        expenseNames: expensesOfRemovedParticipants.map(e => e.name).join(', ')
+    });
 };

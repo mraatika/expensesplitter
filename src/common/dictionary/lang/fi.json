@@ -94,6 +94,8 @@
     "error.server.503": "Yhteyttä tietokantaan ei saatu.",
     "error.server.general": "Palvelimella tapahtui virhe.",
     "error.server.status_code_info": "Status-koodi: ${status}",
+    "error.server.contains_removed_participant": "Laskelma ${sheetName}: Kulut ${expenseNames} tulee poistaa, sillä kulun osallistuja tai maksaja on poistettu toisen käyttäjän toimesta. Ole hyvä ja poista mainitut kulut, ja yritä tallennusta uudestaan.",
+    "error.server.validation_failed": "Laskelmam ${sheetName} tiedot ovat virheellisiä, virheet: ${errors}.",
 
     "expenseaddform.error.participants" : "Laskelmalle ei ole lisätty osallistujia. Palaa osallistujat-sivulle lisätäksesi niitä.",
     "expenses.add_expense" : "Lisää kulu",

@@ -94,6 +94,8 @@
     "error.server.503": "Could not connect to database.",
     "error.server.general": "An error happened on the server.",
     "error.server.status_code_info": "Status code: ${status}",
+    "error.server.contains_removed_participant": "Sheet ${sheetName}: Expenses: ${expenseNames} were removed because a participant or payer has been removed by another user. Please, remove the expenses mentioned and retry saving the sheet.",
+    "error.server.validation_failed": "Validation failed for sheet ${sheetName}, errors: ${errors}.",
 
     "expenseaddform.error.participants" : "Current sheet doesn't contain any participants. Go back to the participants page to add them.",
     "expenses.add_expense" : "Add expense",
