@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {delay, defaults} from 'lodash';
+import {delay} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
@@ -33,35 +33,22 @@ class ExpenseAddForm extends React.Component {
         this._isMounted = false;
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState(this._formState(nextProps));
-    }
-
     /**
      * Returns the default (initial) state
      * @private
      * @param {Object} properties If omitted this.props will be used
      * @return {Object} state
      */
-    _formState(properties) {
-        const errors = {};
-        const props = properties || this.props;
-        const {participants} = props;
-        const defaultExpenseProps = {
-            name: '',
-            price: '',
-            participants: props.participants,
-            payer: participants.length ? participants[0].id : undefined
-        };
-
-        if (!props.participants.length) {
-            errors.noParticipants = t('expenseaddform.error.participants');
-        }
+    _formState(properties = this.props) {
+        const state = this.state || {};
+        const {participants} = properties;
 
         return {
-            // if previous state is available then keep payer and participant values
-            expense: defaults({}, (this.state || {}).expense, defaultExpenseProps),
-            errors: errors
+            name: '',
+            price: '',
+            participants: state.participants || [],
+            payer: state.payer || (participants[0] || {}).id,
+            errors: {}
         };
     }
 
@@ -73,9 +60,7 @@ class ExpenseAddForm extends React.Component {
      * @return {undefined}
      */
     _setExpenseValue(prop, value) {
-        var expense = this.state.expense;
-        expense[prop] = value;
-        this.setState({ expense: expense });
+        this.setState({ [prop]: value });
     }
 
     /**
@@ -91,7 +76,7 @@ class ExpenseAddForm extends React.Component {
         if (!this._isMounted) return;
 
         const errors = { ...this.state.errors, [property]: error || null };
-        this.setState({ 'errors': errors });
+        this.setState({ errors });
     }
 
     /**
@@ -122,54 +107,44 @@ class ExpenseAddForm extends React.Component {
     }
 
     /**
-     * Callback for participants select's change
-     * @private
-     * @param  {Event} e
-     * @return {undefined}
-     */
-    _handleParticipantsChange(e) {
-        var options = e.target.options;
-        const selected = {};
-
-        for (let key in options) {
-            if (options[key].selected) {
-                selected[key] = options[key];
-            }
-        }
-
-        this._onExpensePropertyChange('participants', selected);
-    }
-
-    /**
-     * Callback for payer select's change
-     * @private
-     * @param  {Event} e
-     * @return {undefined}
-     */
-    _handlePayerChange(e) {
-        var payerId = e.target.options[e.target.selectedIndex].value;
-        this._onExpensePropertyChange('payer', payerId);
-    }
-
-    /**
      * Callback for form's submit event
      * @private
      * @param  {Event} e
      * @return {undefined}
      */
     _handleAddExpense(e) {
-        var expense = this.state.expense;
         e.preventDefault();
-        this.props.onSubmit(expense);
+        const {name, price, participants, payer} = this.state;
+        this.props.onSubmit({ name, price, participants, payer });
+        this.setState(this._formState());
+    }
+
+    /**
+     * Form error text spans
+     * @private
+     * @return  {Array} An array of span components
+     */
+    _formErrorTexts() {
+        const errors = {...this.state.errors};
+        const errorTexts = [];
+
+        if (!this.props.participants.length) {
+            errors.noParticipants = t('expenseaddform.error.participants');
+        }
+
+        for (const key in errors) {
+            if (errors[key]) {
+                const span = (<span key={key} className="message-text">{errors[key]}<br/></span>);
+                errorTexts.push(span);
+            }
+        }
+
+        return errorTexts;
     }
 
     render() {
-        const {expense, errors} = this.state;
-        const errorTexts = [];
-
-        for (let key in errors) {
-            if (errors[key]) errorTexts.push(errors[key]);
-        }
+        const {name, price, participants, payer} = this.state;
+        const errorTexts = this._formErrorTexts();
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>
@@ -177,14 +152,7 @@ class ExpenseAddForm extends React.Component {
                     type="danger"
                     show={!!errorTexts.length}
                     closable={false}>
-                    {errorTexts.map(error => {
-                        return ([
-                            <span>
-                                <span className="message-text">{error}</span>,
-                                <br/>
-                            </span>
-                        ]);
-                    })}
+                    { errorTexts }
                 </MessageContainer>
 
                 <div className="row">
@@ -196,7 +164,7 @@ class ExpenseAddForm extends React.Component {
                             name="name"
                             id="expense-name"
                             className="u-full-width"
-                            value={expense.name}
+                            value={name}
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
@@ -210,7 +178,7 @@ class ExpenseAddForm extends React.Component {
                             name="price"
                             id="expense-price"
                             className="u-full-width"
-                            value={expense.price}
+                            value={price}
                             step="any"
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
@@ -226,7 +194,7 @@ class ExpenseAddForm extends React.Component {
                             type="select"
                             multiple={true}
                             className="u-full-width"
-                            value={expense.participants}
+                            value={participants}
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
@@ -248,7 +216,7 @@ class ExpenseAddForm extends React.Component {
                             id="expense-payer"
                             type="select"
                             className="u-full-width"
-                            value={this.state.expense.payer}
+                            value={payer}
                             schema={ExpenseSchema}
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}

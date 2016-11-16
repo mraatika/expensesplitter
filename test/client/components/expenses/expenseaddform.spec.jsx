@@ -125,38 +125,22 @@ describe('Component:ExpenseAddForm', function() {
             payer: 2
         };
 
-        const participantOptions = defaultProps.participants.map(function(p) {
-            return { value: p.id, selected: p.id === expenseModel.payer };
-        });
-
         it('should keep current payer as default', function () {
             const {participants} = defaultProps;
             const spy = sinon.spy();
             const component = mountComponent({ onSubmit: spy });
             const field = component.find('#expense-payer');
 
-            component.setState({ expense: expenseModel });
+            component.setState({ ...expenseModel });
 
             component.simulate('submit');
-            expect(spy).to.have.been.calledWith(expenseModel);
 
             expect(field).to.have.value('' + participants[1].id);
-            expect(component.state('expense').payer).to.equal(participants[1].id);
-
-            // this time without changing the payer select
-            component.find('#expense-name').simulate('change', { target: { value: expenseModel.name }});
-            component.find('#expense-price').simulate('change', { target: { value: expenseModel.price }});
-            component.find('#expense-participants').simulate('change', { target: { options: participantOptions }});
-            component.simulate('submit');
-
-            expect(spy).to.have.been.calledWith(expenseModel);
-            expect(component.find('#expense-payer')).to.have.value('' + participants[1].id);
-            expect(component.state('expense').payer).to.equal(participants[1].id);
+            expect(component.state('payer')).to.equal(participants[1].id);
         });
     });
 
     describe('Selecting default participants', function () {
-        const spy = sinon.spy();
         const expenseModel = {
             name: 'Beer',
             price: 150,
@@ -165,21 +149,15 @@ describe('Component:ExpenseAddForm', function() {
         };
 
         it('should keep current participants as default', function () {
-            const component = mountComponent({ onSubmit: spy });
-            component.setState({ expense: expenseModel });
+            const component = mountComponent({ onSubmit: () => {} });
+            const field = component.find('#expense-participants');
+
+            component.setState({ ...expenseModel });
 
             component.simulate('submit');
-            expect(spy).to.have.been.calledWith(expenseModel);
 
-            expect(component.find('#expense-participants').prop('value')).to.deep.equal([ 1,2 ]);
-            expect(component.state('expense').participants).to.deep.equal([ 1, 2 ]);
-
-            // this time without changing the participants selection
-            component.find('#expense-name').simulate('change', { target: { value: expenseModel.name }});
-            component.find('#expense-price').simulate('change', { target: { value: expenseModel.price }});
-            component.simulate('submit');
-
-            expect(spy.calledWith(expenseModel)).to.be.ok;
+            expect(field.prop('value')).to.deep.equal(expenseModel.participants);
+            expect(component.state('participants')).to.deep.equal(expenseModel.participants);
         });
     });
 
@@ -191,7 +169,7 @@ describe('Component:ExpenseAddForm', function() {
             payer: 1
         };
 
-        it('should call ActionCreators.addExpense with expense model when submitting a valid form', function (done) {
+        it('should call onSubmit with expense model when submitting a valid form', function (done) {
             const spy = sinon.spy();
             const component = mountComponent({ onSubmit: spy });
             const message = component.find(MessageContainer);
@@ -211,6 +189,26 @@ describe('Component:ExpenseAddForm', function() {
                 expect(spy).to.have.been.calledWith(expenseModel);
                 done();
             }, 105);
+        });
+
+        it.only('should clear name and price fields after successfull add', function () {
+            const component = mountComponent({ onSubmit: () => {} });
+            const expenseModel = {
+                name: 'testexpense',
+                price: 200,
+                participants: [1, 2],
+                payer: 1
+            };
+
+            component.setState({...expenseModel});
+
+            component.simulate('submit');
+
+            expect(component.state('name')).to.be.empty;
+            expect(component.find('#expense-name')).to.be.empty;
+
+            expect(component.state('price')).to.be.empty;
+            expect(component.find('#expense-price')).to.be.empty;
         });
     });
 });
