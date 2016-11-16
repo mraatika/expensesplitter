@@ -12,5 +12,6 @@ export default class UnprocessableEntityError extends Error {
     constructor(message) {
         super(message);
         this.statusCode = 422;
+        this.translatedMessage = message;
     }
 }

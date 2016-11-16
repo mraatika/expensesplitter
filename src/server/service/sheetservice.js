@@ -1,6 +1,7 @@
 import UnprocessableEntityError from 'server/util/unprocessableentityerror';
 import ConflictError from 'server/util/conflicterror';
 import {connect} from 'server/database/dbconnector';
+import {tpl} from 'common/dictionary/dictionary';
 import {validate, validateExpensesOfRemovedParticipants} from 'common/validation/sheetvalidator';
 import mergeSheets from 'server/util/mergesheets';
 
@@ -14,7 +15,10 @@ const validateSheet = (sheet) => {
     const errors = validate(sheet);
 
     if (Object.keys(errors).length) {
-        return new UnprocessableEntityError(`Validation failed: Sheet ${sheet.id}, errors: ${JSON.stringify(errors)}`);
+        return new UnprocessableEntityError(tpl('error.server.validation_failed', {
+            sheetName: sheet.name,
+            errors: JSON.stringify(errors)
+        }));
     }
 };
 
@@ -33,6 +37,7 @@ export default class SheetService {
      * Get a sheet from db by sheet id
      * @async
      * @param  {string} sheetId
+     * @param  {Object} options
      * @return {Promise}
      */
     get(sheetId) {
