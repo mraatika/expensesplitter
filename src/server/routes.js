@@ -36,7 +36,7 @@ export default (server, logger) => {
                 res.json({ sheet: savedSheet });
             })
             .catch(err => {
-                logger.error(`Add (id: ${sheet.id}) failed with error ${err}`);
+                logger.error(`Add (id: ${sheet.id}) failed with error ${err}. Sheet ${sheet}`);
                 next(err);
             });
     });
@@ -52,7 +52,7 @@ export default (server, logger) => {
             .then(() => {
                 service.update(sheet)
                     .then(savedSheet => {
-                        logger.info(`Updated sheet with id ${id}`);
+                        logger.info(`Updated sheet with id ${id}. Sheet:`, savedSheet);
                         res.json({ sheet: savedSheet });
                     })
                     .catch(err => {
