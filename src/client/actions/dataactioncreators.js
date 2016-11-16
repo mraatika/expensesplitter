@@ -54,6 +54,68 @@ export function removeSheetHistoryEntry(entry) {
 }
 
 /**
+ * Add a participant to sheet
+ * @param  {Object} participant
+ * @return {Object}
+ */
+export function addParticipant(participant) {
+    if (!isObject(participant)) throw new InvalidArgumentsError('participant missing or invalid!');
+
+    return {
+        type: Constants.ActionTypes.ADD_PARTICIPANT,
+        participant
+    };
+}
+
+/**
+ * Remove participant from sheet
+ * @param  {Object} participant
+ * @param  {Array} expensesToBeRemoved
+ * @return {Function}
+ */
+export function removeParticipant(participant, expensesToBeRemoved = []) {
+    if (!isObject(participant)) throw new InvalidArgumentsError('participant missing or invalid!');
+
+    return (dispatch) => {
+        // remove all expenses
+        expensesToBeRemoved.forEach(e => dispatch(removeExpense(e)));
+
+        return dispatch({
+            type: Constants.ActionTypes.REMOVE_PARTICIPANT,
+            participant
+        });
+    };
+}
+
+/**
+ * Add an expense to sheet
+ * @param  {Object} participant
+ * @return {Object}
+ */
+export function addExpense(expense) {
+    if (!isObject(expense)) throw new InvalidArgumentsError('expense missing or invalid!');
+
+    return {
+        type: Constants.ActionTypes.ADD_EXPENSE,
+        expense
+    };
+}
+
+/**
+ * Remove expense from sheet
+ * @param  {Object} participant
+ * @return {Object}
+ */
+export function removeExpense(expense) {
+    if (!isObject(expense)) throw new InvalidArgumentsError('expense missing or invalid!');
+
+    return {
+        type: Constants.ActionTypes.REMOVE_EXPENSE,
+        expense
+    };
+}
+
+/**
  * Create sheet action
  * @param {Object} sheet
  * @return {Object}

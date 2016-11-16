@@ -18,9 +18,13 @@ export default {
     },
 
     ActionTypes: {
+        ADD_EXPENSE                 : 'ADD_EXPENSE',
+        ADD_PARTICIPANT             : 'ADD_PARTICIPANT',
         CLEAR_HISTORY               : 'CLEAR_HISTORY',
         CREATE_SHEET                : 'CREATE_SHEET',
         LOAD_SHEET                  : 'LOAD_SHEET',
+        REMOVE_EXPENSE              : 'REMOVE_EXPENSE',
+        REMOVE_PARTICIPANT          : 'REMOVE_PARTICIPANT',
         REMOVE_SHEET                : 'REMOVE_SHEET',
         REMOVE_SHEET_HISTORY_ENTRY  : 'REMOVE_SHEET_HISTORY_ENTRY',
         SET_SETTINGS                : 'SET_SETTINGS',

@@ -1,12 +1,15 @@
-import {without} from 'lodash';
 import {connect} from 'react-redux';
-import participantFactory from 'client/factory/participantfactory';
 import ParticipantsPage from 'client/components/participants/participantspage.jsx';
-import {updateSheet} from 'client/actions/dataactioncreators';
+import {addParticipant, removeParticipant} from 'client/actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;
-    return { sheet, settings: state.settings };
+    return {
+        sheet,
+        participants: sheet.participants.filter(p => !p.removed),
+        expenses: sheet.expenses.filter(e => !e.removed),
+        settings: state.settings
+    };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -18,13 +21,7 @@ function mapDispatchToProps(dispatch) {
          * @param  {[type]} participantProperties [description]
          * @return {[type]}
          */
-        addParticipant: (sheet, participantProperties) => {
-            const participant = participantFactory(participantProperties);
-
-            dispatch(updateSheet(sheet, {
-                participants: sheet.participants.concat([ participant ])
-            }));
-        },
+        addParticipant: participant => dispatch(addParticipant(participant)),
         /**
          * Remove a participant (and expenses the participant is participated in)
          * from given sheet
@@ -32,11 +29,8 @@ function mapDispatchToProps(dispatch) {
          * @param  {Object} participant
          * @param  {Array} expensesToBeRemoved
          */
-        removeParticipant: (sheet, participant, expensesToBeRemoved) => {
-            dispatch(updateSheet(sheet, {
-                participants: without(sheet.participants, participant),
-                expenses: without(sheet.expenses, ...expensesToBeRemoved)
-            }));
+        removeParticipant: (participant, expensesToBeRemoved) => {
+            dispatch(removeParticipant(participant, expensesToBeRemoved));
         }
     };
 }

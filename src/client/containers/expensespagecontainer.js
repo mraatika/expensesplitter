@@ -1,31 +1,26 @@
-import {without} from 'lodash';
 import {connect} from 'react-redux';
-import expenseFactory from 'client/factory/expensefactory';
 import ExpensesPage from 'client/components/expenses/expensespage.jsx';
-import {updateSheet} from 'client/actions/dataactioncreators';
+import {addExpense, removeExpense} from 'client/actions/dataactioncreators';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;
-    return { sheet, settings: state.settings };
+
+    return {
+        sheet,
+        participants: sheet.participants.filter(p => !p.removed),
+        expenses: sheet.expenses.filter(e => !e.removed),
+        settings: state.settings
+    };
 }
 
 function mapDispatchToProps(dispatch) {
 
     return {
-        addExpense: (sheet, expenseProperties) => {
-            const expense = expenseFactory(expenseProperties);
+        addExpense: expenseProperties => dispatch(addExpense(expenseProperties)),
 
-            dispatch(updateSheet(sheet, {
-                expenses: sheet.expenses.concat([ expense ])
-            }));
-        },
-
-        removeExpenses: (sheet, expenses) => {
+        removeExpenses: (expenses) => {
             const asArray = [].concat(expenses);
-
-            dispatch(updateSheet(sheet, {
-                expenses: without(sheet.expenses, ...asArray)
-            }));
+            asArray.forEach(e => dispatch(removeExpense(e)));
         }
     };
 }

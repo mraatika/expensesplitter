@@ -8,6 +8,8 @@ function mapStateToProps(state) {
 
     return {
         sheet,
+        expenses: sheet.expenses.filter(e => !e.removed),
+        participants: sheet.participants.filter(p => !p.removed),
         dirty,
         isSavingToServer,
         settings: state.settings

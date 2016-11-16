@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as actions from 'client/actions/dataactioncreators';
@@ -159,6 +160,118 @@ describe('Actions: DataActions', function () {
                 expect(res.payload.request.url).to.equal(`/sheet/${sheet.id}`);
                 expect(res.payload.request.headers['Accept-Language']).to.equal('fi');
                 expect(res.payload.request.headers['X-Admin-Token']).to.equal(sheet.adminKey);
+            });
+        });
+    });
+
+    describe('Participant', function () {
+        describe('add', function () {
+            it('should throw if called without a participant', function () {
+                expect(() => actions.addParticipant()).to.throw();
+            });
+
+            it('should throw if called with an invalid participant', function () {
+                expect(() => actions.addParticipant('a')).to.throw();
+            });
+
+            it('should return an action with participant', function () {
+                const participant = { id: 1 };
+                const res = actions.addParticipant(participant);
+
+                expect(res.type).to.equal(Constants.ActionTypes.ADD_PARTICIPANT);
+                expect(res.participant).to.equal(participant);
+            });
+        });
+
+        describe('remove', function () {
+            it('should throw if called without a participant', function () {
+                expect(() => actions.removeParticipant()).to.throw();
+            });
+
+            it('should throw if called with an invalid participant', function () {
+                expect(() => actions.removeSheet('a')).to.throw();
+            });
+
+            it('should dispatch an event', function () {
+                const sheet = { id: '1', name:'testsheet', settings: {} };
+                const settings = { language: 'en' };
+                const store = mockStore({ sheet: {}, settings });
+
+                const res = actions.fetchSheet(sheet.id)(store.dispatch, store.getState);
+                expect(res.type).to.equal(Constants.ActionTypes.LOAD_SHEET);
+                expect(res.payload.request.url).to.contain(`sheet/${sheet.id}`);
+                expect(res.payload.request.headers).to.have.keys('Accept-Language');
+                expect(res.payload.request.headers['Accept-Language']).to.equal(settings.language);
+            });
+
+            it('should return an action with participant', function () {
+                const participant = { id: 1 };
+                const store = mockStore();
+                const res = actions.removeParticipant(participant)(store.dispatch);
+
+                expect(res.type).to.equal(Constants.ActionTypes.REMOVE_PARTICIPANT);
+                expect(res.participant).to.equal(participant);
+            });
+
+            it('should call dispatch with action', function () {
+                const participant = { id: 1 };
+                const store = mockStore();
+                const spy = sinon.spy(store, 'dispatch');
+
+                const res = actions.removeParticipant(participant)(store.dispatch);
+
+                expect(spy).to.have.been.calledWith({ type: res.type, participant: res.participant });
+            });
+
+            it('should dispatch an remove expense action if the array is not empty', function () {
+                const participant = { id: 1 };
+                const expensesToBeRemoved = [{ id: '1' }, { id: '2' }];
+                const store = mockStore();
+                const spy = sinon.spy(store, 'dispatch');
+
+                actions.removeParticipant(participant, expensesToBeRemoved)(store.dispatch);
+
+                expect(spy).to.have.been.called.thrice;
+                expect(spy).to.have.been.calledWith({type: Constants.ActionTypes.REMOVE_EXPENSE, expense: expensesToBeRemoved[0]});
+                expect(spy).to.have.been.calledWith({type: Constants.ActionTypes.REMOVE_EXPENSE, expense: expensesToBeRemoved[1]});
+            });
+        });
+    });
+
+    describe('Expense', function () {
+        describe('add', function () {
+            it('should throw if called without an expense', function () {
+                expect(() => actions.addExpense()).to.throw();
+            });
+
+            it('should throw if called with an invalid expense', function () {
+                expect(() => actions.addExpense('a')).to.throw();
+            });
+
+            it('should return an action with expense', function () {
+                const expense = { id: 1 };
+                const res = actions.addExpense(expense);
+
+                expect(res.type).to.equal(Constants.ActionTypes.ADD_EXPENSE);
+                expect(res.expense).to.equal(expense);
+            });
+        });
+
+        describe('remove', function () {
+            it('should throw if called without a expense', function () {
+                expect(() => actions.removeExpense()).to.throw();
+            });
+
+            it('should throw if called with an invalid expense', function () {
+                expect(() => actions.removeExpense('a')).to.throw();
+            });
+
+            it('should return an action with expense', function () {
+                const expense = { id: 1 };
+                const res = actions.removeExpense(expense);
+
+                expect(res.type).to.equal(Constants.ActionTypes.REMOVE_EXPENSE);
+                expect(res.expense).to.equal(expense);
             });
         });
     });

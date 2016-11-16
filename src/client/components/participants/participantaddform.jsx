@@ -18,7 +18,7 @@ class ParticipantAddForm extends React.Component {
     }
 
     _validate(participantName) {
-        if (find(this.props.participants, (participant => participant.name === participantName))) {
+        if (find(this.props.participants, (participant => !participant.removed && participant.name === participantName))) {
             return `${t('error.participant.name.duplicate')} ${participantName}`;
         }
     }

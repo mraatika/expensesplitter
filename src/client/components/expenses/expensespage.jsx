@@ -15,7 +15,7 @@ class ExpensesPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet} = this.props;
+        const {sheet, expenses, participants} = this.props;
 
         return (
             <section id="expenses-page">
@@ -23,19 +23,18 @@ class ExpensesPage extends React.Component {
                     <div className="expenses-list eight columns">
                         <h2>{ t('lang.expense_plural') }</h2>
                         <ExpenseList
-                            sheet={sheet}
-                            expenses={sheet.expenses}
-                            participants={sheet.participants}
+                            expenses={expenses}
+                            participants={participants}
                             isRemoveAllowed={true}
-                            removeExpenses={expenses => this.props.removeExpenses(sheet, expenses)}
+                            removeExpenses={this.props.removeExpenses}
                             currencySymbol={sheet.settings.currencySymbol}/>
                     </div>
                     <div className="four columns">
                         <aside role="complementary" className="shares-section-container">
                             <h2>{ t('lang.share_plural') }</h2>
                             <SharesTable
-                                participants={sheet.participants}
-                                expenses={sheet.expenses}
+                                participants={participants}
+                                expenses={expenses}
                                 currencySymbol={sheet.settings.currencySymbol}/>
                         </aside>
                     </div>
@@ -43,8 +42,8 @@ class ExpensesPage extends React.Component {
 
                 <section className="clear-float">
                     <ExpenseAddForm
-                        participants={sheet.participants}
-                        onSubmit={expense => this.props.addExpense(this.props.sheet, expense)}
+                        participants={participants}
+                        onSubmit={this.props.addExpense}
                         currencySymbol={sheet.settings.currencySymbol}/>
                 </section>
 
@@ -57,6 +56,8 @@ class ExpensesPage extends React.Component {
 
 ExpensesPage.propTypes = {
     sheet: PropTypes.object.isRequired,
+    expenses: PropTypes.array.isRequired,
+    participants: PropTypes.array.isRequired,
     addExpense: PropTypes.func.isRequired,
     removeExpenses: PropTypes.func.isRequired
 };

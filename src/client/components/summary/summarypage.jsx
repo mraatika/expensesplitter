@@ -65,11 +65,11 @@ class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet, params} = this.props;
-        const {participants, expenses, settings} = sheet;
+        const {sheet, params, participants, expenses} = this.props;
+        const {settings} = sheet;
         const {adminKey} = params;
-        const transactions = new TransactionsService(sheet).calculateTransactions();
-        const sharesAndBalances = new ExpensesService(sheet).getAllBalancesAndShares();
+        const transactions = new TransactionsService().calculateTransactions(expenses, participants);
+        const sharesAndBalances = new ExpensesService({participants, expenses}).getAllBalancesAndShares();
 
         return (
             <div id="summary-page">
@@ -176,6 +176,8 @@ class SheetSummaryPage extends React.Component {
 
 SheetSummaryPage.propTypes = {
     sheet: PropTypes.object.isRequired,
+    participants: PropTypes.array.isRequired,
+    expenses: PropTypes.array.isRequired,
     removeSheet: PropTypes.func.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,

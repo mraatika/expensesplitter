@@ -21,7 +21,8 @@ class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const expensesParticipatedIn = new ExpensesService(this.props.sheet)
+        const {expenses, participants} = this.props;
+        const expensesParticipatedIn = new ExpensesService({ expenses, participants })
             .findAllExpensesOfParticipant(participant.id);
 
         if (expensesParticipatedIn.length) {
@@ -32,7 +33,7 @@ class ParticipantsPage extends React.Component {
             return;
         }
 
-        this._removeParticipant(participant);
+        this.props.removeParticipant(participant);
     }
 
     /**
@@ -44,17 +45,7 @@ class ParticipantsPage extends React.Component {
         const expensesParticipatedIn = new ExpensesService(this.props.sheet)
             .findAllExpensesOfParticipant(participant.id);
 
-        this._removeParticipant(participant, expensesParticipatedIn);
-    }
-
-    /**
-     * Remove the given participant from the current sheet
-     * @private
-     * @param  {Object} participant
-     * @param  {Array} [expenses]
-     */
-    _removeParticipant(participant, expenses = []) {
-        this.props.removeParticipant(this.props.sheet, participant, expenses);
+        this.props.removeParticipant(participant, expensesParticipatedIn);
     }
 
     /**
@@ -64,14 +55,14 @@ class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _addParticipant(participant) {
-        this.props.addParticipant(this.props.sheet, participant);
+        this.props.addParticipant(participant);
     }
 
     /**
      * @return {ReactComponent}
      */
     render() {
-        const {participants} = this.props.sheet;
+        const {participants, sheet} = this.props;
 
         return (
             <section id="participants-page">
@@ -81,7 +72,7 @@ class ParticipantsPage extends React.Component {
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm
                     onFormSubmit={this._addParticipant.bind(this)}
-                    participants={participants} />
+                    participants={sheet.participants} />
 
                 <Navigation currentPage={pages.PARTICIPANTS} sheetId={this.props.sheet.id} />
 
@@ -99,6 +90,8 @@ class ParticipantsPage extends React.Component {
 
 ParticipantsPage.propTypes = {
     sheet: PropTypes.object.isRequired,
+    participants: PropTypes.array.isRequired,
+    expenses: PropTypes.array.isRequired,
     addParticipant: PropTypes.func.isRequired,
     removeParticipant: PropTypes.func.isRequired
 };
