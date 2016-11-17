@@ -9,7 +9,7 @@ export default class ExpensesService {
 
     /**
      * @constructor
-     * @param {object} sheet
+     * @param {Object} sheet
      */
     constructor(sheet) {
         this.sheet = sheet;
@@ -17,9 +17,9 @@ export default class ExpensesService {
 
     /**
      * Calculate balance for each participant.
-     * @param {array} expenses
-     * @param {array} participants
-     * @returns {array} An array of objects
+     * @param {Array} expenses
+     * @param {Array} participants
+     * @returns {Array} An array of objects
      *     {string} participant
      *     {number} balance
      *
@@ -33,12 +33,11 @@ export default class ExpensesService {
             };
         });
 
-        return sortBy(balances, balance => balance.balance);
+        return sortBy(balances, 'balance');
     }
 
     /**
      * Returns the current balance of a participant (share - paid)
-     * @param {array} expenses
      * @param {string} participantId
      * @returns {number}
      */
@@ -52,8 +51,7 @@ export default class ExpensesService {
 
     /**
      * Calculates participant's share of expenses
-     * @param {array} expenses
-     * @param {string} participantId Participant's id
+     * @param {string} participantId
      * @returns {number} The sum of expenses
      */
     calculateParticipantShare(participantId) {
@@ -113,42 +111,37 @@ export default class ExpensesService {
 
     /**
      * Get expeneses of a participant
-     *
      * @param {string} participantId Participant's id
+     * @return {Array}
      */
     findExpensesByParticipant(participantId) {
         const {expenses} = this.sheet;
-
         return expenses.filter(expense => expense.participants.indexOf(participantId) > -1);
     }
 
     /**
      * Find expenses paid by a participant
      * @param  {string} participantId
-     * @return {array} An array of expenses
+     * @return {Array} An array of expenses
      */
     findExpensesPaidByParticipant(participantId) {
         const {expenses} = this.sheet;
-
         return expenses.filter(expense => expense.payer === participantId);
     }
 
     /**
      * Find expenses paid or participated by a participant
      * @param  {string} participantId
-     * @return {array} An array of expenses
+     * @return {Array} An array of expenses
      */
     findAllExpensesOfParticipant(participantId) {
         const {expenses} = this.sheet;
-
         return expenses.filter(e => e.payer === participantId || e.participants.indexOf(participantId) > -1);
     }
 
     /**
      * Calculate all balances and shares
-     * @param  {array} participants
-     * @param  {array} expenses
-     * @return {array}
+     * @return {Array}
      */
     getAllBalancesAndShares() {
         const {expenses, participants} = this.sheet;

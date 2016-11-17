@@ -1,10 +1,6 @@
 import {expect} from 'chai';
 import ExpensesService from 'service/expensesservice';
 
-/**
- * @TODO: needs more tests
- */
-
 describe('Service: ExpensesService', function () {
     const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' } ];
     const sheet = {
@@ -101,13 +97,38 @@ describe('Service: ExpensesService', function () {
                     }
                 ]
             };
-            const service = new ExpensesService(sheet);
 
-            expect(service.calculateBalances()).to.deep.equal([
-                { participant: '2', balance: -135 },
-                { participant: '3', balance: 30 },
-                { participant: '1', balance: 105 }
-            ]);
+            const res = new ExpensesService(sheet).calculateBalances();
+
+            expect(res).to.contain({ participant: '1', balance: 105 });
+            expect(res).to.contain({ participant: '2', balance: -135 });
+            expect(res).to.contain({ participant: '3', balance: 30 });
+        });
+
+        it('should sort balances by price', function () {
+            const sheet = {
+                participants,
+                expenses: [
+                    {
+                        name: 'expense1',
+                        price: 240,
+                        participants: participants.map(p => p.id),
+                        payer: participants[1].id
+                    },
+                    {
+                        name: 'expense2',
+                        price: 75,
+                        participants: participants.map(p => p.id),
+                        payer: participants[2].id
+                    }
+                ]
+            };
+
+            const res = new ExpensesService(sheet).calculateBalances();
+
+            expect(res[0].balance).to.equal(-135);
+            expect(res[1].balance).to.equal(30);
+            expect(res[2].balance).to.equal(105);
         });
 
         it('participant\'s balance should be 0 if not participated in any expenses', function () {
@@ -128,6 +149,7 @@ describe('Service: ExpensesService', function () {
                     }
                 ]
             };
+
             const service = new ExpensesService(sheet);
 
             expect(service.calculateBalances()).to.deep.equal([
