@@ -81,7 +81,7 @@ class SheetSummaryPage extends React.Component {
                     transactions={transactions}
                     currencySymbol={settings.currencySymbol}/>
 
-                <h2>{ t('lang.expense_plural') }</h2>
+                <h2 className="display-inline">{ t('lang.expense_plural') }</h2>
                 <ParticipantSummaryList
                     participants={participants}
                     sharesAndBalances={sharesAndBalances}

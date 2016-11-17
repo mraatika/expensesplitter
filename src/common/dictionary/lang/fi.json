@@ -8,6 +8,8 @@
     "app.locales.date_format": "${day}.${month}.${year} ${hour}:${minute}",
 
     "common.confirm_removal": "Vahvista poisto",
+    "common.close_all": "Avaa kaikki",
+    "common.open_all": "Sulje kaikki",
 
     "errors.SAVE_SHEET_FAIL.title": "Laskelman tallennus epäonnistui",
     "errors.REMOVE_SHEET_FAIL.title": "Laskelman poistaminen epäonnistui",

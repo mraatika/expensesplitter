@@ -17,7 +17,17 @@ class ParticipantSummaryListItem extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.state = { isExpanded: false };
+        this.state = { isExpanded: this.props.isExpanded };
+    }
+
+    /**
+     * Will be called when component's props change
+     * @param  {Object} newProps
+     */
+    componentWillReceiveProps(newProps) {
+        if (newProps.isExpanded !== this.state.isExpanded) {
+            this.setState({ isExpanded: newProps.isExpanded });
+        }
     }
 
     /**

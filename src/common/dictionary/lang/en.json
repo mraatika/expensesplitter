@@ -8,6 +8,8 @@
     "app.locales.date_format": "${year}/${month}/${day} ${hour}:${minute}",
 
     "common.confirm_removal": "Confirm removal",
+    "common.close_all": "Close all",
+    "common.open_all": "Open all",
 
     "errors.SAVE_SHEET_FAIL.title": "Sheet saving failed",
     "errors.REMOVE_SHEET_FAIL.title": "Sheet removal failed",
