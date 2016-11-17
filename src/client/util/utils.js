@@ -72,6 +72,34 @@ export const DateUtils = {
 };
 
 /**
+ * Array related utility functions
+ * @type {Object}
+ */
+export const ArrayUtils = {
+    /**
+     * Find array entry's index based on it's id
+     * @param  {Array} haystack
+     * @param  {Object|string} entry
+     * @return {number}
+     */
+    findIndexById(haystack, entry) {
+        const id = entry.id || entry;
+        return haystack.findIndex(e => e.id === id);
+    },
+
+    /**
+     * Find array entry based on it's id
+     * @param  {Array} haystack
+     * @param  {Object|string} entry
+     * @return {Object}
+     */
+    findById(haystack, entry) {
+        const id = entry.id || entry;
+        return haystack.find(e => e.id === id);
+    }
+};
+
+/**
  * Find a key following a given fragment
  * @private
  * @param  {string} path

@@ -1,6 +1,6 @@
-import {some} from 'lodash';
 import immutable from 'object-path-immutable';
 import Constants from 'client/constants/appconstants';
+import {ArrayUtils} from 'client/util/utils';
 import sheetFactory from 'client/factory/sheetfactory';
 import participantFactory from 'client/factory/participantfactory';
 import expenseFactory from 'client/factory/expensefactory';
@@ -15,42 +15,6 @@ const initialState = {
 };
 
 /**
- * Update state property if value changes
- * @param  {Object} state
- * @param  {string} name
- * @param  {*} value
- * @return {Object}
- */
-const updateProperties = (state, properties) => {
-    const isChanged = some(properties, (v, k) => state[k] !== v);
-    return !isChanged ? state : {...state, ...properties};
-};
-
-/**
- * Set an entity's removed property to true in a sub array
- * @param  {Object} state
- * @param  {string} arrName
- * @param  {Object} entity
- * @return {Object}
- */
-const removeEntity = (state, arrName, entity) => {
-    const current = state.sheet[arrName];
-    let index;
-
-    for (const i in current) {
-        if (current[i].id === entity.id) {
-            index = i;
-            break;
-        }
-    }
-
-    return immutable(state)
-        .del(`sheet.${arrName}.${index}`)
-        .push(`sheet.${arrName}`, {...entity, removed: true })
-        .value();
-};
-
-/**
  * Sheet related reducers
  * @param  {Object} state
  * @param  {Object} action
@@ -61,25 +25,54 @@ export function sheetReducer(state = initialState, action) {
     switch(action.type) {
     // ACTIONS
     case Constants.ActionTypes.CREATE_SHEET:
-        return updateProperties(state, { dirty: true, sheet: sheetFactory(action.sheet)});
+        return immutable(state)
+            .set('dirty', true)
+            .set('sheet', sheetFactory(action.sheet))
+            .value();
     case Constants.ActionTypes.ADD_EXPENSE:
-        return immutable.push(updateProperties(state, { dirty: true }), 'sheet.expenses', expenseFactory(action.expense));
+        return immutable(state)
+            .set('dirty', true)
+            .push('sheet.expenses', expenseFactory(action.expense))
+            .value();
     case Constants.ActionTypes.REMOVE_EXPENSE:
-        return removeEntity(updateProperties(state, { dirty: true }), 'expenses', action.expense);
+        {
+            const index = ArrayUtils.findIndexById(state.sheet.expenses, action.expense);
+            return immutable(state)
+                .set('dirty', true)
+                .set(`sheet.expenses.${index}.removed`, true)
+                .value();
+        }
     case Constants.ActionTypes.ADD_PARTICIPANT:
-        return immutable.push(updateProperties(state, { dirty: true }), 'sheet.participants', participantFactory(action.participant));
+        return immutable(state)
+            .set('dirty', true)
+            .push('sheet.participants', participantFactory(action.participant))
+            .value();
     case Constants.ActionTypes.REMOVE_PARTICIPANT:
-        return removeEntity(updateProperties(state, { dirty: true }), 'participants', action.participant);
+        {
+            const index = ArrayUtils.findIndexById(state.sheet.participants, action.participant);
+            return immutable(state)
+               .set('dirty', true)
+               .set(`sheet.participants.${index}.removed`, true)
+               .value();
+        }
     case Constants.ActionTypes.UPDATE_SHEET:
-        return updateProperties(state, { dirty: true, sheet: { ...state.sheet, ...action.update }});
+        return immutable(state)
+            .set('dirty', true)
+            .assign('sheet', action.update)
+            .value();
     // EVENTS
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
     case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-        return updateProperties(state, { dirty: false, sheet: action.payload.data.sheet });
+        return immutable(state)
+            .set('dirty', false)
+            .set('sheet', action.payload.data.sheet)
+            .value();
     // ERRORS
     case Constants.ErrorEventTypes.SAVE_SHEET:
-        return updateProperties(state, { dirty: true });
-    default:
-        return state;
+        if (!state.dirty) {
+            return immutable.set(state, 'dirty', true);
+        }
     }
+
+    return state;
 }
