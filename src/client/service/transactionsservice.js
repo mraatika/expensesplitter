@@ -25,7 +25,7 @@ export default class TransactionsService {
     /**
      *  Calculate the transactions. Creates a model for each
      *  transaction and adds them to the transactions collection
-     *  @return {array} Transactions
+     *  @return {Array} Transactions
      */
     calculateTransactions(expenses, participants) {
         const transactions = [];
@@ -35,9 +35,9 @@ export default class TransactionsService {
         // iterate until all accounts are even
         while (balances.length) {
             // the participant who needs to pay most
-            let min = balances[0];
+            const min = balances[0];
             // the participant who needs most compensation
-            let max = balances[balances.length - 1];
+            const max = balances[balances.length - 1];
 
             // break the loop if remaining balance has remainder
             // (calculations with float numbers are tricky)
@@ -46,7 +46,7 @@ export default class TransactionsService {
             }
 
             // how much the min can and need to pay to the max
-            let amount = calculateTransActionAmount((min.balance * -1), max.balance);
+            const amount = calculateTransActionAmount((min.balance * -1), max.balance);
 
             transactions.push({
                 from: max.participant,
