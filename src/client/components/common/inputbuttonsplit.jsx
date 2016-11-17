@@ -7,29 +7,15 @@ import React from 'react';
  * @extends {ReactComponent}
  */
 export default class InputButtonSplit extends React.Component {
-
-    /**
-     * Find
-     * @param  {[type]} type [description]
-     * @return {[type]}      [description]
-     */
-    _findChildOfType(type) {
-        const children = React.Children.toArray(this.props.children);
-        return children.find(c => c.type === type);
-    }
-
     /**
      * @return {ReactComponent}
      */
     render() {
-        let inputField = this._findChildOfType('input');
-        let button = this._findChildOfType('button');
-
         return (
             <div className="split-button">
-                { inputField }
+                {this.props.children[0]}
                 <span className="button-container">
-                    {button}
+                    {this.props.children[1]}
                 </span>
             </div>
         );
