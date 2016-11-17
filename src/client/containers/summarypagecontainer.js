@@ -1,6 +1,7 @@
 import {connect} from 'react-redux';
-import SummaryPage from 'client/components/summary/summarypage.jsx';
+import {ArrayUtils} from 'client/util/utils';
 import {removeSheet, saveSheet, updateSheet} from 'client/actions/dataactioncreators';
+import SummaryPage from 'client/components/summary/summarypage.jsx';
 
 function mapStateToProps(state) {
     const {sheet, dirty} = state.sheet;
@@ -8,8 +9,8 @@ function mapStateToProps(state) {
 
     return {
         sheet,
-        expenses: sheet.expenses.filter(e => !e.removed),
-        participants: sheet.participants.filter(p => !p.removed),
+        expenses: ArrayUtils.rejectRemoved(sheet.expenses),
+        participants: ArrayUtils.rejectRemoved(sheet.participants),
         dirty,
         isSavingToServer,
         settings: state.settings

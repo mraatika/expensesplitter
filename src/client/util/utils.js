@@ -96,6 +96,15 @@ export const ArrayUtils = {
     findById(haystack, entry) {
         const id = entry.id || entry;
         return haystack.find(e => e.id === id);
+    },
+
+    /**
+     * Filter out removed values
+     * @param  {Array} arr
+     * @return {Array}
+     */
+    rejectRemoved(arr) {
+        return arr.filter(e => !e.removed);
     }
 };
 

@@ -1,12 +1,13 @@
 import {connect} from 'react-redux';
 import ParticipantsPage from 'client/components/participants/participantspage.jsx';
 import {addParticipant, removeParticipant} from 'client/actions/dataactioncreators';
+import {ArrayUtils} from 'client/util/utils';
 
 function mapStateToProps(state) {
     const {sheet} = state.sheet;
     return {
         sheet,
-        participants: sheet.participants.filter(p => !p.removed),
+        participants: ArrayUtils.rejectRemoved(sheet.participants),
         expenses: sheet.expenses.filter(e => !e.removed),
         settings: state.settings
     };
