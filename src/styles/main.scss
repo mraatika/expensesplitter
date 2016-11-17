@@ -149,6 +149,10 @@ option.current {
         border-bottom-left-radius: 0;
         margin-left: 0;
         margin-top: -4px;
+
+        .fa {
+            vertical-align: middle;
+        }
     }
 }
 
@@ -161,11 +165,6 @@ option.current {
 
     &.active {
         box-shadow: inset 1px 1px 6px #bbb;
-    }
-
-    .fa {
-        position: relative;
-        top: 3px;
     }
 }
 
