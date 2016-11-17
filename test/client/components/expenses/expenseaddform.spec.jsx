@@ -191,7 +191,7 @@ describe('Component:ExpenseAddForm', function() {
             }, 105);
         });
 
-        it.only('should clear name and price fields after successfull add', function () {
+        it('should clear name and price fields after successfull add', function () {
             const component = mountComponent({ onSubmit: () => {} });
             const expenseModel = {
                 name: 'testexpense',

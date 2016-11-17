@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react';
-import {find} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
 
@@ -17,9 +16,9 @@ class ParticipantAddForm extends React.Component {
         };
     }
 
-    _validate(participantName) {
-        if (find(this.props.participants, (participant => !participant.removed && participant.name === participantName))) {
-            return `${t('error.participant.name.duplicate')} ${participantName}`;
+    _validate(name) {
+        if (this.props.participants.find(p => !p.removed && p.name === name)) {
+            return `${t('error.participant.name.duplicate')} ${name}`;
         }
     }
 

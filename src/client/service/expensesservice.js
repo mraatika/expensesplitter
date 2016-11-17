@@ -1,4 +1,4 @@
-import {map, sortBy, reduce, filter} from 'lodash';
+import {sortBy} from 'lodash';
 import {ArrayUtils} from 'client/util/utils';
 
 /**
@@ -26,7 +26,7 @@ export default class ExpensesService {
      */
     calculateBalances() {
         const {expenses, participants} = this.sheet;
-        const balances = map(participants, participant => {
+        const balances = participants.map(participant => {
             return {
                 participant: participant.id,
                 balance: this.calculateParticipantBalance(participant.id, expenses)
@@ -59,7 +59,7 @@ export default class ExpensesService {
     calculateParticipantShare(participantId) {
         const {expenses} = this.sheet;
 
-        return reduce(expenses, (sum, expense) => {
+        return expenses.reduce((sum, expense) => {
             // expense's participants
             const participants = expense.participants || [],
                 price = +expense.price || 0;
@@ -83,7 +83,7 @@ export default class ExpensesService {
     calculateParticipantTotalPaid(participantId) {
         const {expenses} = this.sheet;
 
-        return reduce(expenses, (sum, expense) => {
+        return expenses.reduce((sum, expense) => {
             // expense's participants
             const payer = expense.payer;
             const price = +expense.price;
@@ -106,7 +106,7 @@ export default class ExpensesService {
     getTotalSum() {
         const {expenses} = this.sheet;
 
-        return reduce(expenses, (sum, expense) => {
+        return expenses.reduce((sum, expense) => {
             return sum + (+expense.price || 0);
         }, 0);
     }
@@ -119,7 +119,7 @@ export default class ExpensesService {
     findExpensesByParticipant(participantId) {
         const {expenses} = this.sheet;
 
-        return filter(expenses, expense => expense.participants.indexOf(participantId) > -1);
+        return expenses.filter(expense => expense.participants.indexOf(participantId) > -1);
     }
 
     /**
@@ -130,7 +130,7 @@ export default class ExpensesService {
     findExpensesPaidByParticipant(participantId) {
         const {expenses} = this.sheet;
 
-        return filter(expenses, expense => expense.payer === participantId);
+        return expenses.filter(expense => expense.payer === participantId);
     }
 
     /**
@@ -141,9 +141,7 @@ export default class ExpensesService {
     findAllExpensesOfParticipant(participantId) {
         const {expenses} = this.sheet;
 
-        return filter(expenses, expense => {
-            return expense.payer === participantId ||expense.participants.indexOf(participantId) > -1;
-        });
+        return expenses.filter(e => e.payer === participantId || e.participants.indexOf(participantId) > -1);
     }
 
     /**
@@ -156,7 +154,7 @@ export default class ExpensesService {
         const {expenses, participants} = this.sheet;
         const balances = this.calculateBalances(expenses, participants);
 
-        return map(balances, balance => {
+        return balances.map(balance => {
             return {
                 participantId: balance.participant,
                 participantName: ArrayUtils.findById(participants, balance.participant).name,

@@ -1,4 +1,4 @@
-import {each, isString, isArray, isObject, isNumber, isFunction} from 'lodash';
+import {isString, isArray, isObject, isNumber, isFunction} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 
 export const validators = {
@@ -111,15 +111,21 @@ export const validate = function(subject, schema) {
 
     const validator = _getAttributeValidator(subject);
 
-    each(schema, (rules, key) => {
+    for (const key in schema) {
+        const rules = schema[key];
         const value = subject[key];
 
         // do not run validator if property is not required and is missing
-        if (!rules.required && (value === null || value === undefined)) return;
+        if (!rules.required && (value === null || value === undefined)) {
+            continue;
+        }
 
         const error = validator(key, rules);
-        if (error) errors[key] = error;
-    });
+
+        if (error) {
+            errors[key] = error;
+        }
+    }
 
     return errors;
 };

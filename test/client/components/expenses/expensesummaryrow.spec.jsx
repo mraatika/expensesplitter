@@ -1,6 +1,5 @@
 import React from 'react';
 import {expect} from 'chai';
-import {reduce} from 'lodash';
 import {shallow} from 'enzyme';
 import sinon from 'sinon';
 import ExpenseSummaryRow from 'components/expenses/expensesummaryrow.jsx';
@@ -42,7 +41,7 @@ describe('Component:ExpenseSummaryRow', function() {
     describe('state when expenses are not empty', () => {
         it('should display the total amount of expenses with currencySymbol', () => {
             const component = renderComponent();
-            const totalSum = reduce(expenses, ((memo, e) => memo + e.price), 0);
+            const totalSum = expenses.reduce(((memo, e) => memo + e.price), 0);
             expect(component.find('td').at(1)).to.have.text(`${totalSum} ${defaultProps.currencySymbol}`);
         });
 

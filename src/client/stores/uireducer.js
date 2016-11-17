@@ -1,5 +1,4 @@
 import immutable from 'object-path-immutable';
-import {reduce} from 'lodash';
 import Constants from 'client/constants/appconstants';
 
 /**
@@ -36,7 +35,7 @@ export function uiReducer(state = {}, action) {
     case Constants.ActionTypes.TOGGLE_SETTINGS_SECTION:
         return updateProperty(state, 'showSettings', action.state);
     case Constants.EventTypes.LOAD_SHEET_SUCCESS:
-        return reduce(['newSheetAdded', 'showLoadSheetDialog', 'isFetching'], (memo, name) => {
+        return ['newSheetAdded', 'showLoadSheetDialog', 'isFetching'].reduce((memo, name) => {
             return updateProperty(memo, name, false);
         }, state);
     case Constants.EventTypes.SAVE_SHEET_SUCCESS:

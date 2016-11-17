@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {findIndex} from 'lodash';
 import Constants from 'client/constants/appconstants';
 
 const proxyquire = require('proxyquire');
@@ -15,7 +14,7 @@ const reducer = proxyquire('client/stores/sheetreducer', {
     'client/factory/participantfactory': participantFactoryStub
 }).sheetReducer;
 
-describe.only('Reducer:SheetReducer', function () {
+describe('Reducer:SheetReducer', function () {
 
     describe('Initial state', function () {
         it('should have an empty sheet object', function () {
@@ -60,7 +59,7 @@ describe.only('Reducer:SheetReducer', function () {
         const update = { id: '123', name: 'testsheet2', prop: 'abc' };
         const action = { type: Constants.ActionTypes.UPDATE_SHEET, update };
         const findByIndex = function(arr, id) {
-            return findIndex(arr, e => e.id === id);
+            return arr.findIndex(e => e.id === id);
         };
 
         describe('sheet', function () {

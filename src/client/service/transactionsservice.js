@@ -1,4 +1,3 @@
-import {filter, reject} from 'lodash';
 import ExpensesService from 'client/service/expensesservice';
 import {NumberUtils} from 'client/util/utils';
 
@@ -15,7 +14,7 @@ const calculateTransActionAmount = (from, to) => from > to ? to : from;
  * @param  {object} balance
  * @return {boolean}
  */
-const zeroBalanceFilterer = balance => !NumberUtils.round(balance.balance, 3);
+const zeroBalanceFilterer = balance => NumberUtils.round(balance.balance, 3);
 
 /**
  * @class TransactionService
@@ -30,7 +29,8 @@ export default class TransactionsService {
      */
     calculateTransactions(expenses, participants) {
         const transactions = [];
-        let balances = filter(new ExpensesService({ expenses, participants }).calculateBalances(), balance => balance.balance != 0);
+        const allBalances = new ExpensesService({ expenses, participants }).calculateBalances();
+        let balances = allBalances.filter(balance => balance.balance != 0);
 
         // iterate until all accounts are even
         while (balances.length) {
@@ -59,7 +59,7 @@ export default class TransactionsService {
             max.balance -= amount;
 
             // filter out all zero balances
-            balances = reject(balances, zeroBalanceFilterer);
+            balances = balances.filter(zeroBalanceFilterer);
         }
 
         return transactions;

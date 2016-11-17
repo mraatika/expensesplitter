@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {pick, map} from 'lodash';
+import {pick} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import RouterService from 'client/router/routerservice';
 import pages from 'client/constants/pages';
@@ -29,6 +29,20 @@ class NavigationSelect extends React.Component {
     render() {
         const {href:currentRoute} = this.props.currentPage;
         const navigablePages = pick(pages, page => page.displayInNavigation);
+        const pageOptions = [];
+
+        for (const key in navigablePages) {
+            const page = navigablePages[key];
+            const isCurrentPage = page.href == currentRoute;
+
+            const option = (
+                <option key={key} value={page.href} className={isCurrentPage ? 'current' : ''}>
+                    {t(page.label)}
+                </option>
+            );
+
+            pageOptions.push(option);
+        }
 
         return (
             <select
@@ -36,14 +50,7 @@ class NavigationSelect extends React.Component {
                 ref={(c) => this._select = c}
                 defaultValue={currentRoute}
                 onChange={this._onChange.bind(this)}>
-                {
-                    map(navigablePages, (page, key) => {
-                        const isCurrentPage = page.href == currentRoute;
-                        return <option key={key} value={page.href} className={isCurrentPage ? 'current' : ''}>
-                            {t(page.label)}
-                        </option>;
-                    })
-                }
+                { pageOptions }
             </select>
         );
     }

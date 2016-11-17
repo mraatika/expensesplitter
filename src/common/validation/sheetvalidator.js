@@ -1,4 +1,4 @@
-import {map, compact, isEmpty, toArray, indexBy} from 'lodash';
+import {compact, isEmpty, toArray, indexBy} from 'lodash';
 import * as Schema from 'common/validation/schema';
 import * as validator from 'common/validation/validator';
 import {tpl} from 'common/dictionary/dictionary';
@@ -11,7 +11,9 @@ import {tpl} from 'common/dictionary/dictionary';
  * @return {Array} An array of error message strings
  */
 const validateArray = (arr, schema) => {
-    let errors = compact(map(arr, (subject) => {
+    if (!(arr instanceof Array)) return [];
+
+    let errors = compact(arr.map((subject) => {
         const errors = validator.validate(subject, schema);
         return !isEmpty(errors) ? `${subject.id}: ${toArray(errors).join(', ')}` : false;
     }));

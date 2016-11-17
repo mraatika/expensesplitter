@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {sortBy, map} from 'lodash';
+import {sortBy} from 'lodash';
 import Participant from 'client/components/participants/participant.jsx';
 import {t} from 'common/dictionary/dictionary';
 
@@ -18,7 +18,7 @@ class ParticipantList extends React.Component {
         return (
             <ul id="participants-list">
             {
-                participants.length ? map(participants, participant =>
+                participants.length ? participants.map(participant =>
                     <Participant
                         key={participant.id}
                         participant={participant}

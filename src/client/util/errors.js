@@ -1,4 +1,3 @@
-import {map} from 'lodash';
 
 function ExtendableError(message) {
     this.name = this.constructor.name;
@@ -11,7 +10,7 @@ ExtendableError.prototype.constructor = ExtendableError;
 
 // Create a new object, that prototypally inherits from the Error constructor.
 export function ValidationError(validationErrors) {
-    const message = map(validationErrors, (value, key) => `${key}: ${value}`).join(', ');
+    const message = validationErrors.map((value, key) => `${key}: ${value}`).join(', ');
     ExtendableError.call(this, message);
 }
 

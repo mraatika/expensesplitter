@@ -1,5 +1,4 @@
 import {browserHistory} from 'react-router';
-import {find} from 'lodash';
 import pages from 'client/constants/pages';
 import {URLUtils} from 'client/util/utils';
 
@@ -9,7 +8,13 @@ import {URLUtils} from 'client/util/utils';
  * @return {Object}
  */
 const _findRouteObject = pageFragment => {
-    return find(pages, page => page.href === pageFragment);
+    for (const key in pages) {
+        const page = pages[key];
+
+        if (page.href === pageFragment) {
+            return page;
+        }
+    }
 };
 
 /**

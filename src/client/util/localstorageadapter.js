@@ -1,4 +1,4 @@
-import {extend, omit} from 'lodash';
+import {omit} from 'lodash';
 
 /**
  * Storage that syncs with localStorage
@@ -9,7 +9,7 @@ import {extend, omit} from 'lodash';
 const LocalStorageAdapter = function(storeName, initialData = {}) {
     if (!storeName) throw new Error('IllegalArgumentsException: storeName missing!');
     this.storeName = storeName;
-    this.setAll(extend({}, initialData, this.load()));
+    this.setAll({ ...initialData, ...this.load() });
 };
 /**
  * Get a value from the store
@@ -24,7 +24,7 @@ LocalStorageAdapter.prototype.get = function(key) {
  * @return {Object}
  */
 LocalStorageAdapter.prototype.getAll = function() {
-    return extend({}, this._data);
+    return { ...this._data };
 };
 /**
  * Set value to the store
@@ -40,7 +40,7 @@ LocalStorageAdapter.prototype.set = function(key, value) {
  * @param  {Object} value
  */
 LocalStorageAdapter.prototype.setAll = function(value) {
-    this._data = extend({}, value);
+    this._data = { ...value };
     this.save();
 };
 /**
