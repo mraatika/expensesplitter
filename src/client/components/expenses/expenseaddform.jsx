@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {delay} from 'lodash';
+import {delay, sortBy} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
@@ -145,6 +145,7 @@ class ExpenseAddForm extends React.Component {
     render() {
         const {name, price, participants, payer} = this.state;
         const errorTexts = this._formErrorTexts();
+        const allParticipants = sortBy(this.props.participants, 'name');
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>
@@ -199,7 +200,7 @@ class ExpenseAddForm extends React.Component {
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
                             events={{change:true, blur: true}}>
-                                {this.props.participants.map(participant =>
+                                {allParticipants.map(participant =>
                                     <option
                                         key={participant.id}
                                         value={participant.id}>
@@ -221,7 +222,7 @@ class ExpenseAddForm extends React.Component {
                             success={this._onExpensePropertyChange}
                             fail={this._onValidationError}
                             events={{change:true}}>
-                                {this.props.participants.map(participant =>
+                                {allParticipants.map(participant =>
                                     <option
                                         key={participant.id}
                                         value={participant.id}>
