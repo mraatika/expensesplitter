@@ -1,4 +1,5 @@
-import {map, sortBy, reduce, filter, find} from 'lodash';
+import {map, sortBy, reduce, filter} from 'lodash';
+import {ArrayUtils} from 'client/util/utils';
 
 /**
  * @class ExpensesService
@@ -153,13 +154,12 @@ export default class ExpensesService {
      */
     getAllBalancesAndShares() {
         const {expenses, participants} = this.sheet;
-        const findParticipant = id => find(participants, p => p.id === id);
         const balances = this.calculateBalances(expenses, participants);
 
         return map(balances, balance => {
             return {
                 participantId: balance.participant,
-                participantName: findParticipant(balance.participant).name,
+                participantName: ArrayUtils.findById(participants, balance.participant).name,
                 balance: balance.balance,
                 amount: this.calculateParticipantShare(
                     balance.participant, expenses

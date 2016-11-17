@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
-import {find} from 'lodash';
 import TrashButton from 'client/components/common/trashbutton.jsx';
-import {NumberUtils} from 'client/util/utils';
+import {ArrayUtils, NumberUtils} from 'client/util/utils';
 
 /**
  * @class Expense
@@ -10,27 +9,18 @@ import {NumberUtils} from 'client/util/utils';
  */
 class Expense extends React.Component {
     /**
-     * Find participant from participants by id
-     * @param  {String} participantId
-     * @return {Object}
-     */
-    findParticipant(participantId) {
-        return find(this.props.participants, participant => participant.id === participantId);
-    }
-
-    /**
      * @return {Component}
      */
     render() {
-        const {expense} = this.props;
+        const {expense, participants} = this.props;
 
         return (
             <tr>
                 <td>{expense.name}</td>
                 <td>{expense.price}</td>
                 <td>{NumberUtils.round(expense.price / expense.participants.length, 1)}</td>
-                <td>{expense.participants.map(participant => this.findParticipant(participant).name).join(', ')}</td>
-                <td>{this.findParticipant(expense.payer).name}</td>
+                <td>{expense.participants.map(id => ArrayUtils.findById(participants, id).name).join(', ')}</td>
+                <td>{ArrayUtils.findById(participants, expense.payer).name}</td>
                 <td className="text-right">
                     {
                         !this.props.isRemoveAllowed ? '' :
