@@ -149,7 +149,6 @@ SheetForm.propTypes = {
     updateSheet: PropTypes.func.isRequired,
     toggleNewSheetAdded: PropTypes.func.isRequired,
     toggleSettingsSection: PropTypes.func.isRequired,
-    dirty: PropTypes.bool,
     summaryButtonDisabled: PropTypes.bool
 };
 

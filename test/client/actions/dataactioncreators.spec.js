@@ -1,3 +1,4 @@
+import {omit} from 'lodash';
 import {expect} from 'chai';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -69,33 +70,33 @@ describe('Actions: DataActions', function () {
             });
 
             it('should return a post action when the sheet is not yet saved to the server', function () {
-                const sheet = { id: '1', name:'testsheet', settings: {} };
+                const sheet = { id: '1', name:'testsheet', settings: {}, dirty: true };
                 const settings = { language: 'en' };
-                const store = mockStore({ sheet: { dirty: true }, settings });
+                const store = mockStore({ settings });
 
                 const res = actions.saveSheet(sheet)(store.dispatch, store.getState);
                 expect(res.type).to.equal(Constants.ActionTypes.SAVE_SHEET);
                 expect(res.payload.request.method).to.equal('POST');
                 expect(res.payload.request.url).to.equal('/sheet');
-                expect(res.payload.request.data.sheet).to.equal(sheet);
+                expect(res.payload.request.data.sheet).to.deep.equal(omit(sheet, 'dirty'));
                 expect(res.payload.request.headers).to.have.keys('Accept-Language');
                 expect(res.payload.request.headers['Accept-Language']).to.equal(settings.language);
             });
 
             it('should return a put action when the sheet should be updated', function () {
-                const sheet = { id: '1', name:'testsheet', settings: {}, lastSavedOn: new Date() };
+                const sheet = { id: '1', name:'testsheet', settings: {}, lastSavedOn: new Date(), dirty: true };
                 const store = mockStore({ sheet: { dirty: true }, settings: {} });
 
                 const res = actions.saveSheet(sheet)(store.dispatch, store.getState);
                 expect(res.type).to.equal(Constants.ActionTypes.SAVE_SHEET);
                 expect(res.payload.request.method).to.equal('PUT');
                 expect(res.payload.request.url).to.equal('/sheet/' + sheet.id);
-                expect(res.payload.request.data.sheet).to.equal(sheet);
+                expect(res.payload.request.data.sheet).to.deep.equal(omit(sheet, 'dirty'));
             });
         });
 
         describe('update', function () {
-            const sheet = { id: '1', name:'testsheet', settings: {}, lastSavedOn: new Date() };
+            const sheet = { id: '1', name:'testsheet', settings: {}, lastSavedOn: new Date(), dirty: true };
 
             it('should throw if called without a sheet', function () {
                 expect(() => actions.updateSheet()).to.throw();

@@ -53,7 +53,7 @@ class MessageContainer extends React.Component {
                 <i
                     onClick={this._close.bind(this)}
                     style={{ display: (this.props.closable) ? 'block' : 'none' }}
-                    aria-role="button"
+                    role="button"
                     className={'close-button fa fa-times u-pull-right ' + colorClass}
                     title={t('lang.close')} />
 

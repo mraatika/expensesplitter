@@ -4,14 +4,13 @@ import * as DataActions from 'client/actions/dataactioncreators';
 import * as UiActions from 'client/actions/uiactioncreators';
 
 function mapStateToProps(state) {
-    const {sheet, dirty} = state.sheet;
+    const {sheet} = state;
     const {newSheetAdded, showSettings} = state.ui;
 
     return {
         sheet,
-        dirty,
         newSheetAdded,
-        showSettings: showSettings === undefined ? dirty : showSettings,
+        showSettings: showSettings === undefined ? sheet.dirty : showSettings,
         settings: state.settings
     };
 }

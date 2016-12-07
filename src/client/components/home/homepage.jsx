@@ -57,7 +57,7 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const {dirty, sheet, params} = this.props;
+        const {sheet, params} = this.props;
         const {adminKey} = params;
         const adminURL = window.location.origin + URLUtils.formSubpageUrl(pages.HOME.href, sheet.id, sheet.adminKey);
 
@@ -82,7 +82,6 @@ class HomePage extends React.Component {
                 <SheetForm
                     ref={c => this._sheetForm = c }
                     sheet={sheet}
-                    dirty={dirty}
                     adminKey={adminKey}
                     showSettings={this.props.showSettings}
                     summaryButtonDisabled={!this.props.params.sheetId}
@@ -148,7 +147,6 @@ HomePage.propTypes = {
     removeSheet: PropTypes.func.isRequired,
     toggleLoadSheetDialog: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
-    dirty: PropTypes.bool,
     newSheetAdded: PropTypes.bool
 };
 

@@ -139,7 +139,7 @@ class SheetSummaryPage extends React.Component {
                             <SaveButton
                                 type="button"
                                 className="u-full-width"
-                                isSaved={!this.props.dirty}
+                                isSaved={!sheet.dirty}
                                 isSaving={this.props.isSavingToServer}
                                 beforeSaveText={t('summary.save_sheet')}
                                 afterSaveText={t('lang.saved')}
@@ -181,7 +181,6 @@ SheetSummaryPage.propTypes = {
     removeSheet: PropTypes.func.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
-    dirty: PropTypes.bool,
     isSavingToServer: PropTypes.bool
 };
 

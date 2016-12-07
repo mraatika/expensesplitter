@@ -6,9 +6,9 @@ import {notificationsReducer} from 'client/stores/notificationsreducer';
 import {uiReducer} from 'client/stores/uireducer';
 
 export default combineReducers({
-    sheet: sheetReducer,
     notifications: notificationsReducer,
-    sheetHistory: sheetHistoryReducer,
     settings: settingsReducer,
+    sheet: sheetReducer,
+    sheetHistory: sheetHistoryReducer,
     ui: uiReducer
 });

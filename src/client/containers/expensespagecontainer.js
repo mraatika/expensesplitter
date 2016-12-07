@@ -4,13 +4,13 @@ import {addExpense, removeExpense} from 'client/actions/dataactioncreators';
 import {ArrayUtils} from 'client/util/utils';
 
 function mapStateToProps(state) {
-    const {sheet} = state.sheet;
+    const {sheet, settings} = state;
 
     return {
         sheet,
         participants: ArrayUtils.rejectRemoved(sheet.participants),
         expenses: ArrayUtils.rejectRemoved(sheet.expenses),
-        settings: state.settings
+        settings
     };
 }
 

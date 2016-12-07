@@ -5,10 +5,11 @@ import {clearHistory, removeSheetHistoryEntry} from 'client/actions/dataactioncr
 import {toggleLoadSheetDialog} from 'client/actions/uiactioncreators';
 
 function mapStateToProps(state) {
+    const {sheet, sheetHistory} = state;
 
     return {
-        sheet: state.sheet.sheet,
-        sheetHistory: toArray(state.sheetHistory),
+        sheet,
+        sheetHistory: toArray(sheetHistory),
         show: state.ui.showLoadSheetDialog
     };
 }
