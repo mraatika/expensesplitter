@@ -18,7 +18,7 @@ class TrashButton extends React.Component {
         return (
             <i
                 className={iconClassName}
-                aria-role="button"
+                role="button"
                 aria-label={ t('lang.remove') }
                 title={ t('lang.remove') }
                 onClick={this.props.onClick} />
