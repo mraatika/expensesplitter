@@ -3,5 +3,6 @@
 /node_modules/
 /src/server/conf/db.conf.json
 /conf/
+/scripts/
 *.sublime-workspace
 *.log
