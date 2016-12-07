@@ -15,7 +15,8 @@ class ExpensesPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet, expenses, participants} = this.props;
+        const {sheet, expenses, participants, settings} = this.props;
+        const {currencySymbol} = settings;
 
         return (
             <section id="expenses-page">
@@ -27,7 +28,7 @@ class ExpensesPage extends React.Component {
                             participants={participants}
                             isRemoveAllowed={true}
                             removeExpenses={this.props.removeExpenses}
-                            currencySymbol={sheet.settings.currencySymbol}/>
+                            currencySymbol={currencySymbol}/>
                     </div>
                     <div className="four columns">
                         <aside role="complementary" className="shares-section-container">
@@ -35,7 +36,7 @@ class ExpensesPage extends React.Component {
                             <SharesTable
                                 participants={participants}
                                 expenses={expenses}
-                                currencySymbol={sheet.settings.currencySymbol}/>
+                                currencySymbol={currencySymbol}/>
                         </aside>
                     </div>
                 </section>
@@ -44,7 +45,7 @@ class ExpensesPage extends React.Component {
                     <ExpenseAddForm
                         participants={participants}
                         onSubmit={this.props.addExpense}
-                        currencySymbol={sheet.settings.currencySymbol}/>
+                        currencySymbol={currencySymbol}/>
                 </section>
 
                 <Navigation currentPage={pages.EXPENSES} sheetId={sheet.id}/>

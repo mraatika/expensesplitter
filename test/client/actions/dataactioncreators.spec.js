@@ -71,27 +71,42 @@ describe('Actions: DataActions', function () {
 
             it('should return a post action when the sheet is not yet saved to the server', function () {
                 const sheet = { id: '1', name:'testsheet', settings: {}, dirty: true };
+                const participants = [ { id: 1 }, { id: 2 } ];
+                const expenses = [ { id: 3 }, { id: 4 } ];
                 const settings = { language: 'en' };
-                const store = mockStore({ settings });
+                const store = mockStore({ expenses, participants, settings });
 
                 const res = actions.saveSheet(sheet)(store.dispatch, store.getState);
                 expect(res.type).to.equal(Constants.ActionTypes.SAVE_SHEET);
                 expect(res.payload.request.method).to.equal('POST');
                 expect(res.payload.request.url).to.equal('/sheet');
-                expect(res.payload.request.data.sheet).to.deep.equal(omit(sheet, 'dirty'));
+                expect(res.payload.request.data.sheet.id).to.equal(sheet.id);
+                expect(res.payload.request.data.sheet.name).to.equal(sheet.name);
+                expect(res.payload.request.data.sheet.expenses).to.deep.equal(expenses);
+                expect(res.payload.request.data.sheet.participants).to.deep.equal(participants);
+
                 expect(res.payload.request.headers).to.have.keys('Accept-Language');
                 expect(res.payload.request.headers['Accept-Language']).to.equal(settings.language);
             });
 
             it('should return a put action when the sheet should be updated', function () {
                 const sheet = { id: '1', name:'testsheet', settings: {}, lastSavedOn: new Date(), dirty: true };
-                const store = mockStore({ sheet: { dirty: true }, settings: {} });
+                const participants = [ { id: 1 }, { id: 2 } ];
+                const expenses = [ { id: 3 }, { id: 4 } ];
+                const settings = { language: 'en' };
+                const store = mockStore({ expenses, participants, settings });
 
                 const res = actions.saveSheet(sheet)(store.dispatch, store.getState);
                 expect(res.type).to.equal(Constants.ActionTypes.SAVE_SHEET);
                 expect(res.payload.request.method).to.equal('PUT');
                 expect(res.payload.request.url).to.equal('/sheet/' + sheet.id);
-                expect(res.payload.request.data.sheet).to.deep.equal(omit(sheet, 'dirty'));
+                expect(res.payload.request.data.sheet.id).to.equal(sheet.id);
+                expect(res.payload.request.data.sheet.name).to.equal(sheet.name);
+                expect(res.payload.request.data.sheet.expenses).to.deep.equal(expenses);
+                expect(res.payload.request.data.sheet.participants).to.deep.equal(participants);
+
+                expect(res.payload.request.headers).to.have.keys('Accept-Language');
+                expect(res.payload.request.headers['Accept-Language']).to.equal(settings.language);
             });
         });
 

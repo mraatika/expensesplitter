@@ -1,18 +1,6 @@
 import {expect} from 'chai';
-import sinon from 'sinon';
 import Constants from 'client/constants/appconstants';
-
-const proxyquire = require('proxyquire');
-proxyquire.noCallThru();
-proxyquire.noPreserveCache();
-
-const expenseFactoryStub = sinon.stub();
-const participantFactoryStub = sinon.stub();
-
-const reducer = proxyquire('client/stores/sheetreducer', {
-    'client/factory/expensefactory': expenseFactoryStub,
-    'client/factory/participantfactory': participantFactoryStub
-}).sheetReducer;
+import {sheetReducer as reducer} from 'client/stores/sheetreducer';
 
 describe('Reducer:SheetReducer', function () {
 
@@ -57,9 +45,6 @@ describe('Reducer:SheetReducer', function () {
         const initialState = { dirty: false, id: '123', name: 'testsheet1', participants: [] };
         const update = { id: '123', name: 'testsheet2', prop: 'abc' };
         const action = { type: Constants.ActionTypes.UPDATE_SHEET, update };
-        const findByIndex = function(arr, id) {
-            return arr.findIndex(e => e.id === id);
-        };
 
         describe('sheet', function () {
             it('should update sheet with given props', function () {
@@ -82,50 +67,18 @@ describe('Reducer:SheetReducer', function () {
             const participant = { id: '1', name: 'testname' };
 
             describe('add', function () {
-                const action = { type: Constants.ActionTypes.ADD_PARTICIPANT, participant };
-
-                it('should add participant to sheet\'s participants', function () {
-                    participantFactoryStub.returns(participant);
-
-                    const sheet = reducer(initialState, action);
-
-                    expect(sheet.participants).to.have.lengthOf(1);
-                    expect(sheet.participants[0]).to.equal(participant);
-
-                    expect(sheet.participants).not.to.equal(initialState.participants);
-                });
-
-                it('should not modify the original array', function () {
-                    expect(reducer(initialState, action).participants).not.to.equal(initialState.participants);
-                });
-
                 it('should mark sheet dirty', function () {
+                    const action = { type: Constants.ActionTypes.ADD_PARTICIPANT, participant };
                     expect(reducer(initialState, action).dirty).to.be.ok;
                 });
             });
 
             describe('remove', function () {
-                const action = { type: Constants.ActionTypes.REMOVE_PARTICIPANT, participant };
-
-                it('should mark participant removed', function () {
-                    const participants = [{ id: '1' }, { id: '2' }];
-                    const initialState = { participants };
-                    const sheet = reducer(initialState, action);
-
-                    expect(sheet.participants).to.have.lengthOf(2);
-                    expect(sheet.participants[findByIndex(sheet.participants, participant.id)].removed).to.be.ok;
-                });
-
-                it('should not modify the original array', function () {
-                    expect(reducer(initialState, action).participants).not.to.equal(initialState.participants);
-                });
-
                 it('should mark sheet dirty', function () {
+                    const action = { type: Constants.ActionTypes.REMOVE_PARTICIPANT, participant };
                     expect(reducer(initialState, action).dirty).to.be.ok;
                 });
             });
-
-
         });
 
         describe('Sheet\'s expenses', function () {
@@ -133,39 +86,15 @@ describe('Reducer:SheetReducer', function () {
 
             describe('add', function () {
                 const action = { type: Constants.ActionTypes.ADD_EXPENSE, expense };
-
-                it('should add expense', function () {
-                    expenseFactoryStub.returns(expense);
-                    const sheet = reducer(initialState, action);
-                    expect(sheet.expenses).to.have.lengthOf(1);
-                    expect(sheet.expenses[0]).to.equal(expense);
-                });
-
-                it('should not modify the original array', function () {
-                    expect(reducer(initialState, action).expenses).not.to.equal(initialState.expenses);
-                });
-
                 it('should mark sheet dirty', function () {
                     expect(reducer(initialState, action).dirty).to.be.ok;
                 });
             });
 
             describe('remove', function () {
-                const action = { type: Constants.ActionTypes.REMOVE_EXPENSE, expense };
-                const expenses = [{ id: '1' }, { id: '2' }];
-                const initialState = { expenses };
-
-                it('should mark expense removed', function () {
-                    const sheet = reducer(initialState, action);
-                    expect(sheet.expenses).to.have.lengthOf(2);
-                    expect(sheet.expenses[findByIndex(sheet.expenses, expense.id)].removed).to.be.ok;
-                });
-
-                it('should not modify the original array', function () {
-                    expect(reducer(initialState, action).expenses).not.to.equal(initialState.expenses);
-                });
 
                 it('should mark sheet dirty', function () {
+                    const action = { type: Constants.ActionTypes.REMOVE_EXPENSE, expense };
                     expect(reducer(initialState, action).dirty).to.be.ok;
                 });
             });

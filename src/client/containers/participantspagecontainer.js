@@ -4,10 +4,10 @@ import {addParticipant, removeParticipant} from 'client/actions/dataactioncreato
 import {ArrayUtils} from 'client/util/utils';
 
 function mapStateToProps(state) {
-    const {sheet, settings} = state;
+    const {participants, sheet, settings} = state;
     return {
         sheet,
-        participants: ArrayUtils.rejectRemoved(sheet.participants),
+        participants: ArrayUtils.rejectRemoved(participants),
         expenses: sheet.expenses.filter(e => !e.removed),
         settings
     };

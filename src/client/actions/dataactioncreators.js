@@ -1,4 +1,4 @@
-import {isObject, omit} from 'lodash';
+import {isObject} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 import Constants from 'client/constants/appconstants';
 import {InvalidArgumentsError} from 'client/util/errors';
@@ -162,8 +162,11 @@ export function saveSheet(sheet) {
         // no need to save if the sheet hasn't changed
         if (!sheet.dirty) return;
 
+        const {expenses, participants, settings} = getState();
         const isNew = !sheet.lastSavedOn;
-        const updateObject = omit(sheet, 'dirty');
+
+        const updateObject = { ...sheet, expenses, participants };
+        delete updateObject.dirty;
 
         return dispatch({
             type: Constants.ActionTypes.SAVE_SHEET,
@@ -172,7 +175,7 @@ export function saveSheet(sheet) {
                     method: isNew ? 'POST' : 'PUT',
                     url: `/sheet${isNew ? '' : `/${updateObject.id}`}`,
                     data: { sheet: updateObject },
-                    headers: { 'Accept-Language': getState().settings.language }
+                    headers: { 'Accept-Language': settings.language }
                 }
             }
         });

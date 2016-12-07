@@ -42,7 +42,8 @@ class ParticipantsPage extends React.Component {
      * @param   {Object} participant
      */
     _participantRemovalConfirmed(participant) {
-        const expensesParticipatedIn = new ExpensesService(this.props.sheet)
+        const {participants, expenses} = this.props;
+        const expensesParticipatedIn = new ExpensesService({ participants, expenses })
             .findAllExpensesOfParticipant(participant.id);
 
         this.props.removeParticipant(participant, expensesParticipatedIn);
@@ -72,9 +73,9 @@ class ParticipantsPage extends React.Component {
                     onRemoveClick={this._handleParticipantRemoval.bind(this) }/>
                 <ParticipantAddForm
                     onFormSubmit={this._addParticipant.bind(this)}
-                    participants={sheet.participants} />
+                    participants={participants} />
 
-                <Navigation currentPage={pages.PARTICIPANTS} sheetId={this.props.sheet.id} />
+                <Navigation currentPage={pages.PARTICIPANTS} sheetId={sheet.id} />
 
                 <RemovalConfirmationDialog
                     ref={c => this._removeConfirmationDialog = c}

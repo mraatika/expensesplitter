@@ -4,13 +4,13 @@ import {removeSheet, saveSheet, updateSheet} from 'client/actions/dataactioncrea
 import SummaryPage from 'client/components/summary/summarypage.jsx';
 
 function mapStateToProps(state) {
-    const {sheet} = state;
+    const {expenses, participants, sheet} = state;
     const {isSavingToServer} = state.ui;
 
     return {
         sheet,
-        expenses: ArrayUtils.rejectRemoved(sheet.expenses),
-        participants: ArrayUtils.rejectRemoved(sheet.participants),
+        expenses: ArrayUtils.rejectRemoved(expenses),
+        participants: ArrayUtils.rejectRemoved(participants),
         isSavingToServer,
         settings: state.settings
     };
