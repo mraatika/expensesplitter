@@ -46,7 +46,8 @@ var commonsChunkOptions = {
  */
 var htmlOptions = {
     template: path.join(PATHS.src, 'index.html'),
-    title: 'ExpenseSplitter'
+    title: 'ExpenseSplitter',
+    favicon: path.join(PATHS.src, 'img', 'favicon.png')
 };
 
 /**
