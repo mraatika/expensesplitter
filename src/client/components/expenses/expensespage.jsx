@@ -15,8 +15,8 @@ class ExpensesPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet, expenses, participants, settings} = this.props;
-        const {currencySymbol} = settings;
+        const {sheet, expenses, participants} = this.props;
+        const {currencySymbol} = sheet.settings;
 
         return (
             <section id="expenses-page">
