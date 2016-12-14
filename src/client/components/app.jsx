@@ -8,9 +8,6 @@ import LanguagesSection from 'client/components/language/languagessection.jsx';
 import RouterService from 'client/router/routerservice';
 import {URLUtils} from 'client/util/utils';
 
-// import styles
-import 'font-awesome-sass-loader';
-import 'styles/main.scss';
 
 /**
  * @class App
