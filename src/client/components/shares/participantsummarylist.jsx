@@ -43,7 +43,7 @@ class ParticipantSummaryList extends React.Component {
             <div className="panel-group participant-summary-list">
                 <div className="text-right">
                     <a href="#" onClick={this._toggleAllListItems.bind(this)}>
-                        {expandAll ? t('common.open_all') : t('common.close_all') }
+                        {expandAll ? t('common.close_all') : t('common.open_all') }
                         &nbsp;
                         <i className={`fa fa-caret-${expandAll ? 'up' : 'down'}`} />
                     </a>
