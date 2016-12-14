@@ -40,27 +40,29 @@
 
 .display-inline { display: inline; }
 
-h1 {
-    display: inline-block;
-    padding: 28px 0 28px 33px;
-    margin-top: 2rem;
-    margin-bottom: 0;
-
-    background-image: url(/1c12a72ccb344bc359afb3e1753db9c7.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-
-    a {
-        position: relative;
-        top: 12px;
-        text-decoration: none;
-    }
-
-    .rotation {
+header {
+    h1 {
         display: inline-block;
-        position: relative;
-        top: 2px;
-        transform: rotate(-7.5deg);
+        padding: 28px 0 28px 33px;
+        margin-top: 2rem;
+        margin-bottom: 0;
+
+        background-image: url(/1c12a72ccb344bc359afb3e1753db9c7.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+
+        a {
+            position: relative;
+            top: 12px;
+            text-decoration: none;
+        }
+
+        .rotation {
+            display: inline-block;
+            position: relative;
+            top: 2px;
+            transform: rotate(-7.5deg);
+        }
     }
 }
 
