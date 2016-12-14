@@ -63,7 +63,6 @@ class HomePage extends React.Component {
 
         return (
             <section id="home-page">
-                <h5 className="text-center">{t('app.info') }</h5>
 
                 <p id="app-description">
                     { t('app.description') }

@@ -103,6 +103,7 @@ class App extends React.Component {
     render() {
         const {isFetching} = this.props;
         const {sheetId, adminKey} = this.props.params;
+        const appName = t('app.name');
 
         return (
             <Swipeable
@@ -112,7 +113,16 @@ class App extends React.Component {
 
                 <div id="app-wrapper" className="container">
                     <header role="banner">
-                        <h1><Link to={URLUtils.formSubpageUrl('/', sheetId, adminKey)}>{ t('app.name') }</Link></h1>
+                        <div className="text-center">
+                            <h1>
+                                <Link to={URLUtils.formSubpageUrl('/', sheetId, adminKey)}>
+                                    <div className="rotation">{ appName[0] }</div>
+                                    { appName.substring(1) }
+                                </Link>
+                            </h1>
+                            <br/>
+                            <span className="app-slogan bold">{  `- ${ t('app.info')}!`}</span>
+                        </div>
                     </header>
 
                     <Modal show={isFetching}>
