@@ -11,17 +11,13 @@ describe('Service: TransactionsService', function () {
     proxyquire.noCallThru();
     proxyquire.noPreserveCache();
 
-    let transactionsService;
+    let calculateTransactions;
     const calculateBalancesStub = sinon.stub();
 
     before(function () {
-        const TransactionsService = proxyquire('service/transactionsservice', {
-            'client/service/expensesservice': function() {
-                return { calculateBalances: calculateBalancesStub };
-            }
-        }).default;
-
-        transactionsService = new TransactionsService();
+        calculateTransactions = proxyquire('client/service/transactionsservice', {
+            'client/service/expensesservice': { calculateBalances: calculateBalancesStub }
+        }).calculateTransactions;
     });
 
     it('should calculate transactions', function() {
@@ -31,7 +27,7 @@ describe('Service: TransactionsService', function () {
             { participant: '1', balance: 105 }
         ]);
 
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = calculateTransactions();
 
         expect(transactions.length).to.equal(2);
 
@@ -51,7 +47,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 50 }
         ]);
 
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = calculateTransactions();
 
         expect(transactions.length).to.equal(1);
 
@@ -67,7 +63,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 0 }
         ]);
 
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = calculateTransactions();
 
         expect(transactions.length).to.equal(0);
     });
@@ -78,7 +74,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 50 }
         ]);
 
-        const transactions = transactionsService.calculateTransactions();
+        const transactions = calculateTransactions();
 
         expect(transactions.length).to.equal(1);
 

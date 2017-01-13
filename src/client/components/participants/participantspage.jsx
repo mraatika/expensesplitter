@@ -5,7 +5,7 @@ import ParticipantAddForm from 'client/components/participants/participantaddfor
 import Navigation from 'client/components/navigation/navigation.jsx';
 import {t} from 'common/dictionary/dictionary';
 import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
-import ExpensesService from 'client/service/expensesservice';
+import {findAllExpensesOfParticipant} from 'client/service/expensesservice';
 
 /**
  * @class ParticipantsPage
@@ -21,9 +21,8 @@ class ParticipantsPage extends React.Component {
      * @return {undefined}
      */
     _handleParticipantRemoval(participant) {
-        const {expenses, participants} = this.props;
-        const expensesParticipatedIn = new ExpensesService({ expenses, participants })
-            .findAllExpensesOfParticipant(participant.id);
+        const {expenses} = this.props;
+        const expensesParticipatedIn = findAllExpensesOfParticipant(participant.id)(expenses);
 
         if (expensesParticipatedIn.length) {
             this._removeConfirmationDialog.open();
@@ -42,9 +41,8 @@ class ParticipantsPage extends React.Component {
      * @param   {Object} participant
      */
     _participantRemovalConfirmed(participant) {
-        const {participants, expenses} = this.props;
-        const expensesParticipatedIn = new ExpensesService({ participants, expenses })
-            .findAllExpensesOfParticipant(participant.id);
+        const {expenses} = this.props;
+        const expensesParticipatedIn = findAllExpensesOfParticipant(participant.id)(expenses);
 
         this.props.removeParticipant(participant, expensesParticipatedIn);
     }

@@ -2,15 +2,18 @@ import {connect} from 'react-redux';
 import ExpensesPage from 'client/components/expenses/expensespage.jsx';
 import {addExpense, removeExpense} from 'client/actions/dataactioncreators';
 import {ArrayUtils} from 'client/util/utils';
+import {getAllBalancesAndShares} from 'client/service/expensesservice';
 
 function mapStateToProps(state) {
     const {expenses, participants, sheet, settings} = state;
+    const sharesAndBalances = getAllBalancesAndShares({ expenses, participants });
 
     return {
         sheet,
         participants: ArrayUtils.rejectRemoved(participants),
         expenses: ArrayUtils.rejectRemoved(expenses),
-        settings
+        settings,
+        sharesAndBalances
     };
 }
 

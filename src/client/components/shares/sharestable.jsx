@@ -1,9 +1,8 @@
 import React, {PropTypes} from 'react';
-import {sortByAll} from 'lodash';
-import ExpensesService from 'client/service/expensesservice';
 import {t} from 'common/dictionary/dictionary';
 import Share from 'client/components/shares/share.jsx';
 import ShareSummaryRow from 'client/components/shares/sharesummaryrow.jsx';
+import {getTotalSum} from 'client/service/expensesservice';
 
 /**
  * @class SharesTable
@@ -16,11 +15,8 @@ class SharesTable extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {expenses, participants} = this.props;
-        const expensesService = new ExpensesService({ expenses, participants });
-        const balancesAndShares = expensesService.getAllBalancesAndShares();
-        // order shares first by balance and the by participant's name
-        const shares = sortByAll(balancesAndShares, ['balance', 'participantName']);
+        const {expenses, sharesAndBalances} = this.props;
+        const totalSum = getTotalSum(expenses);
 
         return (
             <table className="shares-list u-full-width">
@@ -32,11 +28,11 @@ class SharesTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {shares.map(share => <Share key={share.participantId} share={share} />)}
+                    {sharesAndBalances.map(share => <Share key={share.participantId} share={share} />)}
                 </tbody>
                 <tfoot>
                     <ShareSummaryRow
-                        totalSum={expensesService.getTotalSum()}
+                        totalSum={totalSum}
                         currencySymbol={this.props.currencySymbol} />
                 </tfoot>
             </table>
@@ -46,13 +42,13 @@ class SharesTable extends React.Component {
 
 SharesTable.defaultProps = {
     expenses: [],
-    participants: [],
+    sharesAndBalances: [],
     currencySymbol: ''
 };
 
 SharesTable.propTypes = {
     expenses: PropTypes.array,
-    participants: PropTypes.array,
+    sharesAndBalances: PropTypes.array,
     currencySymbol: PropTypes.string
 };
 

@@ -1,161 +1,157 @@
-import {sortBy} from 'lodash';
-import {ArrayUtils} from 'client/util/utils';
+import {ascend, find, filter, map, pipe, pluck, prop, propEq, sortBy, sortWith, sum} from 'ramda';
 
 /**
- * @class ExpensesService
- * @description Service for calculations related to expenses
+ * Get a filtering function
+ * @private
+ * @param  {Array} expenses
+ * @return {Function}
  */
-export default class ExpensesService {
+function expenseFilterer(expenses = []) {
+    // return a function that takes a filtering function and it's parameters as an input
+    // applies expense and given arguments to the filtering function
+    return (fn, ...restArgs) => expenses.filter(e => fn.apply(null, [e].concat(restArgs)));
+}
 
-    /**
-     * @constructor
-     * @param {Object} sheet
-     */
-    constructor(sheet) {
-        this.sheet = sheet;
-    }
+/**
+ * Check if participant is payer of given expense
+ * @private
+ * @param  {Object} expense
+ * @param  {String} participantId
+ * @return {Boolean}
+ */
+function isPayer(expense, participantId) {
+    return expense.payer === participantId;
+}
 
-    /**
-     * Calculate balance for each participant.
-     * @param {Array} expenses
-     * @param {Array} participants
-     * @returns {Array} An array of objects
-     *     {string} participant
-     *     {number} balance
-     *
-     */
-    calculateBalances() {
-        const {expenses, participants} = this.sheet;
-        const balances = participants.map(participant => {
-            return {
-                participant: participant.id,
-                balance: this.calculateParticipantBalance(participant.id, expenses)
-            };
-        });
+/**
+ * Check if participant is participated in given expense
+ * @private
+ * @param  {Object} expense
+ * @param  {String} participantId
+ * @return {Boolean}
+ */
+function isParticipant(expense, participantId) {
+    return expense.participants.indexOf(participantId) > -1;
+}
 
-        return sortBy(balances, 'balance');
-    }
+/**
+ * PUBLIC API
+ *
+ */
 
-    /**
-     * Returns the current balance of a participant (share - paid)
-     * @param {string} participantId
-     * @returns {number}
-     */
-    calculateParticipantBalance(participantId) {
-        const {expenses} = this.sheet;
-        const total = this.calculateParticipantShare(participantId, expenses);
-        const paid = this.calculateParticipantTotalPaid(participantId, expenses);
+/**
+ * Calculate balance for each participant.
+ * @param {Object} sheet
+ * @returns {Array} An array of objects
+ *     {string} participant
+ *     {number} balance
+ *
+ */
+export function calculateBalances(sheet) {
+    const {expenses, participants} = sheet;
 
-        return total - paid;
-    }
+    return pipe(
+        map(p => ({ participant: p.id, balance: calculateParticipantBalance(p.id, expenses)})),
+        sortBy(prop('balance'))
+    )(participants);
+}
 
-    /**
-     * Calculates participant's share of expenses
-     * @param {string} participantId
-     * @returns {number} The sum of expenses
-     */
-    calculateParticipantShare(participantId) {
-        const {expenses} = this.sheet;
+/**
+ * Returns the current balance of a participant (share - paid)
+ * @param {string} participantId
+ * @returns {number}
+ */
+export function calculateParticipantBalance(participantId, expenses) {
+    const total = calculateParticipantShare(participantId, expenses);
+    const paid = calculateParticipantTotalPaid(participantId, expenses);
 
-        return expenses.reduce((sum, expense) => {
-            // expense's participants
-            const participants = expense.participants || [],
-                price = +expense.price || 0;
+    return total - paid;
+}
 
-            // if price is invalid, zero or the participant given
-            // in parameters hasn't participated in this expense
-            if (!price || participants.indexOf(participantId) === -1) {
-                return sum;
-            }
+/**
+ * Calculates participant's share of expenses
+ * @param {string} participantId
+ * @returns {number} The sum of expenses
+ */
+export function calculateParticipantShare(participantId, expenses) {
+    return pipe(
+        expenseFilterer(expenses),
+        map(e => e.price / e.participants.length),
+        sum()
+    )(isParticipant, participantId);
+}
 
-            return sum + (price / participants.length);
+/**
+ * Returns the total sum paid
+ * @param {string} participantId
+ * @returns {number}
+ */
+export function calculateParticipantTotalPaid(participantId, expenses) {
+    return pipe(
+        expenseFilterer(expenses),
+        getTotalSum
+    )(isPayer, participantId);
+}
 
-        }, 0);
-    }
+/**
+ * Return the total sum of all the expenses
+ * @returns {number} The total sum
+ */
+export function getTotalSum(expenses = []) {
+    return pipe(
+        pluck('price'),
+        map(p => +p || 0),
+        sum
+    )(expenses);
+}
 
-    /**
-     * Returns the total sum paid
-     * @param {string} participantId
-     * @returns {number}
-     */
-    calculateParticipantTotalPaid(participantId) {
-        const {expenses} = this.sheet;
+/**
+ * Get expeneses of a participant
+ * @param {string} participantId Participant's id
+ * @return {Array}
+ */
+export function findExpensesByParticipant(participantId) {
+    return filter(e => isParticipant(e, participantId));
+}
 
-        return expenses.reduce((sum, expense) => {
-            // expense's participants
-            const payer = expense.payer;
-            const price = +expense.price;
+/**
+ * Find expenses paid by a participant
+ * @param  {string} participantId
+ * @return {Array} An array of expenses
+ */
+export function findExpensesPaidByParticipant(participantId) {
+    return filter(e => isPayer(e, participantId));
+}
 
-            // if price is invalid, zero or the participant given
-            // in parameters hasn't participated in this expense
-            if (!price || payer !== participantId) {
-                return sum;
-            }
+/**
+ * Find expenses paid or participated by a participant
+ * @param  {string} participantId
+ * @return {Array} An array of expenses
+ */
+export function findAllExpensesOfParticipant(participantId) {
+    return filter(e => isParticipant(e, participantId) || isPayer(e, participantId));
+}
 
-            return sum + price;
+/**
+ * Calculate all balances and shares
+ * @return {Array}
+ */
+export function getAllBalancesAndShares(sheet) {
+    const {expenses, participants} = sheet;
 
-        }, 0);
-    }
-
-    /**
-     * Return the total sum of all the expenses
-     * @returns {number} The total sum
-     */
-    getTotalSum() {
-        const {expenses} = this.sheet;
-
-        return expenses.reduce((sum, expense) => {
-            return sum + (+expense.price || 0);
-        }, 0);
-    }
-
-    /**
-     * Get expeneses of a participant
-     * @param {string} participantId Participant's id
-     * @return {Array}
-     */
-    findExpensesByParticipant(participantId) {
-        const {expenses} = this.sheet;
-        return expenses.filter(expense => expense.participants.indexOf(participantId) > -1);
-    }
-
-    /**
-     * Find expenses paid by a participant
-     * @param  {string} participantId
-     * @return {Array} An array of expenses
-     */
-    findExpensesPaidByParticipant(participantId) {
-        const {expenses} = this.sheet;
-        return expenses.filter(expense => expense.payer === participantId);
-    }
-
-    /**
-     * Find expenses paid or participated by a participant
-     * @param  {string} participantId
-     * @return {Array} An array of expenses
-     */
-    findAllExpensesOfParticipant(participantId) {
-        const {expenses} = this.sheet;
-        return expenses.filter(e => e.payer === participantId || e.participants.indexOf(participantId) > -1);
-    }
-
-    /**
-     * Calculate all balances and shares
-     * @return {Array}
-     */
-    getAllBalancesAndShares() {
-        const {expenses, participants} = this.sheet;
-        const balances = this.calculateBalances(expenses, participants);
-
-        return balances.map(balance => {
+    return pipe(
+        calculateBalances,
+        map(balance => {
             return {
                 participantId: balance.participant,
-                participantName: ArrayUtils.findById(participants, balance.participant).name,
+                participantName: find(propEq('id', balance.participant))(participants).name,
                 balance: balance.balance,
-                amount: this.calculateParticipantShare(
-                    balance.participant, expenses
-                )
+                amount: calculateParticipantShare(balance.participant, expenses)
             };
-        });
-    }
+        }),
+        sortWith([
+            ascend(prop('balance')),
+            ascend(prop('participantName'))
+        ])
+    )(sheet);
 }

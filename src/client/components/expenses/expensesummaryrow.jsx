@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import ExpensesService from 'client/service/expensesservice';
+import {getTotalSum} from 'client/service/expensesservice';
 import {t} from 'common/dictionary/dictionary';
 import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
 
@@ -23,7 +23,7 @@ class ExpenseSummaryRow extends React.Component {
      */
     render() {
         const {expenses} = this.props;
-        const totalSum = new ExpensesService({ expenses }).getTotalSum();
+        const totalSum = getTotalSum(expenses);
 
         return (
             <tr>

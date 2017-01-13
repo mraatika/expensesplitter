@@ -1,11 +1,62 @@
 import {expect} from 'chai';
-import ExpensesService from 'service/expensesservice';
+import * as service from 'service/expensesservice';
 
 describe('Service: ExpensesService', function () {
     const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' } ];
-    const sheet = {
-        participants,
-        expenses: [
+
+    describe('Calculating total sum of expenses', function () {
+        it('should count sum of all expenses', function () {
+            const expenses = [
+                {
+                    name: 'expense1',
+                    price: 1
+                },
+                {
+                    name: 'expense2',
+                    price: 2
+                },
+                {
+                    name: 'expense3',
+                    price: 3
+                }
+            ];
+            const total = expenses.reduce((sum, expense) => sum + expense.price, 0);
+            expect(service.getTotalSum(expenses)).to.equal(total);
+        });
+
+        it('should convert strings to numeric', function () {
+            const expenses = [
+                {
+                    name: 'expense1',
+                    price: 1
+                },
+                {
+                    name: 'expense2',
+                    price: '2'
+                }
+            ];
+
+            expect(service.getTotalSum(expenses)).to.equal(3);
+        });
+
+        it('should convert NaN to 0', function () {
+            const expenses = [
+                {
+                    name: 'expense1',
+                    price: 1
+                },
+                {
+                    name: 'expense2',
+                    price: 'abc'
+                }
+            ];
+
+            expect(service.getTotalSum(expenses)).to.equal(1);
+        });
+    });
+
+    describe('Calculating participant shares', function () {
+        const expenses = [
             {
                 name: 'expense1',
                 price: 1,
@@ -30,49 +81,74 @@ describe('Service: ExpensesService', function () {
                 participants: [ participants[0].id ],
                 payer: participants[0].id
             }
-        ]
-    };
-    describe('Calculating participant shares', function () {
-        let expensesService;
-
-        beforeEach(function () {
-            expensesService = new ExpensesService(sheet);
-        });
-
-        it('should count sum of all expenses', function () {
-            const total = sheet.expenses.reduce((memo, expense) => memo + expense.price, 0);
-            expect(expensesService.getTotalSum()).to.equal(total);
-        });
+        ];
 
         it('should find expenses if the participant is participated in', function () {
-            const expenses = expensesService.findExpensesByParticipant(participants[1].id);
-            expect(expenses.length).to.equal(2);
-            expect(expenses).contains(sheet.expenses[0]);
-            expect(expenses).contains(sheet.expenses[1]);
+            const filtered = service.findExpensesByParticipant(participants[1].id)(expenses);
+            expect(filtered.length).to.equal(2);
+            expect(filtered).contains(expenses[0]);
+            expect(filtered).contains(expenses[1]);
         });
 
         it('should find expenses the participant has paid', function () {
-            const expenses = expensesService.findAllExpensesOfParticipant(participants[0].id);
-            expect(expenses.length).to.equal(4);
+            const filtered = service.findExpensesPaidByParticipant(participants[0].id)(expenses);
+            expect(filtered.length).to.equal(2);
+            expect(filtered).contains(expenses[0]);
+            expect(filtered).contains(expenses[3]);
         });
 
         it('should find expenses the participant has paid for or participated in', function () {
-            const expenses = expensesService.findExpensesPaidByParticipant(participants[0].id);
-            expect(expenses.length).to.equal(2);
-            expect(expenses).contains(sheet.expenses[0]);
-            expect(expenses).contains(sheet.expenses[3]);
+            const filtered = service.findAllExpensesOfParticipant(participants[0].id)(expenses);
+            expect(filtered.length).to.equal(4);
         });
 
+        it('should exclude expenses the participant hasn\'t paid for or participated in', function () {
+            const expense = { name: 'price5', price: 5, participants: ['3'], payer: '3'};
+            const data = expenses.concat(expense);
+            const filtered = service.findAllExpensesOfParticipant(participants[0].id)(data);
+            expect(filtered.length).to.equal(4);
+        });
+    });
+
+    describe('Calculating participant shares', function () {
+
+        const expenses = [
+            {
+                name: 'expense1',
+                price: 1,
+                participants: participants.map(p => p.id),
+                payer: participants[0].id
+            },
+            {
+                name: 'expense2',
+                price: 2,
+                participants: participants.map(p => p.id),
+                payer: participants[1].id
+            },
+            {
+                name: 'expense3',
+                price: 3,
+                participants: [ participants[0].id ],
+                payer: participants[1].id
+            },
+            {
+                name: 'expense4',
+                price: 4,
+                participants: [ participants[0].id ],
+                payer: participants[0].id
+            }
+        ];
+
         it('should calculate participant\'s share of the total sum', function () {
-            expect(expensesService.calculateParticipantShare(participants[1].id)).to.equal(1.5);
+            expect(service.calculateParticipantShare(participants[1].id, expenses)).to.equal(1.5);
         });
 
         it('should calculate total sum paid by a participant', function () {
-            expect(expensesService.calculateParticipantTotalPaid(participants[1].id)).to.equal(5);
+            expect(service.calculateParticipantTotalPaid(participants[1].id, expenses)).to.equal(5);
         });
 
         it('should calculate participant\'s balance (share - total paid)', function () {
-            expect(expensesService.calculateParticipantBalance(participants[1].id)).to.equal(-3.5);
+            expect(service.calculateParticipantBalance(participants[1].id, expenses)).to.equal(-3.5);
         });
     });
 
@@ -98,7 +174,7 @@ describe('Service: ExpensesService', function () {
                 ]
             };
 
-            const res = new ExpensesService(sheet).calculateBalances();
+            const res = service.calculateBalances(sheet);
 
             expect(res).to.contain({ participant: '1', balance: 105 });
             expect(res).to.contain({ participant: '2', balance: -135 });
@@ -124,7 +200,7 @@ describe('Service: ExpensesService', function () {
                 ]
             };
 
-            const res = new ExpensesService(sheet).calculateBalances();
+            const res = service.calculateBalances(sheet);
 
             expect(res[0].balance).to.equal(-135);
             expect(res[1].balance).to.equal(30);
@@ -150,14 +226,42 @@ describe('Service: ExpensesService', function () {
                 ]
             };
 
-            const service = new ExpensesService(sheet);
-
-            expect(service.calculateBalances()).to.deep.equal([
+            expect(service.calculateBalances(sheet)).to.deep.equal([
                 { participant: '1', balance: -100 },
                 { participant: '3', balance: 0 },
                 { participant: '2', balance: 100 }
             ]);
         });
+    });
+
+    it('should return all balances and shares as an array of objects', function () {
+        const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' }, { id: '3', name: 'Make' }, { id: '4', name: 'Aapeli' }];
+        const sheet = {
+            participants,
+            expenses: [
+                {
+                    name: 'expense1',
+                    price: 240,
+                    participants: participants.map(p => p.id),
+                    payer: participants[1].id
+                },
+                {
+                    name: 'expense2',
+                    price: 40,
+                    participants: participants.map(p => p.id),
+                    payer: participants[2].id
+                }
+            ]
+        };
+
+        const expected = [
+            { participantId: participants[1].id, participantName: participants[1].name, balance: -170, amount: 70 },
+            { participantId: participants[2].id, participantName: participants[2].name, balance: 30, amount: 70 },
+            { participantId: participants[3].id, participantName: participants[3].name, balance: 70, amount: 70 },
+            { participantId: participants[0].id, participantName: participants[0].name, balance: 70, amount: 70 }
+        ];
+
+        expect(service.getAllBalancesAndShares(sheet)).to.deep.equal(expected);
     });
 
 });

@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
-import {sortBy} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
-import ExpensesService from 'client/service/expensesservice';
+import {findAllExpensesOfParticipant} from 'client/service/expensesservice';
 import ParticipantSummaryListItem from 'client/components/shares/participantsummarylistitem.jsx';
 
 /**
@@ -35,26 +34,27 @@ class ParticipantSummaryList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const expensesService = new ExpensesService({ expenses: this.props.expenses });
-        const sharesAndBalances = sortBy(this.props.sharesAndBalances, 'participantName');
+        const {expenses, sharesAndBalances} = this.props;
         const {expandAll} = this.state;
 
         return (
             <div className="panel-group participant-summary-list">
                 <div className="text-right">
                     <a href="#" onClick={this._toggleAllListItems.bind(this)}>
-                        {expandAll ? t('common.close_all') : t('common.open_all') }
+                        {expandAll ? t('common.open_all') : t('common.close_all') }
                         &nbsp;
                         <i className={`fa fa-caret-${expandAll ? 'up' : 'down'}`} />
                     </a>
                 </div>
                 {
                     sharesAndBalances.map(shareAndBalance => {
-                        const expenses = expensesService.findAllExpensesOfParticipant(shareAndBalance.participantId);
+                        const {participantId} = shareAndBalance;
+                        const participantsExpenses = findAllExpensesOfParticipant(participantId)(expenses);
+
                         return <ParticipantSummaryListItem
                             key={shareAndBalance.participantId}
                             participantName={shareAndBalance.participantName}
-                            expenses={expenses}
+                            expenses={participantsExpenses}
                             participants={this.props.participants}
                             currencySymbol={this.props.currencySymbol}
                             isExpanded={expandAll} />;

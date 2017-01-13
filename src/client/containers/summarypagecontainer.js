@@ -2,17 +2,23 @@ import {connect} from 'react-redux';
 import {ArrayUtils} from 'client/util/utils';
 import {removeSheet, saveSheet, updateSheet} from 'client/actions/dataactioncreators';
 import SummaryPage from 'client/components/summary/summarypage.jsx';
+import {getAllBalancesAndShares} from 'client/service/expensesservice';
+import {calculateTransactions} from 'client/service/transactionsservice';
 
 function mapStateToProps(state) {
     const {expenses, participants, sheet} = state;
     const {isSavingToServer} = state.ui;
+    const sharesAndBalances = getAllBalancesAndShares({ expenses, participants });
+    const transactions = calculateTransactions({ expenses, participants });
 
     return {
         sheet,
         expenses: ArrayUtils.rejectRemoved(expenses),
         participants: ArrayUtils.rejectRemoved(participants),
         isSavingToServer,
-        settings: state.settings
+        settings: state.settings,
+        sharesAndBalances,
+        transactions
     };
 }
 

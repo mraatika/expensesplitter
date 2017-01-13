@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react';
 import {browserHistory} from 'react-router';
 import Clipboard from 'clipboard';
 import {t} from 'common/dictionary/dictionary';
-import TransactionsService from 'client/service/transactionsservice';
 import ParticipantSummaryList from 'client/components/shares/participantsummarylist.jsx';
 import TransactionsList from 'client/components/transactions/transactionslist.jsx';
 import SharesTable from 'client/components/shares/sharestable.jsx';
@@ -12,7 +11,6 @@ import {DateUtils, URLUtils} from 'client/util/utils';
 import SaveButton from 'client/components/common/savebutton.jsx';
 import InputButtonSplit from 'client/components/common/inputbuttonsplit.jsx';
 import RemovalConfirmationDialog from 'client/components/common/removalconfirmationdialog.jsx';
-import ExpensesService from 'client/service/expensesservice';
 
 
 /**
@@ -65,11 +63,9 @@ class SheetSummaryPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet, params, participants, expenses} = this.props;
+        const {sheet, params, participants, expenses, sharesAndBalances, transactions} = this.props;
         const {settings} = sheet;
         const {adminKey} = params;
-        const transactions = new TransactionsService().calculateTransactions(expenses, participants);
-        const sharesAndBalances = new ExpensesService({participants, expenses}).getAllBalancesAndShares();
 
         return (
             <div id="summary-page">
@@ -90,8 +86,8 @@ class SheetSummaryPage extends React.Component {
 
                 <h2>{t('lang.share_plural')}:</h2>
                 <SharesTable
-                    participants={participants}
                     expenses={expenses}
+                    sharesAndBalances={sharesAndBalances}
                     currencySymbol={settings.currencySymbol}/>
 
                 <div>
@@ -181,6 +177,8 @@ SheetSummaryPage.propTypes = {
     removeSheet: PropTypes.func.isRequired,
     saveSheet: PropTypes.func.isRequired,
     updateSheet: PropTypes.func.isRequired,
+    sharesAndBalances: PropTypes.array.isRequired,
+    transactions: PropTypes.array.isRequired,
     isSavingToServer: PropTypes.bool
 };
 

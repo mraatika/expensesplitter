@@ -15,7 +15,7 @@ class ExpensesPage extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const {sheet, expenses, participants} = this.props;
+        const {sheet, expenses, participants, sharesAndBalances} = this.props;
         const {currencySymbol} = sheet.settings;
 
         return (
@@ -34,7 +34,7 @@ class ExpensesPage extends React.Component {
                         <aside role="complementary" className="shares-section-container">
                             <h2>{ t('lang.share_plural') }</h2>
                             <SharesTable
-                                participants={participants}
+                                sharesAndBalances={sharesAndBalances}
                                 expenses={expenses}
                                 currencySymbol={currencySymbol}/>
                         </aside>
@@ -60,7 +60,8 @@ ExpensesPage.propTypes = {
     expenses: PropTypes.array.isRequired,
     participants: PropTypes.array.isRequired,
     addExpense: PropTypes.func.isRequired,
-    removeExpenses: PropTypes.func.isRequired
+    removeExpenses: PropTypes.func.isRequired,
+    sharesAndBalances: PropTypes.array.isRequired
 };
 
 export default ExpensesPage;
