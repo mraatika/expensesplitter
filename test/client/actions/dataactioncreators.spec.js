@@ -1,4 +1,3 @@
-import {omit} from 'lodash';
 import {expect} from 'chai';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';

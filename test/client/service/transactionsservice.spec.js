@@ -27,7 +27,7 @@ describe('Service: TransactionsService', function () {
             { participant: '1', balance: 105 }
         ]);
 
-        const transactions = calculateTransactions();
+        const transactions = calculateTransactions({});
 
         expect(transactions.length).to.equal(2);
 
@@ -47,7 +47,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 50 }
         ]);
 
-        const transactions = calculateTransactions();
+        const transactions = calculateTransactions({});
 
         expect(transactions.length).to.equal(1);
 
@@ -63,7 +63,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 0 }
         ]);
 
-        const transactions = calculateTransactions();
+        const transactions = calculateTransactions({});
 
         expect(transactions.length).to.equal(0);
     });
@@ -74,7 +74,7 @@ describe('Service: TransactionsService', function () {
             { participant: '3', balance: 50 }
         ]);
 
-        const transactions = calculateTransactions();
+        const transactions = calculateTransactions({});
 
         expect(transactions.length).to.equal(1);
 

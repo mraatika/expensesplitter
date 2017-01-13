@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {delay, sortBy} from 'lodash';
+import {prop, sortBy} from 'ramda';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
@@ -103,7 +103,7 @@ class ExpenseAddForm extends React.Component {
         this._setExpenseValue(property, value);
         // delay displaying the error so it doesn't prevent the first click
         // on elements below it on the screen
-        delay(() => this._setValidationError(property, error), 100);
+        setTimeout(() => this._setValidationError(property, error), 100);
     }
 
     /**
@@ -145,7 +145,7 @@ class ExpenseAddForm extends React.Component {
     render() {
         const {name, price, participants, payer} = this.state;
         const errorTexts = this._formErrorTexts();
-        const allParticipants = sortBy(this.props.participants, 'name');
+        const allParticipants = sortBy(prop('name'), this.props.participants);
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>

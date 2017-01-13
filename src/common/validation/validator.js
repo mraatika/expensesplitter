@@ -1,4 +1,3 @@
-import {isString, isArray, isObject, isNumber, isFunction} from 'lodash';
 import {t} from 'common/dictionary/dictionary';
 
 export const validators = {
@@ -26,27 +25,27 @@ export const validators = {
     type: (value, rule) => {
         switch (rule) {
         case 'string':
-            return isString(value);
+            return typeof value === 'string';
         case 'decimal':
             {
                 const v = ('' + value).replace(',', ',');
                 return /^[0-9]+(\.[0-9]{1,})?$/.test(v);
             }
         case 'number':
-            return isNumber(value) && !isNaN(value);
+            return typeof value === 'number' && !isNaN(value);
         case 'array':
-            return isArray(value);
+            return Array.isArray(value);
         case 'object':
-            return isObject(value) &&
-                !isArray(value) &&
-                !isFunction(value);
+            const type = typeof value;
+            return type == 'object' &&
+                !Array.isArray(value);
         default:
             return true;
         }
     },
 
     pattern: (value, rule) => {
-        const regex = isFunction(rule) ? rule.call(null) : rule;
+        const regex = rule && typeof rule === 'function' ? rule.call(null) : rule;
 
         try {
             return new RegExp(regex).test(value);

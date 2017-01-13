@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
 import {t} from 'common/dictionary/dictionary';
-import {isFunction} from 'lodash';
 import Modal from 'react-bootstrap/lib/Modal';
 
 /**
@@ -68,7 +67,7 @@ class ModalDialog extends React.Component {
                     <div className="button-container">
                     {
                         this.props.buttons.map((button, i) => {
-                            var click = (isFunction(button.click)) ? button.click : this.close.bind(this);
+                            var click = button.click || this.close.bind(this);
 
                             return <button key={i} onClick={click} className={ button.buttonStyle ? ('button-' + button.buttonStyle) : '' }>
                                 <i className={ 'fa fa-fw fa-lg' + (button.icon ? ' ' + button.icon : '') } />

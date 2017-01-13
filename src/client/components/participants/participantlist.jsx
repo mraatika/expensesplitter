@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {sortBy} from 'lodash';
+import {prop, sortBy} from 'ramda';
 import Participant from 'client/components/participants/participant.jsx';
 import {t} from 'common/dictionary/dictionary';
 
@@ -13,7 +13,7 @@ class ParticipantList extends React.Component {
      * @return {ReactComponent}
      */
     render() {
-        const participants = sortBy(this.props.participants, 'name');
+        const participants = sortBy(prop('name'), this.props.participants);
 
         return (
             <ul id="participants-list">

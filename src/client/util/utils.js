@@ -1,5 +1,3 @@
-import {isDate} from 'lodash';
-
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 }
@@ -58,7 +56,7 @@ export const DateUtils = {
      * @return {string}
      */
     format(date, format) {
-        if (!isDate(date)) date = new Date(date);
+        if (typeof date === 'string') date = new Date(date);
         const minutes = date.getMinutes();
         const hours = date.getHours();
 
@@ -177,3 +175,8 @@ export const URLUtils = {
         return _findKeyFromPath(path, 'admin');
     }
 };
+
+export function isObject(value) {
+    const type = typeof value;
+    return type !== null && type == 'object' && !Array.isArray(value);
+}

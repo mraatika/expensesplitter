@@ -1,4 +1,4 @@
-import {omit} from 'lodash';
+import {omit} from 'ramda';
 
 /**
  * Storage that syncs with localStorage
@@ -56,7 +56,7 @@ LocalStorageAdapter.prototype.remove = function(key) {
  * Save data to localStorage
  */
 LocalStorageAdapter.prototype.save = function() {
-    this._data = omit(this._data, (val => val === null || val === void 0 ));
+    this._data = omit(val => val === null || val === void 0, this._data);
     localStorage.setItem(this.storeName, JSON.stringify(this._data));
 };
 

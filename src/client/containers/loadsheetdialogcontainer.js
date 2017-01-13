@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {toArray} from 'lodash';
+import {values} from 'ramda';
 import LoadSheetDialog from 'client/components/home/loadsheetdialog.jsx';
 import {clearHistory, removeSheetHistoryEntry} from 'client/actions/dataactioncreators';
 import {toggleLoadSheetDialog} from 'client/actions/uiactioncreators';
@@ -9,7 +9,7 @@ function mapStateToProps(state) {
 
     return {
         sheet,
-        sheetHistory: toArray(sheetHistory),
+        sheetHistory: values(sheetHistory),
         show: state.ui.showLoadSheetDialog
     };
 }

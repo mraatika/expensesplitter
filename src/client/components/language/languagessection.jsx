@@ -1,5 +1,5 @@
 import React from 'react';
-import {toArray} from 'lodash';
+import {values} from 'ramda';
 import Constants from 'client/constants/appconstants';
 
 /**
@@ -11,7 +11,7 @@ export default class LanguagesSection extends React.Component {
 
     constructor(props) {
         super(props);
-        this.languages = toArray(Constants.Languages);
+        this.languages = values(Constants.Languages);
     }
 
     render() {

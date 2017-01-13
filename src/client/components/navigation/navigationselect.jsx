@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {pick} from 'lodash';
+import {pickBy} from 'ramda';
 import {t} from 'common/dictionary/dictionary';
 import RouterService from 'client/router/routerservice';
 import pages from 'client/constants/pages';
@@ -28,7 +28,7 @@ class NavigationSelect extends React.Component {
      */
     render() {
         const {href:currentRoute} = this.props.currentPage;
-        const navigablePages = pick(pages, page => page.displayInNavigation);
+        const navigablePages = pickBy(page => page.displayInNavigation, pages);
         const pageOptions = [];
 
         for (const key in navigablePages) {

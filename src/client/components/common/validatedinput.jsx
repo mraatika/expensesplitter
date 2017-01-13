@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {omit} from 'lodash';
+import {omit} from 'ramda';
 import {validateProperty} from 'common/validation/validator';
 
 /**
@@ -139,13 +139,13 @@ class ValidatedInput extends React.Component {
         return {
             ...this._formValidationProperties(),
             ...this._formEventProperties(),
-            ...omit(this.props, [
+            ...omit([
                 'schema',
                 'success',
                 'fail',
                 'events',
                 'children'
-            ])
+            ], this.props)
         };
     }
 

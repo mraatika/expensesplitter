@@ -1,4 +1,4 @@
-import {compact, isEmpty, toArray, indexBy} from 'lodash';
+import {filter, indexBy, isEmpty, map, pipe, prop, values} from 'ramda';
 import * as Schema from 'common/validation/schema';
 import * as validator from 'common/validation/validator';
 import {tpl} from 'common/dictionary/dictionary';
@@ -13,10 +13,13 @@ import {tpl} from 'common/dictionary/dictionary';
 const validateArray = (arr, schema) => {
     if (!(arr instanceof Array)) return [];
 
-    let errors = compact(arr.map((subject) => {
-        const errors = validator.validate(subject, schema);
-        return !isEmpty(errors) ? `${subject.id}: ${toArray(errors).join(', ')}` : false;
-    }));
+    let errors = pipe(
+        map(subject => {
+            const errors = validator.validate(subject, schema);
+            return !isEmpty(errors) ? `${subject.id}: ${values(errors).join(', ')}` : false;
+        }),
+        filter(e => !!e)
+    )(arr);
 
     return errors.length ? errors : [];
 };
@@ -70,7 +73,7 @@ export const validate = (sheet) => {
  * @return {Array} Removed expenses
  */
 export const findExpensesOfRemovedParticipants = (participants = [], expenses = []) => {
-    const pMap = indexBy(participants, 'id');
+    const pMap = indexBy(prop('id'), participants);
     const removed = [];
 
     if (!participants.length) return removed;

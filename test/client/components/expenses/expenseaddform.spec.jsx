@@ -1,6 +1,5 @@
-import React from 'react';
 import {expect} from 'chai';
-import {range} from 'lodash';
+import {range} from 'ramda';
 import sinon from 'sinon';
 import {t} from 'common/dictionary/dictionary';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';

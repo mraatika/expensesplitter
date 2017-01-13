@@ -3,7 +3,7 @@ import {validate, findExpensesOfRemovedParticipants, validateExpensesOfRemovedPa
 import {t, tpl} from 'common/dictionary/dictionary';
 import Schema from 'common/validation/schema';
 
-describe('Validation: SheetValidator', function () {
+describe.only('Validation: SheetValidator', function () {
     const validSheet = {
         id: '1',
         name: 'testsheet',
