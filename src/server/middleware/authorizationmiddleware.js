@@ -1,7 +1,7 @@
 import {authenticate, resetAuthorization} from 'server/database/dbauthorization';
 import configs from 'server/conf/db.conf.json';
 
-const conf = configs[process.env.NODE_ENV || 'dev'];
+const conf = configs[process.env.NODE_ENV || 'development'];
 
 /**
  * Authentication middleware (get auth cookie from the db server)

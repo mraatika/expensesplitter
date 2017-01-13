@@ -6,7 +6,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var packageJSON = require('./package.json');
 var path = require('path');
 
-var env = process.env.NODE_ENV || 'dev';
+var env = process.env.NODE_ENV || 'development';
 var isProd = env === 'production';
 
 var conf = require('./conf/client.conf.json')[env];

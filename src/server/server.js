@@ -12,8 +12,8 @@ import i18nMiddleware from 'server/middleware/i18nmiddleware';
 
 // get correct configuration for the current environment
 const conf = {
-    server: serverConf[process.env.NODE_ENV || 'dev'],
-    db: dbConf[process.env.NODE_ENV || 'dev']
+    server: serverConf[process.env.NODE_ENV || 'development'],
+    db: dbConf[process.env.NODE_ENV || 'development']
 };
 
 const app = express();

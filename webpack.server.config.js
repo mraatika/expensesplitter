@@ -1,7 +1,7 @@
 /* eslint-env node */
 var path = require('path');
 
-var env = process.env.NODE_ENV || 'dev';
+var env = process.env.NODE_ENV || 'development';
 var isProd = env === 'prod';
 
 var PATHS = {

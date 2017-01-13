@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import bunyan from 'bunyan';
 import serverConf from 'server/conf/server.conf.json';
 
-const conf = serverConf[process.env.NODE_ENV || 'dev'];
+const conf = serverConf[process.env.NODE_ENV || 'development'];
 
 /**
  * Default logger properties
@@ -16,7 +16,7 @@ const _defaults = {
          * Log file path
          * @type {string}
          */
-        path: `./expensesplitter.access.${process.env.NODE_ENV || 'dev'}.log`,
+        path: `./expensesplitter.access.${process.env.NODE_ENV || 'development'}.log`,
 
         /**
          * Log format

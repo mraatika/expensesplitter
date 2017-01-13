@@ -8,7 +8,7 @@ import {getCookie} from 'server/database/dbauthorization';
  */
 export const connect = (username, password) => {
     // configuration for current environment
-    const conf = config[process.env.NODE_ENV || 'dev'];
+    const conf = config[process.env.NODE_ENV || 'development'];
     const {protocol, host, port, db_name} = conf;
     let conn;
 
