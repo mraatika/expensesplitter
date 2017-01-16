@@ -84,28 +84,28 @@ describe('Service: ExpensesService', function () {
         ];
 
         it('should find expenses if the participant is participated in', function () {
-            const filtered = service.findExpensesByParticipant(participants[1].id)(expenses);
+            const filtered = service.findExpensesByParticipant(expenses)(participants[1].id);
             expect(filtered.length).to.equal(2);
             expect(filtered).contains(expenses[0]);
             expect(filtered).contains(expenses[1]);
         });
 
         it('should find expenses the participant has paid', function () {
-            const filtered = service.findExpensesPaidByParticipant(participants[0].id)(expenses);
+            const filtered = service.findExpensesPaidByParticipant(expenses)(participants[0].id);
             expect(filtered.length).to.equal(2);
             expect(filtered).contains(expenses[0]);
             expect(filtered).contains(expenses[3]);
         });
 
         it('should find expenses the participant has paid for or participated in', function () {
-            const filtered = service.findAllExpensesOfParticipant(participants[0].id)(expenses);
+            const filtered = service.findAllExpensesOfParticipant(expenses)(participants[0].id);
             expect(filtered.length).to.equal(4);
         });
 
         it('should exclude expenses the participant hasn\'t paid for or participated in', function () {
             const expense = { name: 'price5', price: 5, participants: ['3'], payer: '3'};
             const data = expenses.concat(expense);
-            const filtered = service.findAllExpensesOfParticipant(participants[0].id)(data);
+            const filtered = service.findAllExpensesOfParticipant(data)(participants[0].id);
             expect(filtered.length).to.equal(4);
         });
     });
@@ -139,21 +139,65 @@ describe('Service: ExpensesService', function () {
             }
         ];
 
-        it('should calculate participant\'s share of the total sum', function () {
-            expect(service.calculateParticipantShare(participants[1].id, expenses)).to.equal(1.5);
+        it('should sum prices of the expenses participant has participated in', function () {
+            const result = service.calculateParticipantShare(expenses)(participants[1].id);
+            expect(result).to.equal(1.5);
         });
+    });
 
-        it('should calculate total sum paid by a participant', function () {
-            expect(service.calculateParticipantTotalPaid(participants[1].id, expenses)).to.equal(5);
-        });
+    describe('Calculating sum of expenses paid by a participant', function() {
 
-        it('should calculate participant\'s balance (share - total paid)', function () {
-            expect(service.calculateParticipantBalance(participants[1].id, expenses)).to.equal(-3.5);
+        it('should sum prices of the expenses paid by', function () {
+            const expenses = [
+                {
+                    name: 'expense1',
+                    price: 1,
+                    participants: participants.map(p => p.id),
+                    payer: participants[0].id
+                },
+                {
+                    name: 'expense2',
+                    price: 2,
+                    participants: participants.map(p => p.id),
+                    payer: participants[1].id
+                },
+                {
+                    name: 'expense3',
+                    price: 3,
+                    participants: [ participants[0].id ],
+                    payer: participants[1].id
+                }
+            ];
+
+            const payer = participants[1].id;
+
+            expect(service.calculateParticipantTotalPaid(expenses)(payer)).to.equal(5);
         });
     });
 
     describe('Calculating balances', function () {
         const participants = [ { id:'1', name:'Keke' }, { id:'2', name:'Sepi' }, { id:'3', name:'John' } ];
+
+        it('should calculate balance of a single participant', function () {
+            const expenses = [
+                {
+                    name: 'expense1',
+                    price: 6,
+                    participants: participants.map(p => p.id),
+                    payer: participants[0].id
+                },
+                {
+                    name: 'expense2',
+                    price: 2,
+                    participants: participants.map(p => p.id),
+                    payer: participants[1].id
+                }
+            ];
+
+            const result = service.calculateParticipantBalance(participants[0].id, expenses);
+
+            expect(result).to.equal(8 / 3 - 6);
+        });
 
         it('should calculate balances from given expenses', function () {
             const sheet = {

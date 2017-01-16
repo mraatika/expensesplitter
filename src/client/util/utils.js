@@ -1,3 +1,5 @@
+import {ascend, descend, map, prop, sortWith} from 'ramda';
+
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 }
@@ -70,6 +72,13 @@ export const DateUtils = {
 };
 
 /**
+ * Form sorter functions for properties
+ * @param  {String} propName
+ * @return {Array[Function]}
+ */
+const formSortersFor = (propNames,fn) => map(propName => fn(prop(propName)))(propNames);
+
+/**
  * Array related utility functions
  * @type {Object}
  */
@@ -103,6 +112,26 @@ export const ArrayUtils = {
      */
     rejectRemoved(arr) {
         return arr.filter(e => !e.removed);
+    },
+
+    /**
+     * Sort list of objects ascending by given properties
+     * @param  {Array[Object]} list
+     * @param  {Array[String]} propNames
+     * @return {Function}
+     */
+    sortAscByProps(list, propNames) {
+        return sortWith(formSortersFor(propNames, ascend))(list);
+    },
+
+    /**
+     * Sort list of objects descending by given properties
+     * @param  {Array[Object]} list
+     * @param  {Array[String]} propNames
+     * @return {Function}
+     */
+    sortDescByProps(list, propNames) {
+        return sortWith(formSortersFor(propNames, descend))(list);
     }
 };
 

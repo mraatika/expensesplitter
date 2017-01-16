@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {prop, sortBy} from 'ramda';
+import {ArrayUtils} from 'client/util/utils';
 import {t} from 'common/dictionary/dictionary';
 import {Expense as ExpenseSchema} from 'common/validation/schema';
 import MessageContainer from 'client/components/common/messagecontainer.jsx';
@@ -55,12 +55,12 @@ class ExpenseAddForm extends React.Component {
     /**
      * Set a property to the expense model
      * @private
-     * @param {string} prop
+     * @param {string} name
      * @param {string|number|array} value
      * @return {undefined}
      */
-    _setExpenseValue(prop, value) {
-        this.setState({ [prop]: value });
+    _setExpenseValue(name, value) {
+        this.setState({ [name]: value });
     }
 
     /**
@@ -103,7 +103,7 @@ class ExpenseAddForm extends React.Component {
         this._setExpenseValue(property, value);
         // delay displaying the error so it doesn't prevent the first click
         // on elements below it on the screen
-        setTimeout(() => this._setValidationError(property, error), 100);
+        this._setValidationError(property, error);
     }
 
     /**
@@ -145,7 +145,7 @@ class ExpenseAddForm extends React.Component {
     render() {
         const {name, price, participants, payer} = this.state;
         const errorTexts = this._formErrorTexts();
-        const allParticipants = sortBy(prop('name'), this.props.participants);
+        const allParticipants = ArrayUtils.sortAscByProps(this.props.participants, ['name']);
 
         return (
             <form onSubmit={this._handleAddExpense.bind(this)}>

@@ -22,7 +22,7 @@ class ParticipantsPage extends React.Component {
      */
     _handleParticipantRemoval(participant) {
         const {expenses} = this.props;
-        const expensesParticipatedIn = findAllExpensesOfParticipant(participant.id)(expenses);
+        const expensesParticipatedIn = findAllExpensesOfParticipant(expenses)(participant.id);
 
         if (expensesParticipatedIn.length) {
             this._removeConfirmationDialog.open();
@@ -42,7 +42,7 @@ class ParticipantsPage extends React.Component {
      */
     _participantRemovalConfirmed(participant) {
         const {expenses} = this.props;
-        const expensesParticipatedIn = findAllExpensesOfParticipant(participant.id)(expenses);
+        const expensesParticipatedIn = findAllExpensesOfParticipant(expenses)(participant.id);
 
         this.props.removeParticipant(participant, expensesParticipatedIn);
     }

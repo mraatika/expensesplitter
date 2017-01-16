@@ -27,7 +27,7 @@ export function calculateTransactions(sheet) {
     const transactions = [];
     let balances = pipe(
         calculateBalances,
-        filter(b => b.balance != 0)
+        filter(zeroBalanceFilterer)
     )({ expenses, participants });
 
     // iterate until all accounts are even

@@ -36,6 +36,7 @@ class ParticipantSummaryList extends React.Component {
     render() {
         const {expenses, sharesAndBalances} = this.props;
         const {expandAll} = this.state;
+        const expenseFinder = findAllExpensesOfParticipant(expenses);
 
         return (
             <div className="panel-group participant-summary-list">
@@ -49,7 +50,7 @@ class ParticipantSummaryList extends React.Component {
                 {
                     sharesAndBalances.map(shareAndBalance => {
                         const {participantId} = shareAndBalance;
-                        const participantsExpenses = findAllExpensesOfParticipant(participantId)(expenses);
+                        const participantsExpenses = expenseFinder(participantId);
 
                         return <ParticipantSummaryListItem
                             key={shareAndBalance.participantId}
