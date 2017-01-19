@@ -1,4 +1,4 @@
-import {__, partial, either, find, filter, map, pipe, pluck, prop, propEq, reject, sortBy, sum} from 'ramda';
+import R from 'ramda';
 import {ArrayUtils} from 'client/util/utils';
 
 /**
@@ -9,7 +9,7 @@ import {ArrayUtils} from 'client/util/utils';
  *         @param {Array}
  *         @return {Array} filtered values
  */
-const rejectNaNs = reject(num => isNaN(+num));
+const rejectNaNs = R.reject(num => isNaN(+num));
 
 /**
  * Calculate sum converting values to numbers with NaN check
@@ -19,14 +19,14 @@ const rejectNaNs = reject(num => isNaN(+num));
  *         @param {Array}
  *         @return {Number}
  */
-const safeSum = pipe(rejectNaNs, sum);
+const safeSum = R.pipe(rejectNaNs, R.sum);
 
 /**
  * Return the summed up price of all the expenses
  * @param {Array}
  * @returns {Number}
  */
-export const getTotalSum = pipe(pluck('price'), safeSum);
+export const getTotalSum = R.pipe(R.pluck('price'), safeSum);
 
 /**
  * Filter expenses list using a filtering function
@@ -34,7 +34,7 @@ export const getTotalSum = pipe(pluck('price'), safeSum);
  * @param  {Array} expenses
  * @return {Array}
  */
-const filterExpensesBy = (fn, expenses) => filter(fn)(expenses);
+const filterExpensesBy = (fn, expenses) => R.filter(fn)(expenses);
 
 /**
  * Check if given participant id is found in expense's participants list
@@ -58,7 +58,7 @@ export const findExpensesByParticipant = expenses => id => filterExpensesBy(isPa
  * @param {String} id
  * @return {Boolean}
  */
-const isPayer = partial(propEq, ['payer']);
+const isPayer = R.partial(R.propEq, ['payer']);
 
 /**
  * Find expenses paid by a participant
@@ -72,7 +72,7 @@ export const findExpensesPaidByParticipant = expenses => id => filterExpensesBy(
  * @param  {Array[Object]} An array of expense objects
  * @return {Array[Object]}
  */
-export const findAllExpensesOfParticipant = expenses => id => filterExpensesBy(either(isPayer(id), isParticipant(id)), expenses);
+export const findAllExpensesOfParticipant = expenses => id => filterExpensesBy(R.either(isPayer(id), isParticipant(id)), expenses);
 
 
 /**
@@ -81,9 +81,9 @@ export const findAllExpensesOfParticipant = expenses => id => filterExpensesBy(e
  * @returns {Number}
  */
 export const calculateParticipantShare = (expenses) => {
-    return pipe(
+    return R.pipe(
         findExpensesByParticipant(expenses),
-        map(e => e.price / e.participants.length),
+        R.map(e => e.price / e.participants.length),
         safeSum
     );
 };
@@ -94,7 +94,7 @@ export const calculateParticipantShare = (expenses) => {
  * @returns {Number}
  */
 export const calculateParticipantTotalPaid = (expenses) => {
-    return pipe(
+    return R.pipe(
         findExpensesPaidByParticipant(expenses),
         getTotalSum
     );
@@ -125,9 +125,9 @@ export const calculateParticipantBalance = (participantId, expenses) => {
 export const calculateBalances = (sheet) => {
     const {expenses, participants} = sheet;
 
-    return pipe(
-        map(p => ({ participant: p.id, balance: calculateParticipantBalance(p.id, expenses)})),
-        sortBy(prop('balance'))
+    return R.pipe(
+        R.map(p => ({ participant: p.id, balance: calculateParticipantBalance(p.id, expenses)})),
+        R.sortBy(R.prop('balance'))
     )(participants);
 };
 
@@ -137,7 +137,7 @@ export const calculateBalances = (sheet) => {
  * @param {String}
  * @return {Boolean}
  */
-const isIdEqual = partial(propEq, ['id']);
+const isIdEqual = R.partial(R.propEq, ['id']);
 /**
  * Find an object from a list by it's id
  * @param  {Array[Object]} list
@@ -145,7 +145,7 @@ const isIdEqual = partial(propEq, ['id']);
  *         @param {String} id
  *         @return {Object}
  */
-const findByIdFromList = list => id => find(isIdEqual(id))(list);
+const findByIdFromList = list => id => R.find(isIdEqual(id))(list);
 
 /**
  * Calculate all balances and shares
@@ -158,12 +158,12 @@ const findByIdFromList = list => id => find(isIdEqual(id))(list);
  */
 export const getAllBalancesAndShares = (sheet) => {
     const {expenses, participants} = sheet;
-    const findParticipantById = pipe(findByIdFromList(participants), prop('name'));
+    const findParticipantById = R.pipe(findByIdFromList(participants), R.prop('name'));
     const shareCalculator = calculateParticipantShare(expenses);
 
-    return pipe(
+    return R.pipe(
         calculateBalances,
-        map(balanceObj => {
+        R.map(balanceObj => {
             const {participant, balance} = balanceObj;
             return {
                 participantId: participant,
@@ -172,6 +172,6 @@ export const getAllBalancesAndShares = (sheet) => {
                 amount: shareCalculator(participant)
             };
         }),
-        ArrayUtils.sortAscByProps(__, ['balance', 'participantName'])
+        R.partialRight(ArrayUtils.sortAscByProps, [['balance', 'participantName']])
     )(sheet);
 };
