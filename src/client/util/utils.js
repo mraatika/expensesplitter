@@ -1,4 +1,4 @@
-import {ascend, descend, map, prop, sortWith} from 'ramda';
+import R from 'ramda';
 
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -76,7 +76,7 @@ export const DateUtils = {
  * @param  {String} propName
  * @return {Array[Function]}
  */
-const formSortersFor = (propNames,fn) => map(propName => fn(prop(propName)))(propNames);
+const formSortersFor = (propNames,fn) => R.map(propName => fn(R.prop(propName)))(propNames);
 
 /**
  * Array related utility functions
@@ -121,7 +121,7 @@ export const ArrayUtils = {
      * @return {Function}
      */
     sortAscByProps(list, propNames) {
-        return sortWith(formSortersFor(propNames, ascend))(list);
+        return R.sortWith(formSortersFor(propNames, R.ascend))(list);
     },
 
     /**
@@ -131,8 +131,18 @@ export const ArrayUtils = {
      * @return {Function}
      */
     sortDescByProps(list, propNames) {
-        return sortWith(formSortersFor(propNames, descend))(list);
-    }
+        return R.sortWith(formSortersFor(propNames, R.descend))(list);
+    },
+    /**
+     * Convert an array to a string using comma as separator
+     * @type {Function}
+     * @param {Array|Object}
+     * @return {String}
+     */
+    toListString: R.pipe(
+        R.when(isObject, R.values ),
+        R.when(Array.isArray, R.invoker(1, 'join')(', '))
+    )
 };
 
 /**
@@ -205,6 +215,44 @@ export const URLUtils = {
     }
 };
 
+
+const callWithNthArg = (fn, argN) => (...args) => fn(args[argN - 1]);
+
+/**
+ * Function utils
+ * @type {Object}
+ */
+export const FunctionUtils = {
+    /**
+     * Call function with nth argument
+     * @param  {Function} fn Function to call
+     * @param  {Number} argN Argument index
+     * @return {*} The value from fn
+     */
+    callWithNthArg,
+    /**
+     * Call function with 2nd argument
+     * @param  {...*} args
+     * @return {*} The value from fn
+     */
+    callWithSecondArg: R.partialRight(callWithNthArg, [2]),
+    /**
+     * Check if value is not nil (undefined or null)
+     * @type {Boolean}
+     */
+    isNotNil: R.pipe(R.isNil, R.not),
+    /**
+     * Check if given value is not empty
+     * @type {Boolean}
+     */
+    isNotEmpty: R.pipe(R.isEmpty, R.not)
+};
+
+/**
+ * Check if value is an object (not null or array)
+ * @param  {*} value
+ * @return {Boolean}
+ */
 export function isObject(value) {
     const type = typeof value;
     return type !== null && type == 'object' && !Array.isArray(value);

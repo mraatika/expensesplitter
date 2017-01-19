@@ -1,164 +1,163 @@
 import {expect} from 'chai';
 import {t} from 'common/dictionary/dictionary';
-import validation from 'common/validation/validator';
+import {validate, validateProperty} from 'common/validation/validator';
 
 describe('Validation', function() {
     it('should be defined', function() {
-        expect(typeof validation.validate).to.equal('function');
-        expect(typeof validation.validateProperty).to.equal('function');
-    });
-
-    it('should require a schema', function () {
-        expect(function() {
-            validation.validate();
-        }).to.throw('IllegalArgumentsException: Schema missing!');
-
-        expect(function() {
-            validation.validate({});
-        }).to.throw('IllegalArgumentsException: Schema missing!');
+        expect(typeof validate).to.equal('function');
+        expect(typeof validateProperty).to.equal('function');
     });
 
     describe('common', function() {
 
         describe('required', function() {
-            var schema = { name: { required: true }};
-            var subject = { name: void 0 };
+            const schema = { name: { required: true }};
 
             it('should pass if value is truthy (or 0)', function () {
-                subject.name = 'John';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: 'John' };
+                expect(validate(subject, schema)).to.be.empty;
                 subject.name = 1;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                expect(validate(subject, schema)).to.be.empty;
                 subject.name = [];
-                expect(validation.validate(subject, schema)).to.be.empty;
+                expect(validate(subject, schema)).to.be.empty;
                 subject.name = function(){};
-                expect(validation.validate(subject, schema)).to.be.empty;
+                expect(validate(subject, schema)).to.be.empty;
                 subject.name = '   ';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should fail if value is falsy', function () {
+                const subject = { name: null };
                 subject.name = null;
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                expect(validate(subject, schema).name).to.be.ok;
                 subject.name = void 0;
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                expect(validate(subject, schema).name).to.be.ok;
                 subject.name = '';
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                expect(validate(subject, schema).name).to.be.ok;
                 subject.name = NaN;
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should fail if subject doesn\'t have property at all', function () {
-                var subject = {};
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = {};
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should not fail if a value is not required and is null', function () {
                 const schema = { name: { type: 'string', required: false }};
                 const subject = { name: null };
 
-                expect(validation.validate(subject, schema).name).to.be.undefined;
+                expect(validate(subject, schema).name).to.be.undefined;
             });
 
             it('should not fail if a value is not required and is undefined', function () {
                 const schema = { name: { type: 'string', required: false }};
                 const subject = { name: undefined };
 
-                expect(validation.validate(subject, schema).name).to.be.undefined;
+                expect(validate(subject, schema).name).to.be.undefined;
             });
         });
 
         describe('pattern', function() {
-            var schema = { name: { pattern: '^[a-z1]+$' }};
-            var subject = { name: void 0 };
+            const schema = { name: { pattern: '^[a-z1]+$' }};
 
             it('should pass if pattern matches the value', function () {
-                subject.name = 'john1';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: 'john1' };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should fail if pattern doesn\'t match the value', function () {
-                subject.name = 'john-*1';
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = { name: 'john-*1' };
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should take functon as a pattern rule', function () {
-                var schema = { name: { pattern: function() { return '^[a-z1]+$'; }}};
-                var subject = { name: 'john' };
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const schema = { name: { pattern: function() { return '^[a-z1]+$'; }}};
+                const subject = { name: 'john' };
+                expect(validate(subject, schema)).to.be.empty;
             });
         });
 
         describe('translated error messages', function () {
             it('should return translated error message when rule has msgKey property', function () {
-                var msgKey = 'error.participant.name';
-                var schema = { name: { required : true, type: 'string', msgKey: msgKey }};
-                var participant = { name: '' };
-                expect(validation.validate(participant, schema).name).to.equal(t(msgKey + '.required'));
+                const msgKey = 'error.participant.name';
+                const schema = { name: { required : true, type: 'string', msgKey: msgKey }};
+                const participant = { name: '' };
+                expect(validate(participant, schema).name).to.equal(t(msgKey + '.required'));
                 participant.name = 2;
-                expect(validation.validate(participant, schema).name).to.equal(t(msgKey + '.type'));
+                expect(validate(participant, schema).name).to.equal(t(msgKey + '.type'));
             });
         });
     });
 
     describe('string', function() {
         describe('type', function() {
-            var schema = { name: { type: 'string' } };
-            var subject = { name: void 0 };
+            const schema = { name: { type: 'string', required: true }};
 
             it('should accept a valid string', function () {
+                const subject = { name: 'John' };
                 subject.name = 'John';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept a value of different type', function() {
-                subject.name = 12;
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = { name: 12 };
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should not accept a value of different (falsy) type', function() {
-                subject.name = NaN;
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = { name: NaN };
+                expect(validate(subject, schema).name).to.be.ok;
+            });
+
+            it('should not accept missing value if required', function () {
+                const subject = { name: undefined };
+                expect(validate(subject, schema).name).to.be.ok;
+            });
+
+            it('should accept missing value if not required', function () {
+                const subject = { name: undefined };
+                const schema = { name: { type: 'string', required: false }};
+                expect(validate(subject, schema).name).to.be.undefined;
             });
         });
 
         describe('minLength', function() {
-            var schema = { name: { minLength: 3 }};
-            var subject = { name: void 0 };
+            const schema = { name: { minLength: 3, required: true }};
 
             it('should accept if min length requirement is met', function() {
-                subject.name = 'abc';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: 'abc' };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept if length is less than minimum length', function() {
-                subject.name = 'a';
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = { name: 'a' };
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should accept if value is not defined', function() {
-                subject.name = void 0;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: undefined };
+                const schema = { name: { minLength: 3, required: false }};
+                expect(validate(subject, schema)).to.be.empty;
             });
         });
 
         describe('maxLength', function() {
-            var schema = { name: { maxLength: 3 }};
-            var subject = { name: void 0 };
+            const schema = { name: { maxLength: 3 }};
 
             it('should accept if value length is less or equal than max length', function() {
-                subject.name = 'abc';
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: 'abc' };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept if length is greater than max length', function() {
-                subject.name = 'abcd';
-                expect(validation.validate(subject, schema).name).to.be.ok;
+                const subject = { name: 'abcd' };
+                expect(validate(subject, schema).name).to.be.ok;
             });
 
             it('should accept if value is not defined', function() {
-                subject.name = void 0;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { name: undefined };
+                expect(validate(subject, schema)).to.be.empty;
             });
         });
     });
@@ -166,161 +165,165 @@ describe('Validation', function() {
     describe('number', function() {
 
         describe('type:number', function() {
-            var schema = { age: { type: 'number' } };
-            var subject = { age: void 0 };
+            const schema = { age: { type: 'number' } };
 
             it('should accept a valid number', function () {
-                subject.age = 12;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { age: 12 };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept a value of different type', function() {
-                subject.age = 'John';
-                expect(validation.validate(subject, schema).age).to.be.ok;
+                const subject = { age: 'John' };
+                expect(validate(subject, schema).age).to.be.ok;
             });
         });
 
         describe('type:decimal', function () {
-            var schema = { average: { type: 'decimal'} };
-            var subject = { average: void 0 };
+            const schema = { average: { type: 'decimal'} };
 
             it('should accept a valid decimal number', function () {
-                subject.average = 3.5;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { average: 3.5 };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept a value of different type', function () {
-                subject.average = 'John';
-                expect(validation.validate(subject, schema).average).to.be.ok;
+                const subject = { average: 'John' };
+                expect(validate(subject, schema).average).to.be.ok;
+            });
+
+            it('should convert commas to dots', function () {
+                const subject = { average: '3,5' };
+                expect(validate(subject, schema).average).to.be.undefined;
             });
         });
 
         describe('min', function() {
-            var schema = { age: { min: 1 } };
-            var subject = { age: void 0 };
+            const schema = { age: { min: 1, required: true }};
 
             it('should accept if min length requirement is met', function() {
-                subject.age = 1;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { age: 1 };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept if length is less than minimum length', function() {
-                subject.age = 0;
-                expect(validation.validate(subject, schema).age).to.be.ok;
+                const subject = { age: 0 };
+                expect(validate(subject, schema).age).to.be.ok;
             });
 
             it('should accept if value is not defined', function() {
-                subject.age = void 0;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { age: undefined };
+                const schema = { age: { min: 1, required: false }};
+                expect(validate(subject, schema)).to.be.empty;
             });
         });
 
         describe('max', function() {
-            var schema = { age: { max: 1 } };
-            var subject = { age: void 0 };
+            const schema = { age: { max: 1 } };
 
             it('should accept if value is less than max rule', function() {
-                subject.age = 0;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { age: 0 };
+                expect(validate(subject, schema)).to.be.empty;
 
-                subject.age = -1;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject2 = { age: -1 };
+                expect(validate(subject2, schema)).to.be.empty;
             });
 
             it('should not accept if length is greater than max rule', function() {
-                subject.age = 2;
-                expect(validation.validate(subject, schema).age).to.be.ok;
+                const subject = { age: 2 };
+                expect(validate(subject, schema).age).to.be.ok;
             });
 
             it('should accept if value is not defined', function() {
-                subject.age = void 0;
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { age: undefined };
+                expect(validate(subject, schema)).to.be.empty;
             });
         });
     });
 
     describe('array', function() {
         describe('type', function() {
-            var schema = { languages: { type: 'array' } };
-            var subject = { languages: void 0 };
+            const schema = { languages: { type: 'array' } };
 
             it('should accept a valid array', function () {
-                subject.languages = [];
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { languages: [] };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept a value of different type', function() {
-                subject.languages = 'John';
-                expect(validation.validate(subject, schema).languages).to.be.ok;
-                subject.languages = {};
-                expect(validation.validate(subject, schema).languages).to.be.ok;
+                const subject = { languages: 'John' };
+                expect(validate(subject, schema).languages).to.be.ok;
+            });
+
+            it('should not accept object as an array', function () {
+                const subject = { languages: {} };
+                expect(validate(subject, schema).languages).to.be.ok;
             });
         });
 
         describe('minLength', function() {
-            var schema = { languages: { minLength: 2 }};
-            var subject = { languages: void 0 };
+            const schema = { languages: { minLength: 2 }};
 
             it('should accept if min length requirement is met', function() {
-                subject.languages = [1,2];
-                expect(validation.validate(subject, schema)).to.be.empty;
+                const subject = { languages: [1, 2] };
+                expect(validate(subject, schema)).to.be.empty;
             });
 
             it('should not accept if length is less than minimum length', function() {
-                subject.languages = [1];
-                expect(validation.validate(subject, schema).languages).to.be.ok;
+                const subject = { languages: [1] };
+                expect(validate(subject, schema).languages).to.be.ok;
             });
         });
     });
 
     describe('type:object', function() {
-        var schema = { competences: { type: 'object' } };
-        var subject = { competences: void 0 };
+        const schema = { competences: { type: 'object' } };
 
         it('should accept a valid array', function () {
-            subject.competences = {};
-            expect(validation.validate(subject, schema)).to.be.empty;
+            const subject = { competences: {} };
+            expect(validate(subject, schema)).to.be.empty;
         });
 
         it('should not accept a value of different type', function() {
-            subject.competences = [];
-            expect(validation.validate(subject, schema).competences).to.be.ok;
-            subject.competences = function() {};
-            expect(validation.validate(subject, schema).competences).to.be.ok;
+            const subject = { competences: [] };
+            expect(validate(subject, schema).competences).to.be.ok;
+        });
+
+        it('should not accept function as object', function () {
+            const subject = { competences: function() {} };
+            expect(validate(subject, schema).competences).to.be.ok;
         });
     });
 
     describe('type:invalid type', function() {
         it('should return void if type is not defined', function() {
-            var schema = { age: { type: 'notfoundtype' } };
-            var subject = { age: 'asb' };
-            expect(validation.validate(subject, schema)).to.be.empty;
+            const schema = { age: { type: 'notfoundtype' } };
+            const subject = { age: 'asb' };
+            expect(validate(subject, schema)).to.be.empty;
         });
     });
 
     describe('Multiple rules', function() {
-        var schema = {
+        const schema = {
             name: {
                 type: 'string',
                 minLength: 5,
                 pattern: '^[a-z]+$'
             }
         };
-        var subject = { name: void 0 };
 
         it('should pass if all the rules are satisfied', function() {
-            subject.name = 'yormuli';
-            expect(validation.validate(subject, schema)).to.be.empty;
+            const subject = { name: 'yormuli' };
+            expect(validate(subject, schema)).to.be.empty;
         });
 
         it('should return true if any of the rules are not met', function() {
-            subject.name = 'yormuli1';
-            expect(validation.validate(subject, schema).name).to.be.ok;
+            const subject = { name: 'yormuli1' };
+            expect(validate(subject, schema).name).to.be.ok;
         });
     });
 
     describe('Multiple fields', function() {
-        var schema = {
+        const schema = {
             name: {
                 type: 'string',
                 minLength: 5,
@@ -335,41 +338,87 @@ describe('Validation', function() {
                 minLength: 2
             }
         };
-        var subject = { name: void 0 };
 
         it('should pass if all the rules are satisfied', function() {
-            subject.name = 'yormuli';
-            subject.age = 1;
-            subject.languages = [1,2,3];
-            expect(validation.validate(subject, schema)).to.be.empty;
+            const subject = {
+                name: 'yormuli',
+                age: 1,
+                languages: [1,2,3]
+            };
+
+            expect(validate(subject, schema)).to.be.empty;
         });
 
         it('should return true if any of the rules are not met', function() {
-            subject.name = 'yormuli1';
-            subject.age = -5;
-            subject.languages = [1, 2, 3];
+            const subject = {
+                name: 'yormuli1',
+                age: -5,
+                languages: [1,2,3]
+            };
 
-            var result = validation.validate(subject, schema);
-            expect(result.name).to.be.ok;
-            expect(result.age).to.be.ok;
-            expect(result.languages).to.be.undefined;
+            const result = validate(subject, schema);
+            expect(result).to.include.keys(['name', 'age']);
+            expect(result).not.to.include.keys('languages');
         });
     });
 
     describe('Validating a single property', function () {
-        var schema = { name: { required: true, maxLength: 5, minLength: 3 }};
+        const schema = {
+            name: {
+                required: true,
+                maxLength: 5,
+                minLength: 3
+            }
+        };
 
         it('should return true when msgKey is not defined and the result is errous', function () {
-            expect(validation.validateProperty('name', 'gg', schema)).to.be.ok;
+            expect(validateProperty('name', 'gg', schema)).to.be.ok;
         });
 
         it('should return undefined when validation is successfull', function () {
-            expect(validation.validateProperty('name', 'ggall', schema)).to.equal(void 0);
+            expect(validateProperty('name', 'ggall', schema)).to.be.undefined;
         });
 
         it('should return a translated error message if msgKey is defined', function () {
-            schema.name.msgKey = 'error.participant.name';
-            expect(validation.validateProperty('name', 'ggallin', schema)).to.equal(t(schema.name.msgKey + '.maxLength'));
+            const schema = {
+                name: {
+                    type: 'string',
+                    maxLength: 5,
+                    msgKey: 'error.participant.name'
+                }
+            };
+
+            const expected = t(schema.name.msgKey + '.maxLength');
+            const result = validateProperty('name', 'ggallin', schema);
+
+            expect(result).to.equal(expected);
+        });
+
+        it('should pass if value is not required and empty', function () {
+            const schema = {
+                optional: {
+                    type: 'string',
+                    required: false
+                }
+            };
+
+            const subject = { optional: null };
+
+            expect(validateProperty('optional', subject.optional, schema)).to.be.undefined;
+
+        });
+
+        it('should pass if value is not required and empty', function () {
+            const schema = {
+                nonOptional: {
+                    type: 'string',
+                    required: true
+                }
+            };
+
+            const subject = { nonOptional: null };
+
+            expect(validateProperty('nonOptional', subject.optional, schema)).to.be.ok;
         });
     });
 });

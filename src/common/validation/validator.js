@@ -1,42 +1,39 @@
+import R from 'ramda';
 import {t} from 'common/dictionary/dictionary';
+import {FunctionUtils} from 'client/util/utils';
 
+/**
+ * Validation functions for validation rules
+ * @type {Object}
+ */
 export const validators = {
 
-    required: (value, rule) => {
-        return rule ? (value || value === 0) : void 0;
-    },
+    required: (value, rule) => rule && (value || value === 0),
 
-    maxLength: (value, rule) => {
-        return (value || '').length <= rule;
-    },
+    minLength: (value, rule) => (value || '').length >= rule,
 
-    minLength: (value, rule) => {
-        return !value || (value || '').length >= rule;
-    },
+    maxLength: (value, rule) => (value || '').length <= rule,
 
-    min: (value, rule) => {
-        return (!value && value !== 0) || value >= rule;
-    },
+    min: (value, rule) => value >= rule,
 
-    max: (value, rule) => {
-        return (!value && value !== 0) || value <= rule;
-    },
+    max: (value, rule) => value <= rule,
 
     type: (value, rule) => {
+        const type = typeof value;
+
         switch (rule) {
         case 'string':
-            return typeof value === 'string';
+            return type === 'string';
         case 'decimal':
             {
-                const v = ('' + value).replace(',', ',');
+                const v = ('' + value).replace(',', '.');
                 return /^[0-9]+(\.[0-9]{1,})?$/.test(v);
             }
         case 'number':
-            return typeof value === 'number' && !isNaN(value);
+            return type === 'number' && !isNaN(value);
         case 'array':
             return Array.isArray(value);
         case 'object':
-            const type = typeof value;
             return type == 'object' &&
                 !Array.isArray(value);
         default:
@@ -45,7 +42,7 @@ export const validators = {
     },
 
     pattern: (value, rule) => {
-        const regex = rule && typeof rule === 'function' ? rule.call(null) : rule;
+        const regex = typeof rule === 'function' ? rule.call(null) : rule;
 
         try {
             return new RegExp(regex).test(value);
@@ -63,37 +60,47 @@ export const validators = {
  * @param   {string} rule
  * @return  {string}
  */
-const _formErrorReturnValue = function(msgKey, rule) {
-    return msgKey ? t(msgKey + '.' + rule) : true;
-};
+const formErrorReturnValue = (msgKey, rule) => msgKey ? t(msgKey + '.' + rule) : true;
 
 /**
- * Partial application function for validator functions. Get validation
- * function for a rule
+ * Check if a property has validator function
+ * @param  {String} name
+ * @return {Boolean}
+ */
+const hasValidator = name => validators[name];
+
+/**
+ * Partial function for validator functions. Returns validation function for a property
  * @private
  * @param   {Object} subject
  * @return  {Function}
  */
-const _getAttributeValidator = function(subject) {
+const getAttributeValidator = function(subject) {
 
     /**
-     * Get validation function for a rule
-     * @param  {string} ruleName
-     * @param  {*} ruleValue
-     * @return {string}
+     * Get validation function for a property
+     * @param  {String} propName Name of the validated property
+     * @param  {Object} rules A set of validation rules
+     * @return {String}
      */
-    return (ruleName, ruleValue) => {
-        for (let rule in ruleValue) {
-            if (ruleValue.hasOwnProperty(rule)) {
-                const validator = validators[rule];
+    return function actualValidator(rules, propName) {
+        const propValue = subject[propName];
+        const errorMessageFormatter = R.partial(formErrorReturnValue, [rules.msgKey]);
 
-                if (validator && !validator.call(null, subject[ruleName], ruleValue[rule])) {
-                    return _formErrorReturnValue(ruleValue.msgKey, rule);
-                }
-            }
-        }
+        // do not run validation is value is nil and the prop is not required
+        if (!rules.required && R.isNil(propValue)) return null;
 
-        return void 0;
+        return R.pipe(
+            // select all rules that have a validator fn
+            R.pickBy(FunctionUtils.callWithSecondArg(hasValidator)),
+            R.mapObjIndexed((ruleValues, ruleName) => {
+                const validator = validators[ruleName];
+                return validator(propValue, ruleValues) ? null : errorMessageFormatter(ruleName);
+            }),
+            R.pickBy(FunctionUtils.isNotNil),
+            // if not empty return first value of the object
+            R.ifElse(R.isEmpty, R.always(null), R.pipe(R.values, R.head))
+        )(rules);
     };
 };
 
@@ -104,56 +111,30 @@ const _getAttributeValidator = function(subject) {
  * @return {Object}
  */
 export const validate = function(subject, schema) {
-    const errors = {};
+    const validator = getAttributeValidator(subject);
 
-    if (!schema)  throw new Error('IllegalArgumentsException: Schema missing!');
-
-    const validator = _getAttributeValidator(subject);
-
-    for (const key in schema) {
-        const rules = schema[key];
-        const value = subject[key];
-
-        // do not run validator if property is not required and is missing
-        if (!rules.required && (value === null || value === undefined)) {
-            continue;
-        }
-
-        const error = validator(key, rules);
-
-        if (error) {
-            errors[key] = error;
-        }
-    }
-
-    return errors;
+    return R.pipe(
+        R.mapObjIndexed(validator),
+        R.pickBy(FunctionUtils.isNotNil)
+    )(schema);
 };
 
 /**
  * Validate a property against given schema
- * @param  {string} propertyName
- * @param  {*} propertyValue
+ * @param  {String} key
+ * @param  {*} value
  * @param  {Object} schema
- * @return {string}
+ * @return {String}
  */
-export const validateProperty = function(propertyName, propertyValue, schema) {
-    const rules = schema[propertyName];
+export const validateProperty = function(key, value, schema) {
+    const subject = { [key]: value };
 
-    for (let ruleName in rules) {
-        const validator  = validators[ruleName] ;
-
-        if (!rules.required && !propertyValue) return;
-
-        if (validator && !validator.call(null, propertyValue, rules[ruleName])) {
-            return _formErrorReturnValue(rules.msgKey, ruleName);
-        }
-    }
-
-    return void 0;
-};
-
-export default {
-    validators: validators,
-    validate: validate,
-    validateProperty: validateProperty
+    return R.pipe(
+        validate,
+        R.ifElse(
+            R.isEmpty,
+            R.always(undefined),
+            R.prop(key)
+        )
+    )(subject, schema);
 };

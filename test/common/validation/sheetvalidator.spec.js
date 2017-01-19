@@ -3,7 +3,7 @@ import {validate, findExpensesOfRemovedParticipants, validateExpensesOfRemovedPa
 import {t, tpl} from 'common/dictionary/dictionary';
 import Schema from 'common/validation/schema';
 
-describe.only('Validation: SheetValidator', function () {
+describe('Validation: SheetValidator', function () {
     const validSheet = {
         id: '1',
         name: 'testsheet',
@@ -90,7 +90,7 @@ describe.only('Validation: SheetValidator', function () {
             expect(validate(validSheet)).not.to.contain.property('expenses');
         });
 
-        it('should contain expenses error message when the property is invalid', function () {
+        it('should contain expenses error message when a property is invalid', function () {
             const sheet = {...validSheet, ...{ expenses: 1 }};
             expect(validate(sheet).expenses).to.contain(t(Schema.Sheet.expenses.msgKey + '.type'));
         });
@@ -103,8 +103,9 @@ describe.only('Validation: SheetValidator', function () {
         it('should have property expense if a participant is invalid', function () {
             const expense = { ...validExpense, ...{ name: null }};
             const sheet = {...validSheet, ...{ expenses: [ expense ]}};
-            expect(validate(sheet)).to.have.property('expenses');
-            expect(validate(sheet).expenses).to.be.a('string');
+            const result = validate(sheet);
+            expect(result).to.have.property('expenses');
+            expect(result.expenses).to.be.a('string');
         });
 
         it('should contain participant\'s id whose validation fails', function () {
@@ -136,25 +137,25 @@ describe.only('Validation: SheetValidator', function () {
 
     describe('Checking expenses for removed participants', function () {
         it('should return an empty array if expenses is empty', function () {
-            const res = findExpensesOfRemovedParticipants([{ id: 1 }], []);
+            const res = findExpensesOfRemovedParticipants({ participants: [{ id: 1 }], expenses: [] });
             expect(res).to.be.an('array');
             expect(res).to.be.emtpy;
         });
 
         it('should return an empty array if expenses is missing', function () {
-            const res = findExpensesOfRemovedParticipants([{ id: 1 }]);
+            const res = findExpensesOfRemovedParticipants({ participants: [{ id: 1 }]});
             expect(res).to.be.an('array');
             expect(res).to.be.emtpy;
         });
 
         it('should return an empty array if participants is empty', function () {
-            const res = findExpensesOfRemovedParticipants([], [{ participants: [1, 2] }]);
+            const res = findExpensesOfRemovedParticipants({ participants: [], expenses: [{ participants: [1, 2] }]});
             expect(res).to.be.an('array');
             expect(res).to.be.emtpy;
         });
 
         it('should return an empty array if participants is not defined', function () {
-            const res = findExpensesOfRemovedParticipants(undefined, [{ participants: [1, 2] }]);
+            const res = findExpensesOfRemovedParticipants({ participants: undefined, expenses: [{ participants: [1, 2] }]});
             expect(res).to.be.an('array');
             expect(res).to.be.emtpy;
         });
@@ -163,7 +164,7 @@ describe.only('Validation: SheetValidator', function () {
             const participants = [{ id: 1 }, { id: 2, removed: true }];
             const expenses = [{ id: 1, participants: [1, 2], payer: 1 }];
 
-            expect(findExpensesOfRemovedParticipants(participants, expenses)[0]).to.deep.equal(expenses[0]);
+            expect(findExpensesOfRemovedParticipants({participants, expenses})[0]).to.deep.equal(expenses[0]);
         });
 
         it('should return all the expenses removed participant is participated in', function () {
@@ -173,7 +174,7 @@ describe.only('Validation: SheetValidator', function () {
                 { id: 2, participants: [1, 2], payer: 1 },
                 { id: 3, participants: [1, 2], payer: 1 }
             ];
-            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            const res = findExpensesOfRemovedParticipants({participants, expenses});
             expect(res).to.have.lengthOf(3);
         });
 
@@ -181,7 +182,7 @@ describe.only('Validation: SheetValidator', function () {
             const participants = [{ id: 1 }, { id: 2, removed: true }];
             const expenses = [{ id: 1, participants: [1], payer: 2 }];
 
-            expect(findExpensesOfRemovedParticipants(participants, expenses)[0]).to.deep.equal(expenses[0]);
+            expect(findExpensesOfRemovedParticipants({participants, expenses})[0]).to.deep.equal(expenses[0]);
         });
 
         it('should return all the expenses the removed participant is payer of', function () {
@@ -191,14 +192,14 @@ describe.only('Validation: SheetValidator', function () {
                 { id: 2, participants: [1], payer: 2 },
                 { id: 3, participants: [1], payer: 2 }
             ];
-            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            const res = findExpensesOfRemovedParticipants({participants, expenses});
             expect(res).to.have.lengthOf(3);
         });
 
         it('should return expense once if the removed participant has payed it and also participated in it', function () {
             const participants = [{ id: 1 }, { id: 2, removed: true }];
             const expenses = [{ id: 1, participants: [1, 2], payer: 2 }];
-            const res = findExpensesOfRemovedParticipants(participants, expenses);
+            const res = findExpensesOfRemovedParticipants({participants, expenses});
             expect(res).to.have.lengthOf(1);
         });
 
@@ -213,7 +214,7 @@ describe.only('Validation: SheetValidator', function () {
                 { id: 6, participants: [3], payer: 2 }
             ];
 
-            expect(findExpensesOfRemovedParticipants(participants, expenses)).to.have.lengthOf(expenses.length - 1);
+            expect(findExpensesOfRemovedParticipants({participants, expenses})).to.have.lengthOf(expenses.length - 1);
         });
 
         it('should not take removed expenses into account', function () {
@@ -223,7 +224,7 @@ describe.only('Validation: SheetValidator', function () {
                 { id: 2, participants: [1], payer: 2, removed: true }
             ];
 
-            expect(findExpensesOfRemovedParticipants(participants, expenses)).to.be.empty;
+            expect(findExpensesOfRemovedParticipants({participants, expenses})).to.be.empty;
         });
     });
 
