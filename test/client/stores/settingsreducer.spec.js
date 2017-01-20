@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import Constants from 'client/constants/appconstants';
+import {SET_SETTINGS} from 'client/stores/settingsreducer';
 
 describe('Reducer:SettingsReducer', function () {
 
@@ -16,7 +16,7 @@ describe('Reducer:SettingsReducer', function () {
 
     before(() => reducer = proxyquire('client/stores/settingsreducer', {
         'client/factory/storagefactory': () => { return { setAll: storageSetAllSpy, getAll: storageGetAllStub };}
-    }).settingsReducer);
+    }).default);
 
     afterEach(() => {
         storageSetAllSpy.reset();
@@ -35,7 +35,7 @@ describe('Reducer:SettingsReducer', function () {
 
     describe('Setting new settings', function () {
         const settings = { lang: 'en' };
-        const action = { type: Constants.ActionTypes.SET_SETTINGS, settings };
+        const action = { type: SET_SETTINGS, settings };
 
         it('should add settings to state', function () {
             expect(reducer({}, action).lang).to.equal(settings.lang);

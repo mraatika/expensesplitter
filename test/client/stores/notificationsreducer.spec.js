@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {t, tpl} from 'common/dictionary/dictionary';
-import Constants from 'client/constants/appconstants';
-import {notificationsReducer as reducer} from 'client/stores/notificationsreducer';
+import reducer from 'client/stores/notificationsreducer';
+import {LOAD_SHEET_FAIL, REMOVE_SHEET_FAIL, SAVE_SHEET_FAIL} from 'client/stores/sheetreducer';
 
 describe('Reducer:NotificationsReducer', function () {
 
@@ -13,13 +13,13 @@ describe('Reducer:NotificationsReducer', function () {
     });
 
     describe('Adding a server error', function () {
-        const loadSheetAction = { type: Constants.ErrorEventTypes.LOAD_SHEET, error: {}};
-        const saveSheetAction = { type: Constants.ErrorEventTypes.SAVE_SHEET, error: {}};
-        const removeSheetAction = { type: Constants.ErrorEventTypes.REMOVE_SHEET, error: {}};
+        const loadSheetAction = { type: LOAD_SHEET_FAIL, error: {}};
+        const saveSheetAction = { type: SAVE_SHEET_FAIL, error: {}};
+        const removeSheetAction = { type: REMOVE_SHEET_FAIL, error: {}};
 
         it('should have a type related title', function () {
             const res = reducer(undefined, loadSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${loadSheetAction.type}.title`));
+            expect(res.title).to.contain(t(`errors.LOAD_SHEET_FAIL.title`));
         });
 
         it('should have a general error message when connection to server fails', function () {
@@ -55,24 +55,26 @@ describe('Reducer:NotificationsReducer', function () {
 
         it('should return an error message when save sheet fails', function () {
             const res = reducer(undefined, saveSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${saveSheetAction.type}.title`));
+            expect(res.title).to.contain(t(`errors.SAVE_SHEET_FAIL.title`));
+            expect(res.title).not.to.contain('Missing string:');
         });
 
         it('should return an error message when removing a sheet fails', function () {
             const res = reducer(undefined, removeSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${removeSheetAction.type}.title`));
+            expect(res.title).not.to.contain('Missing string:');
+            expect(res.title).to.contain(t(`errors.REMOVE_SHEET_FAIL.title`));
         });
     });
 
     describe('Adding a client error message', function () {
         const message = 'testmessage';
-        const loadSheetAction = { type: Constants.ErrorEventTypes.LOAD_SHEET, error: { client: true, message }};
-        const saveSheetAction = { type: Constants.ErrorEventTypes.SAVE_SHEET, error: {}};
-        const removeSheetAction = { type: Constants.ErrorEventTypes.REMOVE_SHEET, error: {}};
+        const loadSheetAction = { type: LOAD_SHEET_FAIL, error: { client: true, message }};
+        const saveSheetAction = { type: SAVE_SHEET_FAIL, error: {}};
+        const removeSheetAction = { type: REMOVE_SHEET_FAIL, error: {}};
 
         it('should have a title', function () {
             const res = reducer(undefined, loadSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${loadSheetAction.type}.title`));
+            expect(res.title).to.contain(t(`errors.LOAD_SHEET_FAIL.title`));
         });
 
         it('should have a message', function () {
@@ -92,12 +94,13 @@ describe('Reducer:NotificationsReducer', function () {
 
         it('should return an error message when save sheet fails', function () {
             const res = reducer(undefined, saveSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${saveSheetAction.type}.title`));
+            expect(res.title).not.to.contain('Missing string:');
+            expect(res.title).to.contain(t(`errors.SAVE_SHEET_FAIL.title`));
         });
 
         it('should return an error message when removing a sheet fails', function () {
             const res = reducer(undefined, removeSheetAction)[0];
-            expect(res.title).to.contain(t(`errors.${removeSheetAction.type}.title`));
+            expect(res.title).to.contain(t(`errors.REMOVE_SHEET_FAIL.title`));
         });
     });
 });

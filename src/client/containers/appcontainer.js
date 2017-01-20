@@ -1,7 +1,8 @@
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import App from 'client/components/app.jsx';
-import {createSheet, fetchSheet, setSettings} from 'client/actions/dataactioncreators';
+import {createSheet, fetchSheet} from 'client/stores/sheetreducer';
+import {setSettings} from 'client/stores/settingsreducer';
 
 function mapStateToProps(state) {
     const {sheet} = state;

@@ -1,8 +1,8 @@
 import {connect} from 'react-redux';
 import {values} from 'ramda';
 import LoadSheetDialog from 'client/components/home/loadsheetdialog.jsx';
-import {clearHistory, removeSheetHistoryEntry} from 'client/actions/dataactioncreators';
-import {toggleLoadSheetDialog} from 'client/actions/uiactioncreators';
+import {clearHistory, removeSheetHistoryEntry} from 'client/stores/sheethistoryreducer';
+import {toggleLoadSheetDialog} from 'client/stores/uireducer';
 
 function mapStateToProps(state) {
     const {sheet, sheetHistory} = state;

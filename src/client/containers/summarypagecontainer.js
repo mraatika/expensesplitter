@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {ArrayUtils} from 'client/util/utils';
-import {removeSheet, saveSheet, updateSheet} from 'client/actions/dataactioncreators';
+import {removeSheet, saveSheet, updateSheet} from 'client/stores/sheetreducer';
 import SummaryPage from 'client/components/summary/summarypage.jsx';
 import {getAllBalancesAndShares} from 'client/service/expensesservice';
 import {calculateTransactions} from 'client/service/transactionsservice';

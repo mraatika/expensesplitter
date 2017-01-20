@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import HomePage from 'client/components/home/homepage.jsx';
-import * as DataActions from 'client/actions/dataactioncreators';
-import * as UiActions from 'client/actions/uiactioncreators';
+import {createSheet, removeSheet, saveSheet, updateSheet} from 'client/stores/sheetreducer';
+import {toggleLoadSheetDialog, toggleNewSheetAdded, toggleSettingsSection} from 'client/stores/uireducer';
 
 function mapStateToProps(state) {
     const {sheet} = state;
@@ -21,44 +21,44 @@ function mapDispatchToProps(dispatch, ownProps) {
          * Create new sheet
          * @param  {Object} sheet
          */
-        createSheet: sheet => dispatch(DataActions.createSheet(sheet)),
+        createSheet: sheet => dispatch(createSheet(sheet)),
 
         /**
          * Save current sheet
          * @param  {Object} sheet
          */
-        saveSheet: sheet => dispatch(DataActions.saveSheet(sheet)),
+        saveSheet: sheet => dispatch(saveSheet(sheet)),
 
         /**
          * Update current sheet
          * @param  {Object} sheet
          * @param  {Object} updateObject
          */
-        updateSheet: (sheet, updateObject) => dispatch(DataActions.updateSheet(sheet, updateObject)),
+        updateSheet: (sheet, updateObject) => dispatch(updateSheet(sheet, updateObject)),
 
         /**
          * Remove current sheet
          * @param  {Object} sheet
          */
-        removeSheet: sheet => dispatch(DataActions.removeSheet(sheet, ownProps.params.adminKey)),
+        removeSheet: sheet => dispatch(removeSheet(sheet, ownProps.params.adminKey)),
 
         /**
          * Toggle load sheet dialog's display state
          * @param  {boolean} state
          */
-        toggleLoadSheetDialog: state => dispatch(UiActions.toggleLoadSheetDialog(state)),
+        toggleLoadSheetDialog: state => dispatch(toggleLoadSheetDialog(state)),
 
         /**
          * Toggle new sheet message's display state
          * @param  {boolean} state
          */
-        toggleNewSheetAdded: state => dispatch(UiActions.toggleNewSheetAdded(state)),
+        toggleNewSheetAdded: state => dispatch(toggleNewSheetAdded(state)),
 
         /**
          * Toggle settings section
          * @param  {boolean} state
          */
-        toggleSettingsSection: state => dispatch(UiActions.toggleSettingsSection(state))
+        toggleSettingsSection: state => dispatch(toggleSettingsSection(state))
     };
 }
 

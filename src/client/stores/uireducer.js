@@ -1,5 +1,19 @@
 import immutable from 'object-path-immutable';
-import Constants from 'client/constants/appconstants';
+import {
+    LOAD_SHEET,
+    LOAD_SHEET_FAIL,
+    LOAD_SHEET_SUCCESS,
+    SAVE_SHEET,
+    SAVE_SHEET_FAIL,
+    SAVE_SHEET_SUCCESS
+} from 'client/stores/sheetreducer';
+
+/**
+ * Action types
+ */
+export const TOGGLE_LOAD_SHEET_DIALOG = 'expensesplitter/ui/TOGGLE_LOAD_SHEET_DIALOG';
+export const TOGGLE_NEW_SHEET_MESSAGE = 'expensesplitter/ui/TOGGLE_NEW_SHEET_MESSAGE';
+export const TOGGLE_SETTINGS_SECTION = 'expensesplitter/ui/TOGGLE_SETTINGS_SECTION';
 
 /**
  * Update state property if value changes
@@ -22,28 +36,64 @@ const updateProperty = (state, name, value) => {
  * @param  {Object} action
  * @return {Object} Modified state
  */
-export function uiReducer(state = {}, action) {
+export default function reducer(state = {}, action) {
     switch(action.type) {
-    case Constants.ActionTypes.LOAD_SHEET:
+    case LOAD_SHEET:
         return updateProperty(state, 'isFetching', true);
-    case Constants.ActionTypes.SAVE_SHEET:
+    case SAVE_SHEET:
         return updateProperty(state, 'isSavingToServer', true);
-    case Constants.ActionTypes.TOGGLE_LOAD_SHEET_DIALOG:
+    case TOGGLE_LOAD_SHEET_DIALOG:
         return updateProperty(state, 'showLoadSheetDialog', action.state);
-    case Constants.ActionTypes.TOGGLE_NEW_SHEET_MESSAGE:
+    case TOGGLE_NEW_SHEET_MESSAGE:
         return updateProperty(state, 'newSheetAdded', action.state);
-    case Constants.ActionTypes.TOGGLE_SETTINGS_SECTION:
+    case TOGGLE_SETTINGS_SECTION:
         return updateProperty(state, 'showSettings', action.state);
-    case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+    case LOAD_SHEET_SUCCESS:
         return ['newSheetAdded', 'showLoadSheetDialog', 'isFetching'].reduce((memo, name) => {
             return updateProperty(memo, name, false);
         }, state);
-    case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-    case Constants.ErrorEventTypes.SAVE_SHEET:
+    case SAVE_SHEET_SUCCESS:
+    case SAVE_SHEET_FAIL:
         return updateProperty(state, 'isSavingToServer', false);
-    case Constants.ErrorEventTypes.LOAD_SHEET:
+    case LOAD_SHEET_FAIL:
         return updateProperty(state, 'isFetching', false);
     default:
         return state;
     }
+}
+
+/**
+ * Toggle load sheet dialog's display state
+ * @param  {boolean} state Show or not to show
+ * @return {Object}
+ */
+export function toggleLoadSheetDialog(state) {
+    return {
+        type: TOGGLE_LOAD_SHEET_DIALOG,
+        state
+    };
+}
+
+/**
+ * Toggle new sheet added messages's display state
+ * @param  {boolean} state Show or not to show
+ * @return {Object}
+ */
+export function toggleNewSheetAdded(state) {
+    return {
+        type: TOGGLE_NEW_SHEET_MESSAGE,
+        state
+    };
+}
+
+/**
+ * Toggle settings section's display state
+ * @param  {boolean} state Show or not to show
+ * @return {Object}
+ */
+export function toggleSettingsSection(state) {
+    return {
+        type: TOGGLE_SETTINGS_SECTION,
+        state
+    };
 }

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import ExpensesPage from 'client/components/expenses/expensespage.jsx';
-import {addExpense, removeExpense} from 'client/actions/dataactioncreators';
+import {addExpense, removeExpense} from 'client/stores/expensesreducer';
 import {ArrayUtils} from 'client/util/utils';
 import {getAllBalancesAndShares} from 'client/service/expensesservice';
 

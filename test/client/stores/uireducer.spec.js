@@ -1,6 +1,20 @@
 import {expect} from 'chai';
-import Constants from 'client/constants/appconstants';
-import {uiReducer as reducer} from 'client/stores/uireducer';
+import reducer, {
+    toggleSettingsSection,
+    toggleNewSheetAdded,
+    toggleLoadSheetDialog,
+    TOGGLE_LOAD_SHEET_DIALOG,
+    TOGGLE_NEW_SHEET_MESSAGE,
+    TOGGLE_SETTINGS_SECTION
+} from 'client/stores/uireducer';
+import {
+    SAVE_SHEET,
+    SAVE_SHEET_SUCCESS,
+    LOAD_SHEET,
+    SAVE_SHEET_FAIL,
+    LOAD_SHEET_FAIL,
+    LOAD_SHEET_SUCCESS
+} from 'client/stores/sheetreducer';
 
 describe('Reducer:UiReducer', function () {
 
@@ -12,8 +26,8 @@ describe('Reducer:UiReducer', function () {
     });
 
     describe('Toggling load sheet dialog', function () {
-        const toggleAction = { type: Constants.ActionTypes.TOGGLE_LOAD_SHEET_DIALOG, state: true };
-        const loadSheetEvent = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS };
+        const toggleAction = { type: TOGGLE_LOAD_SHEET_DIALOG, state: true };
+        const loadSheetEvent = { type: LOAD_SHEET_SUCCESS };
 
         it('should set state', function () {
             expect(reducer(undefined, toggleAction).showLoadSheetDialog).to.be.ok;
@@ -35,8 +49,8 @@ describe('Reducer:UiReducer', function () {
     });
 
     describe('Toggling new sheet message', function () {
-        const toggleAction = { type: Constants.ActionTypes.TOGGLE_NEW_SHEET_MESSAGE, state: true };
-        const loadSheetEvent = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS };
+        const toggleAction = { type: TOGGLE_NEW_SHEET_MESSAGE, state: true };
+        const loadSheetEvent = { type: LOAD_SHEET_SUCCESS };
 
         it('should set state', function () {
             expect(reducer(undefined, toggleAction).newSheetAdded).to.be.ok;
@@ -63,9 +77,9 @@ describe('Reducer:UiReducer', function () {
     });
 
     describe('Toggling loading dialog', function () {
-        const loadSheetAction = { type: Constants.ActionTypes.LOAD_SHEET };
-        const loadSheetEvent = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS };
-        const loadSheetError = { type: Constants.ErrorEventTypes.LOAD_SHEET };
+        const loadSheetAction = { type: LOAD_SHEET };
+        const loadSheetEvent = { type: LOAD_SHEET_SUCCESS };
+        const loadSheetError = { type: LOAD_SHEET_FAIL };
 
         it('should set isFetching true when beginning to fetch', function () {
             expect(reducer({}, loadSheetAction).isFetching).to.be.ok;
@@ -81,9 +95,9 @@ describe('Reducer:UiReducer', function () {
     });
 
     describe('Toggling sheet save status', function () {
-        const saveSheetAction = { type: Constants.ActionTypes.SAVE_SHEET };
-        const saveSheetEvent = { type: Constants.EventTypes.SAVE_SHEET_SUCCESS };
-        const saveSheetError = { type: Constants.ErrorEventTypes.SAVE_SHEET };
+        const saveSheetAction = { type: SAVE_SHEET };
+        const saveSheetEvent = { type: SAVE_SHEET_SUCCESS };
+        const saveSheetError = { type: SAVE_SHEET_FAIL };
 
         it('should set isFetching true when beginning to save', function () {
             expect(reducer({}, saveSheetAction).isSavingToServer).to.be.ok;
@@ -99,10 +113,36 @@ describe('Reducer:UiReducer', function () {
     });
 
     describe('Toggling settings section', function () {
-        const toggleAction = { type: Constants.ActionTypes.TOGGLE_SETTINGS_SECTION, state: true };
+        const toggleAction = { type: TOGGLE_SETTINGS_SECTION, state: true };
 
         it('should set showSettings', function () {
             expect(reducer({}, toggleAction).showSettings).to.be.ok;
+        });
+    });
+
+    describe('Actions: UIActionCreators', function () {
+        describe('toggle sheet dialog', function () {
+            it('should dispatch an event with state', function () {
+                const res = toggleLoadSheetDialog(true);
+                expect(res.type).to.equal(TOGGLE_LOAD_SHEET_DIALOG);
+                expect(res.state).to.be.ok;
+            });
+        });
+
+        describe('toggle new sheet added message', function () {
+            it('should dispatch an event with state', function () {
+                const res = toggleNewSheetAdded(true);
+                expect(res.type).to.equal(TOGGLE_NEW_SHEET_MESSAGE);
+                expect(res.state).to.be.ok;
+            });
+        });
+
+        describe('toggle settings section', function () {
+            it('should dispatch event with state', function () {
+                const res = toggleSettingsSection(true);
+                expect(res.type).to.equal(TOGGLE_SETTINGS_SECTION);
+                expect(res.state).to.be.ok;
+            });
         });
     });
 });

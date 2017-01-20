@@ -2,6 +2,10 @@ import immutable from 'object-path-immutable';
 import Constants from 'client/constants/appconstants';
 import sheetHistoryFactory from 'client/factory/sheethistoryfactory';
 import storageFactory from 'client/factory/storagefactory';
+import {LOAD_SHEET_SUCCESS, REMOVE_SHEET_SUCCESS, SAVE_SHEET_SUCCESS} from 'client/stores/sheetreducer';
+
+export const CLEAR_HISTORY = 'expensesplitter/sheethistory/CLEAR_HISTORY';
+export const REMOVE_SHEET_HISTORY_ENTRY = 'expensesplitter/sheethistory/REMOVE_SHEET_HISTORY_ENTRY';
 
 // create local storage
 const storage = storageFactory(Constants.SHEET_STORE_NAME);
@@ -35,7 +39,7 @@ const deleteEntry = (state, id) => {
  * Clear the state
  * @return {Object}
  */
-const clearHistory = () => {
+const clearHistoryStorage = () => {
     storage.clear();
     return {};
 };
@@ -46,18 +50,40 @@ const clearHistory = () => {
  * @param  {Object} action
  * @return {Object} Modified state
  */
-export function sheetHistoryReducer(state = storage.getAll(), action) {
+export default function reducer(state = storage.getAll(), action) {
     switch(action.type) {
-    case Constants.EventTypes.SAVE_SHEET_SUCCESS:
-    case Constants.EventTypes.LOAD_SHEET_SUCCESS:
+    case SAVE_SHEET_SUCCESS:
+    case LOAD_SHEET_SUCCESS:
         return addEntry(state, action.payload.data.sheet);
-    case Constants.EventTypes.REMOVE_SHEET_SUCCESS:
+    case REMOVE_SHEET_SUCCESS:
         return deleteEntry(state, action.payload.data.id);
-    case Constants.ActionTypes.REMOVE_SHEET_HISTORY_ENTRY:
+    case REMOVE_SHEET_HISTORY_ENTRY:
         return deleteEntry(state, action.entry.id);
-    case Constants.ActionTypes.CLEAR_HISTORY:
-        return clearHistory();
+    case CLEAR_HISTORY:
+        return clearHistoryStorage();
     default:
         return state;
     }
+}
+
+/**
+ * Clear sheet history
+ * @return {Object}
+ */
+export function clearHistory() {
+    return {
+        type: CLEAR_HISTORY
+    };
+}
+
+/**
+ * Remove a single sheet history entry from state and local db
+ * @param  {Object} entry
+ * @return {Object}
+ */
+export function removeSheetHistoryEntry(entry) {
+    return {
+        type: REMOVE_SHEET_HISTORY_ENTRY,
+        entry
+    };
 }

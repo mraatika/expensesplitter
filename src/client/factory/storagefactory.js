@@ -7,5 +7,8 @@ import LocalStorageAdapter from 'client/util/localstorageadapter';
  * @return {LocalStorageAdapter}
  */
 export default function create(storeName, initialData) {
-    return new LocalStorageAdapter(storeName, initialData);
+    if (window && window.localStorage) {
+        return new LocalStorageAdapter(storeName, initialData);
+    }
+    return ({ setAll: () => {}, getAll: () => {}, clear: () => {} });
 }

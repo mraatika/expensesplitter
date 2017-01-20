@@ -1,10 +1,12 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
-import Constants from 'client/constants/appconstants';
+import {LOAD_SHEET_FAIL, REMOVE_SHEET_FAIL, SAVE_SHEET_FAIL} from 'client/stores/sheetreducer';
 import {t, tpl} from 'common/dictionary/dictionary';
 
 const _notificationDefaults = (errorType, message) => {
+    // use the actual action type as translation key
+    const translationKey = errorType.substring(errorType.lastIndexOf('/') + 1);
     return {
-        title: t(`errors.${errorType}.title`) + '!',
+        title: t(`errors.${translationKey}.title`) + '!',
         message,
         level: 'error',
         autoDismiss: 15
@@ -63,11 +65,11 @@ function createErrorNotification(action) {
  * @param  {Object} action
  * @return {Object}
  */
-export function notificationsReducer(state = [], action) {
+export default function notificationsReducer(state = [], action) {
     switch(action.type) {
-    case Constants.ErrorEventTypes.LOAD_SHEET:
-    case Constants.ErrorEventTypes.SAVE_SHEET:
-    case Constants.ErrorEventTypes.REMOVE_SHEET:
+    case LOAD_SHEET_FAIL:
+    case SAVE_SHEET_FAIL:
+    case REMOVE_SHEET_FAIL:
         return state.concat(createErrorNotification(action));
     default:
         return state;

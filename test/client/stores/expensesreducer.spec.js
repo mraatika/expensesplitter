@@ -1,6 +1,9 @@
 import {expect} from 'chai';
+import {omit} from 'ramda';
 import sinon from 'sinon';
-import Constants from 'client/constants/appconstants';
+import {addExpense, removeExpense, ADD_EXPENSE, REMOVE_EXPENSE} from 'client/stores/expensesreducer';
+import expenseFactory from 'client/factory/expensefactory';
+import {CREATE_SHEET, LOAD_SHEET_SUCCESS} from 'client/stores/sheetreducer';
 
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
@@ -10,9 +13,9 @@ const expenseFactoryStub = sinon.stub();
 
 const reducer = proxyquire('client/stores/expensesreducer', {
     'client/factory/expensefactory': expenseFactoryStub
-}).expensesReducer;
+}).default;
 
-describe('Reducer:ParticipantsReducer', function () {
+describe('Reducer:ExpensesReducer', function () {
     const initialState = [];
     const expense = { id: '1', name: 'testexpense' };
     const findByIndex = function(arr, id) {
@@ -36,7 +39,7 @@ describe('Reducer:ParticipantsReducer', function () {
     describe('Sheet load', function () {
         const expenses = [ { id: 1 }, { id: 2} ];
         const sheet = { expenses };
-        const action = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS, payload: { data: { sheet }}};
+        const action = { type: LOAD_SHEET_SUCCESS, payload: { data: { sheet }}};
 
         it('should add all participants to state when a sheet is loaded', function () {
             const res = reducer(undefined, action);
@@ -46,7 +49,7 @@ describe('Reducer:ParticipantsReducer', function () {
 
     describe('Sheet create', function () {
         const initialState = [ { id: 1 }, { id: 2} ];
-        const action = { type: Constants.ActionTypes.CREATE_SHEET };
+        const action = { type: CREATE_SHEET };
 
         it('should clear the state when a new sheet is created', function () {
             const res = reducer(initialState, action);
@@ -56,7 +59,7 @@ describe('Reducer:ParticipantsReducer', function () {
     });
 
     describe('Add expense', function () {
-        const action = { type: Constants.ActionTypes.ADD_EXPENSE, expense };
+        const action = { type: ADD_EXPENSE, expense };
 
         it('should add expense', function () {
             expenseFactoryStub.returns(expense);
@@ -71,7 +74,7 @@ describe('Reducer:ParticipantsReducer', function () {
     });
 
     describe('Remove expense', function () {
-        const action = { type: Constants.ActionTypes.REMOVE_EXPENSE, expense };
+        const action = { type: REMOVE_EXPENSE, expense };
         const initialState = [{ id: '1' }, { id: '2' }];
 
         it('should mark expense removed', function () {
@@ -84,4 +87,45 @@ describe('Reducer:ParticipantsReducer', function () {
             expect(reducer(initialState, action)).not.to.equal(initialState);
         });
     });
+
+    describe('ActionCreators:Expense', function () {
+        describe('add', function () {
+            it('should throw if called without an expense', function () {
+                expect(() => addExpense()).to.throw();
+            });
+
+            it('should throw if called with an invalid expense', function () {
+                expect(() => addExpense('a')).to.throw();
+            });
+
+            it('should return an action with expense', function () {
+                const expense = { id: 1, name: 'Food' };
+                const payload = addExpense(expense);
+                const expected = omit(['id'], expenseFactory(expense));
+
+                expect(payload.type).to.equal(ADD_EXPENSE);
+                expect(payload.expense.id).to.be.ok;
+                expect(omit(['id'], payload.expense)).to.deep.equal(expected);
+            });
+        });
+
+        describe('remove', function () {
+            it('should throw if called without a expense', function () {
+                expect(() => removeExpense()).to.throw();
+            });
+
+            it('should throw if called with an invalid expense', function () {
+                expect(() => removeExpense('a')).to.throw();
+            });
+
+            it('should return an action with expense', function () {
+                const expense = { id: 1 };
+                const res = removeExpense(expense);
+
+                expect(res.type).to.equal(REMOVE_EXPENSE);
+                expect(res.expense).to.equal(expense);
+            });
+        });
+    });
 });
+

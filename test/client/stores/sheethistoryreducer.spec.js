@@ -1,7 +1,8 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import Constants from 'client/constants/appconstants';
+import {CLEAR_HISTORY, REMOVE_SHEET_HISTORY_ENTRY} from 'client/stores/sheethistoryreducer';
+import {LOAD_SHEET_SUCCESS, REMOVE_SHEET_SUCCESS, SAVE_SHEET_SUCCESS} from 'client/stores/sheetreducer';
 
 describe('Reducer:SheetHistoryReducer', function () {
 
@@ -16,8 +17,8 @@ describe('Reducer:SheetHistoryReducer', function () {
     proxyquire.noPreserveCache();
 
     before(() => reducer = proxyquire('client/stores/sheethistoryreducer', {
-        'client/factory/storagefactory': () => { return { setAll: storageSetAllSpy, getAll: storageGetAllStub, clear: storageClearStub };}
-    }).sheetHistoryReducer);
+        'client/factory/storagefactory': () => ({ setAll: storageSetAllSpy, getAll: storageGetAllStub, clear: storageClearStub })
+    }).default);
 
     afterEach(() => {
         storageSetAllSpy.reset();
@@ -34,8 +35,8 @@ describe('Reducer:SheetHistoryReducer', function () {
 
     describe('Adding sheet history entry', function () {
         const sheet = { id: '123', name: 'testsheet', createdOn: new Date()};
-        const saveSheetEvent = { type: Constants.EventTypes.SAVE_SHEET_SUCCESS, payload: { data: { sheet }}};
-        const loadSheetEvent = { type: Constants.EventTypes.LOAD_SHEET_SUCCESS, payload: { data: { sheet }}};
+        const saveSheetEvent = { type: SAVE_SHEET_SUCCESS, payload: { data: { sheet }}};
+        const loadSheetEvent = { type: LOAD_SHEET_SUCCESS, payload: { data: { sheet }}};
 
         it('should add an entry with id', function () {
             const res = reducer({}, saveSheetEvent);
@@ -78,7 +79,7 @@ describe('Reducer:SheetHistoryReducer', function () {
 
     describe('Removing sheet history entry after a sheet is successfully removed', function () {
         const id = '123';
-        const removeSheetEvent = { type: Constants.EventTypes.REMOVE_SHEET_SUCCESS, payload: { data: { id }}};
+        const removeSheetEvent = { type: REMOVE_SHEET_SUCCESS, payload: { data: { id }}};
 
         it('should remove corresponding entry', function () {
             const res = reducer({ [id]: {}, '234': {}}, removeSheetEvent);
@@ -101,7 +102,7 @@ describe('Reducer:SheetHistoryReducer', function () {
 
     describe('Removing a sheet history entry after a REMOVE_SHEET_HISTORY_ENTRY action', function () {
         const id = '123';
-        const removeSheetHistoryAction = { type: Constants.ActionTypes.REMOVE_SHEET_HISTORY_ENTRY, entry: { id }};
+        const removeSheetHistoryAction = { type: REMOVE_SHEET_HISTORY_ENTRY, entry: { id }};
 
         it('should remove corresponding entry', function () {
             const res = reducer({ [id]: {}, '234': {}}, removeSheetHistoryAction);
@@ -124,7 +125,7 @@ describe('Reducer:SheetHistoryReducer', function () {
 
     describe('Removing all history entries', function () {
         const id = '123';
-        const removeAllHistoryAction = { type: Constants.ActionTypes.CLEAR_HISTORY };
+        const removeAllHistoryAction = { type: CLEAR_HISTORY };
 
         it('should remove corresponding entry', function () {
             const res = reducer({ [id]: {}, '234': {}}, removeAllHistoryAction);

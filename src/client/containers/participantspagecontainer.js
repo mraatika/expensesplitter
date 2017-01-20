@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import ParticipantsPage from 'client/components/participants/participantspage.jsx';
-import {addParticipant, removeParticipant} from 'client/actions/dataactioncreators';
+import {addParticipant, removeParticipant} from 'client/stores/participantreducer';
 import {ArrayUtils} from 'client/util/utils';
 
 function mapStateToProps(state) {
