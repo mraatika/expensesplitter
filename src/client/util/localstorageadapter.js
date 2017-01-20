@@ -1,89 +1,92 @@
 import {omit} from 'ramda';
 
 /**
- * Storage that syncs with localStorage
- * @constructor
- * @param {string} storeName
- * @param {Object} initialData
+ * @class LocalStorageAdapter
+ * @description Storage that syncs with localStorage
  */
-const LocalStorageAdapter = function(storeName, initialData = {}) {
-    if (!storeName) throw new Error('IllegalArgumentsException: storeName missing!');
-    this.storeName = storeName;
-    this.setAll({ ...initialData, ...this.load() });
-};
-/**
- * Get a value from the store
- * @param  {string} key
- * @return {*}
- */
-LocalStorageAdapter.prototype.get = function(key) {
-    return key ? this._data[key] : null;
-};
-/**
- * Return the whole dataset
- * @return {Object}
- */
-LocalStorageAdapter.prototype.getAll = function() {
-    return { ...this._data };
-};
-/**
- * Set value to the store
- * @param  {string} key
- * @param  {*} value
- */
-LocalStorageAdapter.prototype.set = function(key, value) {
-    this._data[key] = value;
-    this.save();
-};
-/**
- * Replace current dataset with given
- * @param  {Object} value
- */
-LocalStorageAdapter.prototype.setAll = function(value) {
-    this._data = { ...value };
-    this.save();
-};
-/**
- * Remove value from the store
- * @param  {string} key
- */
-LocalStorageAdapter.prototype.remove = function(key) {
-    this._data[key] = null;
-    this.save();
-};
+export default class LocalStorageAdapter {
 
-/**
- * Save data to localStorage
- */
-LocalStorageAdapter.prototype.save = function() {
-    this._data = omit(val => val === null || val === void 0, this._data);
-    localStorage.setItem(this.storeName, JSON.stringify(this._data));
-};
-
-/**
- * Remove the whole dataset from localStorage
- */
-LocalStorageAdapter.prototype.clear = function() {
-    this._data = {};
-    localStorage.removeItem(this.storeName);
-};
-
-/**
- * Load data from localStorage
- * @return {Object}
- */
-LocalStorageAdapter.prototype.load = function() {
-    let data = localStorage.getItem(this.storeName);
-
-    try {
-        data = JSON.parse(data);
-    } catch(e) {
-        console.error('Error while tring to parse localstorage data', e);
+    /**
+     * @constructor
+     * @param {String} storeName
+     * @param {Object} initialData
+     */
+    constructor(storeName, initialData = {}) {
+        if (!storeName) throw new Error('IllegalArgumentsException: storeName missing!');
+        this.storeName = storeName;
+        this.setAll({ ...initialData, ...this.load() });
+    }
+    /**
+     * Get a value from the store
+     * @param  {String} key
+     * @return {*}
+     */
+    get(key) {
+        return key ? this._data[key] : null;
+    }
+    /**
+     * Return the whole dataset
+     * @return {Object}
+     */
+    getAll() {
+        return { ...this._data };
+    }
+    /**
+     * Set value to the store
+     * @param  {String} key
+     * @param  {*} value
+     */
+    set(key, value) {
+        this._data[key] = value;
+        this.save();
+    }
+    /**
+     * Replace current dataset with given
+     * @param  {Object} value
+     */
+    setAll(value) {
+        this._data = { ...value };
+        this.save();
+    }
+    /**
+     * Remove value from the store
+     * @param  {String} key
+     */
+    remove(key) {
+        this._data[key] = null;
+        this.save();
     }
 
-    return data || {};
-};
+    /**
+     * Save data to localStorage
+     */
+    save() {
+        this._data = omit(val => val === null || val === void 0, this._data);
+        localStorage.setItem(this.storeName, JSON.stringify(this._data));
+    }
 
-export default LocalStorageAdapter;
+    /**
+     * Remove the whole dataset from localStorage
+     */
+    clear() {
+        this._data = {};
+        localStorage.removeItem(this.storeName);
+    }
 
+    /**
+     * Load data from localStorage
+     * @return {Object}
+     */
+    load() {
+        let data = localStorage.getItem(this.storeName);
+
+        try {
+            data = JSON.parse(data);
+        } catch(e) {
+            console.error('Error while tring to parse localstorage data', e);
+        }
+
+        return data || {};
+    }
+}
 
